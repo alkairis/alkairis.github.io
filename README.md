@@ -1,95 +1,73 @@
-<img align="center" width="100%" src="./Assets/mario.gif" alt="Mario Banner"/>
+<div align="center">
 
-<h1 align="center">Hi, I'm Deepak Singh Rajput <img src="https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/wave.gif" width="40px"></h1>
-<h3 align="center">AI/ML Developer · Python Enthusiast · Full-stack Engineer · Technical Blogger</h3>
+```
+AI/ML · FULL-STACK · GCP
+```
 
----
+# Deepak Singh Rajput
 
-## 🚀 About Me
+**Senior Software Developer · Generative AI Engineer · Technical Writer**
 
-Hello! I'm **Deepak Singh Rajput**, a passionate AI/ML developer driven by the challenge of building intelligent, scalable systems. My core strengths include:
+![Open to Collabs](https://img.shields.io/badge/Open%20to%20Collabs-1d9e75?style=flat-square&logoColor=white)
+![Location](https://img.shields.io/badge/Indore%2C%20India-555?style=flat-square)
+![Handle](https://img.shields.io/badge/@alkairis-555?style=flat-square)
 
-- 🤖 **Generative AI, NLP, and LLM Integration** using **Hugging Face, Llama Index, Ollama, GEMMA**
-- 🧠 Building intelligent backends with **Python (FastAPI)** and **Java (Spring Boot)**
-- 🌐 Crafting rich user interfaces with **ReactJS** and **Streamlit**
-- ☁️ Automating deployments and infrastructure with **GCP + Terraform**
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-alkairis-0A66C2?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/alkairis/)
+[![Twitter](https://img.shields.io/badge/Twitter-@alkairis__-1DA1F2?style=flat-square&logo=twitter)](https://twitter.com/alkairis_)
+[![Medium](https://img.shields.io/badge/Medium-@alkairis-000?style=flat-square&logo=medium)](https://medium.com/@alkairis)
+[![Email](https://img.shields.io/badge/Email-deepaksinghrajput0711-EA4335?style=flat-square&logo=gmail)](mailto:deepaksinghrajput0711@gmail.com)
 
-> 🎯 Currently working on: **A GenAI app that understands GitHub repositories and answers developer questions contextually.**
-
----
-
-<img align="right" alt="Developer Animation" width="400" src="./Assets/98764-custom-developer-animation-02.gif" />
-
-## 🛠️ Tech Stack
-
-**Languages & Frameworks**
-<p>
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" width="35"/>
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" width="35"/>
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" width="35"/>
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="35"/>
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" width="35"/>
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" width="35"/>
-</p>
-
-**Cloud & DevOps**
-<p>
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg" width="35"/>
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" width="35"/>
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg" width="35"/>
-</p>
-
-**Databases**
-<p>
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" width="35"/>
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" width="35"/>
-</p>
+</div>
 
 ---
 
-## ✍️ Latest Blogs on [Medium](https://medium.com/@alkairis)
+### `ABOUT`
 
-> I enjoy writing about AI, ML, and full-stack development. Here are a few popular ones:
-
-- 🧪 [Streamlining DB Migrations with Alembic + FastAPI](https://medium.com/@alkairis)
-- ⚡ [Simplifying API Integration in React using Axios](https://medium.com/@alkairis)
-- 🧰 [Why UV is Replacing Poetry for Python Project Management](https://medium.com/@alkairis)
-
-> ✨ Stay tuned for deep dives on LLM architectures, AI-powered DevOps, and GCP automation.
+I build **production-grade GenAI systems** — RAG pipelines, agentic workflows, and LLM evaluation frameworks. My day job is a mix of Python for AI/ML, Java + Spring Boot for backend services, and GCP for everything in between. I write on Medium when I find something worth sharing: a sharp take on a tool, a pattern that actually scales, or a mistake I made so you don't have to.
 
 ---
 
-## 🔍 Currently Exploring
+### `CURRENTLY BUILDING`
 
-- 🧠 **LLM-powered assistant apps** using LangChain, Hugging Face, and Ollama
-- 🔧 **Terraform for production-grade GCP infrastructure**
-- 📊 **AI-assisted SQL optimization for query engines**
+**GitHub Repo Q&A Assistant** &nbsp;·&nbsp; ![Status](https://img.shields.io/badge/In%20Progress-1d9e75?style=flat-square)
 
----
+> A GenAI app that ingests any GitHub repository and lets developers ask contextual questions about the codebase — architecture decisions, dependency graphs, function-level explanations. Think Cursor, but focused on *understanding* rather than editing.
 
-## 📬 Connect With Me
-
-| Platform | Link |
-|----------|------|
-| 💼 LinkedIn | [Deepak Singh Rajput](https://www.linkedin.com/in/alkairis/) |
-| 🐦 Twitter | [@alkairis_](https://twitter.com/alkairis_) |
-| 📸 Instagram | [@alkairis_](https://www.instagram.com/alkairis_/) |
-| 📧 Email | [deepaksinghrajput0711@gmail.com](mailto:deepaksinghrajput0711@gmail.com) |
-| 📓 Medium | [@alkairis](https://medium.com/@alkairis) |
+`LangChain` &nbsp;`LlamaIndex` &nbsp;`RAG` &nbsp;`FastAPI` &nbsp;`GCP`
 
 ---
 
-## 📊 GitHub Stats
+### `TECH STACK`
 
-<p align="center">
+| Domain | Technologies |
+|---|---|
+| **AI / ML** | LangChain · LangGraph · LlamaIndex · HuggingFace · Ollama · GEMMA |
+| **Backend** | Python (FastAPI) · Java (Spring Boot) · Node.js |
+| **Frontend** | ReactJS · Streamlit · JavaScript |
+| **Cloud & Infra** | GCP · Docker · Terraform · CI/CD |
+| **Databases** | MySQL · MongoDB · Vector DBs |
+
+---
+
+### `LATEST ON MEDIUM`
+
+| Post | Tag |
+|---|---|
+| [Streamlining DB Migrations with Alembic + FastAPI](https://medium.com/@alkairis) | `DevOps` |
+| [Simplifying API Integration in React using Axios](https://medium.com/@alkairis) | `Frontend` |
+| [Why UV is Replacing Poetry for Python Project Management](https://medium.com/@alkairis) | `Tooling` |
+
+---
+
+### `GITHUB STATS`
+
+<div align="center">
   <img width="47%" src="https://github-readme-streak-stats.herokuapp.com/?user=alkairis&theme=react&hide_border=true" />
   <img width="47%" src="https://github-readme-stats.vercel.app/api/top-langs/?username=alkairis&layout=compact&theme=react&hide_border=true" />
-</p>
+</div>
 
 ---
 
-## 📜 License
-
-This project is licensed under the [MIT License](./LICENSE).
-
----
+<div align="center">
+  <sub>MIT License · Built with intention, not templates.</sub>
+</div>
