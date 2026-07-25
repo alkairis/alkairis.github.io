@@ -63,7 +63,7 @@ I build **production-grade GenAI systems** — RAG pipelines, agentic workflows,
 
 <div align="center">
   <img width="47%" src="https://github-readme-streak-stats.herokuapp.com/?user=alkairis&theme=react&hide_border=true" />
-  <img width="47%" src="https://github-readme-stats.vercel.app/api/top-langs/?username=alkairis&layout=compact&theme=react&hide_border=true" />
+  <img width="47%" src="./profile-summary-card-output/tokyonight/1-repos-per-language.svg" />
 </div>
 
 ---
