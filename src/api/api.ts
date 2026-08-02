@@ -376,6 +376,19 @@ export const getSocialMedia = async (): Promise<SocialMedia[]> => {
   return Array.isArray(data) ? data : [];
 };
 
+// ─── Contact form ─────────────────────────────────────────────────────────────
+
+export type ContactPayload = {
+  name: string;
+  email: string;
+  message: string;
+};
+
+/** Send a contact-form message. Backend emails it via Resend. */
+export const sendContact = async (payload: ContactPayload): Promise<void> => {
+  await apiClient.post('/api/contact', payload);
+};
+
 type TokenResponse = {
   access_token: string;
   token_type: string;

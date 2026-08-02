@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import emailjs from "@emailjs/browser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faClock, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { gsap } from "gsap";
@@ -7,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 import TitleHeader from "../components/TitleHeader";
-import { getSocialMedia } from "../api/api";
+import { getSocialMedia, sendContact } from "../api/api";
 import {
   resolveSocialIcon,
   socialHref,
@@ -127,17 +126,12 @@ const Contact = () => {
     setStatus(STATUS.LOADING);
 
     try {
-      await emailjs.sendForm(
-        import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID,
-        formRef.current,
-        import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
-      );
+      await sendContact(form);
       setForm({ name: "", email: "", message: "" });
       setStatus(STATUS.SUCCESS);
       setTimeout(() => setStatus(STATUS.IDLE), 5000);
     } catch (error) {
-      console.error("EmailJS Error:", error);
+      console.error("Contact send error:", error);
       setStatus(STATUS.ERROR);
       setTimeout(() => setStatus(STATUS.IDLE), 5000);
     }
