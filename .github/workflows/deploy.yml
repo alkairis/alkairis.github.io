@@ -1,6 +1,6 @@
 name: Deploy to GitHub Pages
 
-# Build the Vite site in ui/ and publish it to GitHub Pages.
+# Build the Vite site and publish it to GitHub Pages.
 #
 # Custom domain: this workflow does NOT lock the site to any single domain.
 # The site is base-path-agnostic (all assets resolve against import.meta.env
