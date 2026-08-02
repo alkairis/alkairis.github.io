@@ -1,113 +1,121 @@
 <div align="center">
 
-```
-AGENTIC AI · RAG · AWS · GCP
-```
+<img src="assets/banner.png" alt="Deepak Singh Rajput — Senior Software Engineer · Generative AI & GCP" width="100%" />
 
-# Deepak Singh Rajput
+<!-- ### ✦ Personal Portfolio — [alkairis.github.io](https://alkairis.github.io) -->
 
-**Senior AI Engineer · Generative AI Systems · Technical Writer**
+<br/>
 
-![Open to Collabs](https://img.shields.io/badge/Open%20to%20Collabs-1d9e75?style=flat-square&logoColor=white)
-![Location](https://img.shields.io/badge/Indore%2C%20India-555?style=flat-square)
-![Experience](https://img.shields.io/badge/4%2B%20yrs-555?style=flat-square)
-![Handle](https://img.shields.io/badge/@alkairis-555?style=flat-square)
+[![Live](https://img.shields.io/badge/🌐_Live_Site-alkairis.github.io-4cc9f0?style=for-the-badge&labelColor=0f172a)](https://alkairis.github.io)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-alkairis-0a66c2?style=for-the-badge&logo=linkedin&logoColor=white&labelColor=0f172a)](https://www.linkedin.com/in/alkairis/)
+[![Medium](https://img.shields.io/badge/Medium-@alkairis-white?style=for-the-badge&logo=medium&logoColor=black&labelColor=0f172a)](https://alkairis.medium.com)
+[![Twitter / X](https://img.shields.io/badge/X-@alkairis__-white?style=for-the-badge&logo=x&logoColor=white&labelColor=0f172a)](https://x.com/alkairis_)
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-alkairis-0A66C2?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/alkairis/)
-[![Twitter](https://img.shields.io/badge/Twitter-@alkairis__-1DA1F2?style=flat-square&logo=twitter)](https://twitter.com/alkairis_)
-[![Medium](https://img.shields.io/badge/Medium-@alkairis-000?style=flat-square&logo=medium)](https://medium.com/@alkairis)
-[![Email](https://img.shields.io/badge/Email-deepaksinghrajput0711-EA4335?style=flat-square&logo=gmail)](mailto:deepaksinghrajput0711@gmail.com)
+<br/>
+
+> *"Shipping RAG pipelines, agentic workflows, and cloud-native systems that solve real problems at scale."*
 
 </div>
 
 ---
 
-### `ABOUT`
+## 🧠 About Me
 
-Senior AI Engineer with **4+ years** building **production-grade Generative AI** applications and cloud-native data platforms on **AWS & GCP**. I specialize in agentic AI systems — LangGraph/LangChain orchestration, RAG pipelines, LLM evaluation, and multi-model architectures — and own initiatives end to end, from problem discovery and solution design through deployment. **Google Cloud Generative AI Leader** certified. I write on Medium when I find something worth sharing: a sharp take on a tool, a pattern that actually scales, or a mistake I made so you don't have to.
+**Deepak Singh Rajput** — Senior Software Engineer based in **Indore, Madhya Pradesh, India**.
 
----
+4+ years at [Impetus Technologies](https://www.impetus.com/) shipping production-grade Generative AI systems — RAG pipelines and agentic LLM workflows (LangChain · LangGraph) — and migrating large-scale on-prem data workloads to GCP. **GCP Generative AI Leader certified.**
 
-### `EXPERIENCE`
-
-**Senior Software Engineer** &nbsp;·&nbsp; Impetus Technologies &nbsp;·&nbsp; *Client: American Express* &nbsp;·&nbsp; ![Current](https://img.shields.io/badge/Jul%202022%20%E2%80%93%20Present-1d9e75?style=flat-square)
-
-- Shipped several **production RAG services** on LangChain and LangGraph; set the team's prompt-engineering standards and stood up **LangSmith** tracing for token usage, latency, and retrieval scores with alerts on cost and hallucination spikes.
-- Built the retrieval core over **2M+ enterprise documents** (HuggingFace embeddings + Qdrant/FAISS), pairing dense and BM25 search with cross-encoder reranking to reach **~88% retrieval accuracy**.
-- Built the **FastAPI** serving layer with streaming responses, JWT-secured endpoints, Redis-backed semantic caching, and async LLM calls — holding **p99 latency under 2.5s** at concurrent load.
-- Owned migration assessments and authored **GCP target architectures** (BigQuery, Dataproc, Cloud Composer), migrating legacy Hive/Java-MapR batch workflows to BigQuery SQL and PySpark on Dataproc.
-
----
-
-### `FEATURED PROJECTS`
-
-**Agent Builder Platform** &nbsp;·&nbsp; `LangGraph` `LangChain` `Ollama` `Amazon Bedrock` `Qdrant`
-
-> No-code platform to build custom AI agents from a system prompt and configurable tools — handles orchestration, tool routing, and memory so teams ship agents without writing framework code. Pluggable RAG core with runtime hot-swap of LLMs, embedding models, and retrieval/reranking strategies.
-
-**GitNexus** &nbsp;·&nbsp; `Python` `MCP` `LangChain`
-
-> MCP-based dependency-graph server giving AI coding agents structured, queryable repository context over the Model Context Protocol.
-
-**Text-to-SQL Engine** &nbsp;·&nbsp; `LangGraph` `FastMCP` `PostgreSQL` `Ollama`
-
-> Natural-language interface over enterprise databases — generates validated SQL via a schema-aware ReAct agent, exposed through a FastMCP server.
-
----
-
-### `TECH STACK`
-
-| Domain | Technologies |
+| Domain | Stack |
 |---|---|
-| **AI / GenAI** | LangChain · LangGraph · HuggingFace · Ollama · RAG · Hybrid Retrieval & Reranking · Agentic AI · MCP · LangSmith |
-| **AWS** | EC2 · S3 · Lambda · ECS · RDS · Bedrock · Lex · DynamoDB · IAM |
-| **GCP** | BigQuery · Dataproc · Cloud Composer · Cloud Run · GCS · Cloud Functions · Artifact Registry |
-| **Languages** | Python (OOP, Async) · TypeScript · SQL |
-| **Frameworks** | FastAPI · ReactJS · Pydantic · REST APIs |
-| **Databases** | PostgreSQL · MySQL · MongoDB · Redis · Qdrant · FAISS · Chroma · Pinecone |
-| **DevOps** | Docker · Terraform · Git · CI/CD · uv · venv |
+| 🤖 AI / GenAI | LangChain · LangGraph · HuggingFace · Ollama · RAG Pipelines · Agentic AI · Prompt Engineering · Function Calling · Vector Embeddings · LangSmith · MCP Protocol |
+| ☁️ GCP | BigQuery · GCS · Dataproc · Cloud Composer · Cloud Run · Artifact Registry · Deployment Manager · Cloud Secrets · Cloud Functions |
+| 🐍 Languages | Python (OOP · Async) · TypeScript · SQL |
+| ⚙️ Frameworks | FastAPI · ReactJS · Pydantic · REST APIs |
+| 🗄️ Databases | MySQL · PostgreSQL · FAISS · Chroma · Pinecone |
+| 🔧 DevOps | Terraform · Docker · Git · uv · venv |
 
 ---
 
-### `CERTIFICATIONS`
+## 🏆 Awards & Certifications
 
-- **Google Cloud Certified — Generative AI Leader** &nbsp;·&nbsp; 2025
-- **Google Cloud Certified — Associate Cloud Engineer** &nbsp;·&nbsp; 2023
-- **Databricks — Generative AI Fundamentals** &nbsp;·&nbsp; 2026
+**Awards**
+- **Excellence Award — Transformational Performance** · Impetus Technologies, 2026
+- **iAppreciate Award** · Impetus Technologies, 2026
 
----
-
-### `AWARDS & RECOGNITION`
-
-- **Excellence Award — Transformational Performance** &nbsp;·&nbsp; Impetus Technologies, 2026 — for delivery impact on the Cloud Migration Project, beyond standard expectations across the migration lifecycle.
-- **iAppreciate Award** &nbsp;·&nbsp; Impetus Technologies, 2026 — peer and leadership recognition for consistent, high-quality contributions from analysis through production support.
-
----
-
-### `LATEST ON MEDIUM`
-
-| Post | Tag |
-|---|---|
-| [Streamlining DB Migrations with Alembic + FastAPI](https://medium.com/@alkairis) | `DevOps` |
-| [Simplifying API Integration in React using Axios](https://medium.com/@alkairis) | `Frontend` |
-| [Why UV is Replacing Poetry for Python Project Management](https://medium.com/@alkairis) | `Tooling` |
+**Certifications**
+- GCP Generative AI Leader · Google Cloud, 2025
+- HuggingFace AI Agents · Hugging Face, 2025
+- GenAI Fundamentals · Databricks, 2024
+- Associate Cloud Engineer · Google Cloud, 2023
 
 ---
 
-### `GITHUB STATS`
+## 🛠️ Portfolio Site — Tech Stack
 
 <div align="center">
 
-  <img width="49%" src="https://github-stats-extended.vercel.app/api?username=alkairis&rank_icon=github&hide_title=true&custom_title=My%20Github%20Stats&show_icons=true&include_all_commits=true&theme=shadow_blue" />
-  &nbsp;
-  <img width="49%" src="https://github-stats-extended.vercel.app/api/top-langs?username=alkairis&layout=donut&langs_count=5&theme=shadow_blue" />
-
-  <img width="60%" src="https://github-readme-streak-stats.herokuapp.com/?user=alkairis&theme=react&hide_border=true" />
+![React](https://img.shields.io/badge/React_19-20232A?style=flat-square&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite_6-646CFF?style=flat-square&logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_v4-0F172A?style=flat-square&logo=tailwindcss&logoColor=38bdf8)
+![Three.js](https://img.shields.io/badge/Three.js-black?style=flat-square&logo=three.js&logoColor=white)
+![GSAP](https://img.shields.io/badge/GSAP_3-88CE02?style=flat-square&logo=greensock&logoColor=black)
+![EmailJS](https://img.shields.io/badge/EmailJS-F7DF1E?style=flat-square&logo=gmail&logoColor=black)
 
 </div>
 
 ---
 
+## ✨ Features
+
+- 🌌 Animated constellation canvas (Canvas 2D)
+- 🔮 Mouse-tracking glow border cards
+- 💫 Floating 3D tech skill orbs (Three.js)
+- ⚡ GSAP scroll-triggered timeline animations
+- ✍️ Live Medium RSS blog feed
+- 📬 Working contact form via EmailJS
+- 🔤 Typewriter name animation
+- 📱 Fully responsive with mobile nav drawer
+
+---
+
+## 🚀 Getting Started
+
+```bash
+git clone https://github.com/alkairis/alkairis.dev.git
+cd alkairis.dev
+npm install
+
+cp .env.example .env   # add your EmailJS credentials
+
+npm run dev             # start dev server
+npm run build           # production build → dist/
+npm run lint             # ESLint check
+```
+
+### Environment Variables
+
+```env
+VITE_APP_EMAILJS_SERVICE_ID=your_service_id
+VITE_APP_EMAILJS_TEMPLATE_ID=your_template_id
+VITE_APP_EMAILJS_PUBLIC_KEY=your_public_key
+```
+
+Get these from [emailjs.com](https://www.emailjs.com/).
+
+---
+
+## 📝 License
+
+Licensed under the [MIT License](LICENSE) — feel free to use this as a reference or inspiration, but please don't deploy it as-is with my name, photo, or personal content. Build your own story.
+
+---
+
 <div align="center">
-  <sub>MIT License · Built with intention, not templates.</sub>
+
+**Built with ☕ from Indore, India**
+
+[![alkairis.github.io](https://img.shields.io/badge/alkairis.github.io-0f172a?style=for-the-badge&logo=vercel&logoColor=4cc9f0)](https://alkairis.github.io)
+
+*If this helped you, a ⭐ on the repo goes a long way.*
+
 </div>

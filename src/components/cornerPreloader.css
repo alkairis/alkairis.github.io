@@ -1,0 +1,90 @@
+.preloader {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  min-height: 100vh;
+  min-height: 100dvh;
+  z-index: 999999;
+  pointer-events: auto;
+}
+
+.pre-mask {
+  position: absolute;
+  background: #f0f6ff;
+  z-index: 1;
+  transform: scale(1);
+}
+
+.mask-tl { top: 0; left: 0; width: 50%; height: 50%; transform-origin: center top; }
+.mask-tr { top: 0; right: 0; width: 50%; height: 50%; transform-origin: right center; }
+.mask-bl { bottom: 0; left: 0; width: 50%; height: 50%; transform-origin: left center; }
+.mask-br { right: 0; bottom: 0; width: 50%; height: 50%; transform-origin: center bottom; }
+
+.pre-lines {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.line-v,
+.line-h,
+.fill-left,
+.fill-right,
+.fill-top,
+.fill-bottom {
+  position: absolute;
+  display: block;
+}
+
+.line-v,
+.line-h {
+  background: rgba(14, 165, 233, 0.22);
+}
+
+.fill-left,
+.fill-right,
+.fill-top,
+.fill-bottom {
+  background: #0ea5e9;
+}
+
+.line-v { top: 0; bottom: 0; left: 50%; width: 1px; transform: translateX(-0.5px); }
+.line-h { top: 50%; left: 0; right: 0; height: 1px; transform: translateY(-0.5px); }
+
+.fill-left { left: 0; top: 50%; width: 0; height: 1px; transform: translateY(-0.5px); }
+.fill-right { right: 0; top: 50%; width: 0; height: 1px; transform: translateY(-0.5px); }
+.fill-top { top: 0; left: 50%; width: 1px; height: 0; transform: translateX(-0.5px); }
+.fill-bottom { bottom: 0; left: 50%; width: 1px; height: 0; transform: translateX(-0.5px); }
+
+.pre-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: #0f172a;
+  color: #fff;
+}
+
+.pre-icon {
+  position: absolute;
+  width: 62%;
+  height: 62%;
+  display: none;
+  object-fit: contain;
+  transform-origin: center;
+}
+
+.pre-count {
+  color: #fff;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}

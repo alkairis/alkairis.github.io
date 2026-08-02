@@ -23,7 +23,6 @@
     "axios": "^1.18.1",
     "clsx": "^2.1.1",
     "gsap": "^3.12.7",
-    "matter-js": "^0.20.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.18.1",

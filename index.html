@@ -40,9 +40,9 @@
     <meta name="twitter:image:alt" content="Deepak Singh Rajput — Senior Software Engineer specializing in Generative AI and GCP" />
 
     <!--
-      Paint the loader's dark background before any JS/CSS loads so the
-      BinaryPreloader doesn't flash a white screen first. Only applied when the
-      loader will actually show (first visit of the session, motion allowed).
+      Paint the loader's background before any JS/CSS loads so the preloader
+      doesn't flash a bare screen first. Only applied when the loader will
+      actually show (first visit of the session, motion allowed).
     -->
     <style>
       html.binary-pending,
@@ -58,7 +58,7 @@
             window.matchMedia("(prefers-reduced-motion: reduce)").matches;
           var seen = false;
           try {
-            seen = sessionStorage.getItem("alkairis-binary-seen") === "1";
+            seen = sessionStorage.getItem("alkairis-preloader-seen") === "1";
           } catch (e) {
             /* sessionStorage unavailable (privacy mode) — treat as not seen */
           }

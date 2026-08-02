@@ -8,7 +8,7 @@ import Navbar from "./components/NavBar.jsx";
 import Tech from "./sections/Tech.jsx";
 import Blog from "./sections/Blog.jsx";
 import ChatBot from "./components/ChatBot.jsx";
-import BinaryPreloader from "./components/BinaryPreloader.jsx";
+import CornerPreloader from "./components/CornerPreloader.jsx";
 import CustomCursor from "./components/CustomCursor.jsx";
 import { LoadingProvider, useAppLoading } from "./context/LoadingContext.jsx";
 import Certificates from "./sections/Certificates.jsx";
@@ -52,7 +52,7 @@ const AppContent = () => {
 
   return (
     <div className="app-shell">
-      <BinaryPreloader isLoading={isLoading} />
+      <CornerPreloader isLoading={isLoading} />
       <CustomCursor />
 
       <div className="app-bg" aria-hidden="true">
