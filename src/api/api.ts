@@ -361,6 +361,14 @@ export const getAchievements = async (): Promise<Recognition[]> => {
   return Array.isArray(data) ? data.map(normalizeAchievement) : [];
 };
 
+// ─── Resume ───────────────────────────────────────────────────────────────────
+
+/** Public URL of the resume PDF (backend-managed). */
+export const getResumeUrl = async (): Promise<string> => {
+  const { data } = await apiClient.get<{ url: string }>('/api/resume');
+  return data?.url ?? '';
+};
+
 // ─── Social media / contact links ─────────────────────────────────────────────
 
 export type SocialMedia = {

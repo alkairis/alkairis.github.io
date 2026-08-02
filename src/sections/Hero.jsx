@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { getSocialMedia } from "../api/api";
+import { getSocialMedia, getResumeUrl } from "../api/api";
 import { resolveSocialIcon, socialHref } from "../constants/socialIcons";
 import Button from "../components/Button.jsx";
 import Typing from "../components/Typing.jsx";
@@ -36,6 +36,8 @@ const Hero = () => {
   const roleTimerRef = useRef(null);
   const [socials, setSocials] = useState([]);
   const [useField, setUseField] = useState(false);
+  // Backend-managed resume URL; fall back to the bundled PDF until it loads.
+  const [resumeUrl, setResumeUrl] = useState("");
 
   // Decide once, client-side, whether to run the WebGL field or fall back to
   // the lightweight 2D constellation (mobile / reduced-motion / no WebGL).
@@ -53,6 +55,20 @@ const Hero = () => {
       })
       .catch(() => {
         if (active) setSocials([]);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    getResumeUrl()
+      .then((url) => {
+        if (active && url) setResumeUrl(url);
+      })
+      .catch(() => {
+        /* keep bundled-PDF fallback */
       });
     return () => {
       active = false;
@@ -127,7 +143,7 @@ const Hero = () => {
 
         {/* CTAs */}
         <div className="h-ctas h-in" style={{ animationDelay: "360ms" }}>
-          <DownloadButton href={asset("/deepak_singh_rajput_resume.pdf")} text="Download CV" />
+          <DownloadButton href={resumeUrl} text="Download CV" />
           <Button variant="outline" scrollTo="work">
             View My Work
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
