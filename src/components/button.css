@@ -1,0 +1,117 @@
+.download-btn {
+  height: 45px;
+  width: 110px;
+  cursor: pointer;
+  border: none;
+
+  overflow: hidden;
+  position: relative;
+
+  border-radius: 9999px;
+
+  background: #0f172a;
+  color: white;
+
+  border: 1px solid rgba(15, 23, 42, 0.12);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.download-btn:hover {
+  background: #1e293b;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.22);
+}
+
+.download-btn:active {
+  transform: scale(0.96);
+}
+
+.button-content {
+  display: flex;
+  flex-direction: column;
+
+  transition: transform 250ms ease-in-out;
+}
+
+.download-btn:hover .button-content {
+  transform: translateY(-45px);
+}
+
+.svg-container,
+.text-container {
+  height: 45px;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+
+  color: white;
+
+  opacity: 1;
+
+  transition: opacity 250ms ease-in-out;
+}
+
+.download-icon {
+  width: 18px;
+  height: 18px;
+
+  color: white;
+
+  opacity: 0;
+
+  transition:
+    opacity 250ms ease-in-out,
+    transform 250ms ease-in-out;
+}
+
+.download-btn:hover .text {
+  opacity: 0;
+}
+
+.download-btn:hover .download-icon {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.download-btn:focus .download-icon {
+  animation: heartbeat 1.5s ease-in-out infinite both;
+}
+
+@keyframes heartbeat {
+  from {
+    transform: scale(1);
+    transform-origin: center center;
+    animation-timing-function: ease-out;
+  }
+
+  10% {
+    transform: scale(0.91);
+    animation-timing-function: ease-in;
+  }
+
+  17% {
+    transform: scale(0.98);
+    animation-timing-function: ease-out;
+  }
+
+  33% {
+    transform: scale(0.87);
+    animation-timing-function: ease-in;
+  }
+
+  45% {
+    transform: scale(1);
+    animation-timing-function: ease-out;
+  }
+}

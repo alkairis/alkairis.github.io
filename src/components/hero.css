@@ -1,0 +1,245 @@
+/* ── Section ─────────────────────────────────── */
+#hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: transparent;
+    /* Dragging the interactive background field would otherwise start a
+       native text selection on the hero copy — suppress it. */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+/* ── Background ──────────────────────────────── */
+.h-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+/* The WebGL field wrapper just positions the layer; the top-fade mask now
+   lives on its inner .nf-mask so the control panel stays crisp. */
+
+/* ── Content ─────────────────────────────────── */
+.h-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.75rem;
+    padding: 6rem 1.5rem 5rem;
+    max-width: 800px;
+    width: 100%;
+}
+
+/* ── Badge ───────────────────────────────────── */
+.h-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    background: rgba(15, 23, 42, 0.04);
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    border-radius: 9999px;
+    padding: 0.4rem 1.1rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.h-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #0ea5e9;
+    box-shadow: 0 0 8px rgba(14, 165, 233, 0.7);
+    animation: dotPulse 2.2s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+.h-role {
+    min-width: 160px;
+    max-width: 240px;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    opacity: 1;
+    transform: translateY(0);
+    white-space: nowrap;
+}
+
+@keyframes dotPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(0.75);
+        opacity: 0.55;
+    }
+}
+
+/* ── Name ────────────────────────────────────── */
+.h-name {
+    font-size: clamp(1.5rem, 4.5vw, 3.25rem);
+    font-weight: 400;
+    color: #0f172a;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    min-height: 1.1em;
+}
+
+/* Override Typewriter cursor color */
+.h-name .Typewriter__cursor {
+    color: #0ea5e9;
+}
+
+/* ── Tagline ──────────────────────────────────── */
+.h-tagline {
+    font-size: clamp(1rem, 2.2vw, 1.25rem);
+    color: rgba(15, 23, 42, 0.55);
+    line-height: 1.7;
+    max-width: 580px;
+}
+
+.h-accent {
+    color: rgba(15, 23, 42, 0.9);
+    font-weight: 500;
+}
+
+/* ── Quip ─────────────────────────────────────── */
+.h-quip {
+    font-size: clamp(0.85rem, 1.6vw, 0.95rem);
+    font-style: italic;
+    color: rgba(15, 23, 42, 0.45);
+    max-width: 560px;
+}
+
+/* ── CTAs ────────────────────────────────────── */
+.h-ctas {
+    display: flex;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ── Socials ──────────────────────────────────── */
+.h-socials {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Frosted backdrop so social icons stay legible over the WebGL field */
+.h-socials a,
+.h-socials button {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-color: rgba(15, 23, 42, 0.35);
+}
+
+.h-socials a svg,
+.h-socials button svg {
+    color: #0f172a;
+}
+
+/* ── Scroll indicator ──────────────────────────── */
+.h-scroll {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22px;
+    height: 38px;
+    border: 1px solid rgba(15, 23, 42, 0.18);
+    border-radius: 11px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 5px;
+}
+
+.h-scroll span {
+    width: 3px;
+    height: 8px;
+    border-radius: 2px;
+    background: rgba(14, 165, 233, 0.75);
+    animation: scrollDot 1.9s ease-in-out infinite;
+}
+
+@keyframes scrollDot {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(14px);
+        opacity: 0;
+    }
+}
+
+/* ── Entrance blur reveal ──────────────────────── */
+/* Each element starts blurred, transparent and nudged down, then resolves
+   to sharp/opaque — a smooth blur-fade-in, staggered via animation-delay. */
+.h-in {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(12px);
+    animation: hIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    will-change: opacity, transform, filter;
+}
+
+@keyframes hIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+/* ── Reduced motion ────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    .h-in {
+        animation: none;
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
+
+    .h-dot {
+        animation: none;
+    }
+
+    .h-scroll span {
+        animation: none;
+    }
+}
+
+/* ── Mobile ────────────────────────────────────── */
+@media (max-width: 640px) {
+    .h-content {
+        gap: 1.4rem;
+    }
+
+    .h-badge {
+        font-size: 0.72rem;
+    }
+
+    .h-ctas {
+        gap: 0.7rem;
+    }
+}

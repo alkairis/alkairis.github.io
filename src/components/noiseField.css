@@ -1,0 +1,24 @@
+/* ── Water field: canvas fade mask ───────────────────────────── */
+
+/* The field dissolves at the top (so the hero text stays clean) and at the
+   bottom (so scrolling into the next section fades out instead of hard-cutting
+   and feeling empty). */
+.nf-mask {
+    position: absolute;
+    inset: 0;
+    -webkit-mask-image: linear-gradient(to bottom,
+            transparent 0%,
+            transparent 30%,
+            rgba(0, 0, 0, 0.55) 52%,
+            #000 70%,
+            #000 84%,
+            transparent 100%);
+    mask-image: linear-gradient(to bottom,
+            transparent 0%,
+            transparent 30%,
+            rgba(0, 0, 0, 0.55) 52%,
+            #000 70%,
+            #000 84%,
+            transparent 100%);
+    pointer-events: none;
+}

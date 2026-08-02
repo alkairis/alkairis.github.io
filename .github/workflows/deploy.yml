@@ -1,0 +1,101 @@
+name: Deploy to GitHub Pages
+
+# Build the Vite site in ui/ and publish it to GitHub Pages.
+#
+# Custom domain: this workflow does NOT lock the site to any single domain.
+# The site is base-path-agnostic (all assets resolve against import.meta.env
+# .BASE_URL), so the same code works at a domain root OR the *.github.io/<repo>/
+# project URL. One repository variable controls which:
+#
+#   CUSTOM_DOMAIN (Settings → Secrets and variables → Actions → Variables)
+#     - set to e.g. "alkairis.com": build uses base "/", and a matching CNAME
+#       file is written so GitHub Pages serves the site at that domain.
+#     - empty/unset: build uses base "/<repo>/" and the site works at
+#       https://<user>.github.io/<repo>/ with no CNAME.
+#
+# Changing (or removing) the domain is just editing that variable and re-running
+# the workflow — no tracked files change. If you also set the domain under
+# Settings → Pages, set CUSTOM_DOMAIN to the same value so the base path matches.
+
+on:
+  # Deploy on every push to the default branch.
+  push:
+    branches: [main]
+  # Allow manual runs from the Actions tab.
+  workflow_dispatch:
+
+# Grant the token the permissions Pages deployment needs.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one live Pages deployment at a time; don't cancel an in-progress
+# release so a run always finishes cleanly.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ui
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        env:
+          # Public base path, chosen automatically so one build works at either
+          # URL:
+          #   - CUSTOM_DOMAIN set  -> "/"            (served at the domain root)
+          #   - CUSTOM_DOMAIN unset -> "/<repo>/"    (user.github.io/<repo>/)
+          # Set a VITE_BASE repo variable to override this entirely.
+          VITE_BASE: ${{ vars.VITE_BASE || (vars.CUSTOM_DOMAIN != '' && '/') || format('/{0}/', github.event.repository.name) }}
+          # Optional runtime config — passed through from Actions secrets/vars
+          # if you've set them; the app tolerates missing values.
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+          VITE_API_TIMEOUT_MS: ${{ vars.VITE_API_TIMEOUT_MS }}
+          VITE_CHATBOT_API_URL: ${{ vars.VITE_CHATBOT_API_URL }}
+          VITE_APP_EMAILJS_SERVICE_ID: ${{ secrets.VITE_APP_EMAILJS_SERVICE_ID }}
+          VITE_APP_EMAILJS_TEMPLATE_ID: ${{ secrets.VITE_APP_EMAILJS_TEMPLATE_ID }}
+          VITE_APP_EMAILJS_PUBLIC_KEY: ${{ secrets.VITE_APP_EMAILJS_PUBLIC_KEY }}
+        run: npm run build
+
+      - name: Add SPA fallback (404.html)
+        # GitHub Pages serves 404.html for unknown paths. Copying index.html
+        # there lets client-side routes (/sign-me, /admin-me, …) load on a
+        # hard refresh or deep link instead of showing a 404.
+        run: cp dist/index.html dist/404.html
+
+      - name: Write CNAME for custom domain (optional)
+        # Only writes a CNAME when the CUSTOM_DOMAIN repo variable is set, so
+        # the domain stays freely changeable and is never hardcoded in git.
+        if: ${{ vars.CUSTOM_DOMAIN != '' }}
+        run: echo "${{ vars.CUSTOM_DOMAIN }}" > dist/CNAME
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ui/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
