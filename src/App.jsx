@@ -75,7 +75,7 @@ const AppContent = () => {
         <Footer />
       </div>
 
-      <ChatBot />
+      {/* <ChatBot /> */}
     </div>
   );
 };
