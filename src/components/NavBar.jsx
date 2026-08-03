@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import { navLinks } from "../constants/";
+import { useResumeUrl } from "../hooks/useResumeUrl.js";
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const resumeUrl = useResumeUrl();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,7 +49,26 @@ const NavBar = () => {
             </ul>
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {resumeUrl && (
+              <a
+                href={resumeUrl}
+                download
+                target="_blank"
+                rel="noopener noreferrer"
+                className="contact-btn group hidden sm:flex"
+                aria-label="Download CV"
+              >
+                <div className="inner flex items-center gap-2">
+                  <FontAwesomeIcon
+                    icon={faDownload}
+                    className="w-3.5 h-3.5 transition-transform duration-300 group-hover:-translate-y-0.5"
+                  />
+                  <span>CV</span>
+                </div>
+              </a>
+            )}
+
             <a href="#contact" className="contact-btn group">
               <div className="inner">
                 <span>Contact me</span>
@@ -115,20 +138,43 @@ const NavBar = () => {
           ))}
         </ul>
 
-        <a
-          href="#contact"
-          onClick={closeMenu}
-          className="mt-auto px-5 py-3 rounded-lg font-semibold text-center transition-all duration-200 hover:-translate-y-0.5"
-          style={{
-            background: "#0f172a",
-            color: "#ffffff",
-            border: "1.5px solid #0f172a",
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = "#1e293b"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "#0f172a"; }}
-        >
-          Contact me
-        </a>
+        <div className="mt-auto flex flex-col gap-3">
+          {resumeUrl && (
+            <a
+              href={resumeUrl}
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={closeMenu}
+              className="flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-semibold text-center transition-all duration-200 hover:-translate-y-0.5"
+              style={{
+                background: "#0f172a",
+                color: "#ffffff",
+                border: "1.5px solid #0f172a",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "#1e293b"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "#0f172a"; }}
+            >
+              <FontAwesomeIcon icon={faDownload} className="w-3.5 h-3.5" />
+              <span>Download CV</span>
+            </a>
+          )}
+
+          <a
+            href="#contact"
+            onClick={closeMenu}
+            className="px-5 py-3 rounded-lg font-semibold text-center transition-all duration-200 hover:-translate-y-0.5"
+            style={{
+              background: "#0f172a",
+              color: "#ffffff",
+              border: "1.5px solid #0f172a",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "#1e293b"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "#0f172a"; }}
+          >
+            Contact me
+          </a>
+        </div>
       </nav>
     </>
   );

@@ -6,7 +6,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 import TitleHeader from "../components/TitleHeader";
+import DownloadButton from "../components/DownloadButton";
 import { getSocialMedia, sendContact } from "../api/api";
+import { useResumeUrl } from "../hooks/useResumeUrl.js";
 import {
   resolveSocialIcon,
   socialHref,
@@ -29,6 +31,7 @@ const Contact = () => {
   const [status, setStatus] = useState(STATUS.IDLE);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [socials, setSocials] = useState([]);
+  const resumeUrl = useResumeUrl();
 
   useEffect(() => {
     let active = true;
@@ -231,12 +234,18 @@ const Contact = () => {
               </p>
             </div>
 
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full w-fit"
-              style={{ background: "rgba(14,165,233,0.07)", border: "1px solid rgba(14,165,233,0.18)" }}>
-              <span className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse flex-shrink-0" />
-              <span className="text-sm font-medium" style={{ color: "rgba(15,23,42,0.65)" }}>
-                Open to opportunities
-              </span>
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full w-fit"
+                style={{ background: "rgba(14,165,233,0.07)", border: "1px solid rgba(14,165,233,0.18)" }}>
+                <span className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse flex-shrink-0" />
+                <span className="text-sm font-medium" style={{ color: "rgba(15,23,42,0.65)" }}>
+                  Open to opportunities
+                </span>
+              </div>
+
+              {resumeUrl && (
+                <DownloadButton href={resumeUrl} text="Download CV" />
+              )}
             </div>
 
             <div className="flex flex-col gap-3">
