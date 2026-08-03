@@ -6,12 +6,14 @@ import { useGSAP } from "@gsap/react";
 import TitleHeader from "../components/TitleHeader";
 import CertificateModal from "../components/CertificateModal";
 import { getCertificates } from "../api/api";
+import { fallbackCertificates } from "../constants/fallbacks";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Certificates = () => {
   const sectionRef = useRef(null);
   const [certifications, setCertifications] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeCert, setActiveCert] = useState(null);
   const [originRect, setOriginRect] = useState(null);
 
@@ -23,11 +25,20 @@ const Certificates = () => {
       })
       .catch(() => {
         if (active) setCertifications([]);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
       });
     return () => {
       active = false;
     };
   }, []);
+
+  // Show static credentials rather than an empty grid while the backend cold
+  // starts or if it returns nothing.
+  const visibleCertificates = certifications.length
+    ? certifications
+    : fallbackCertificates;
 
   const openCert = (cert, e) => {
     setOriginRect(e.currentTarget.getBoundingClientRect());
@@ -63,7 +74,7 @@ const Certificates = () => {
         }
       );
     });
-  }, { scope: sectionRef, dependencies: [certifications] });
+  }, { scope: sectionRef, dependencies: [visibleCertificates, loading] });
 
   return (
     <section id="certifications" ref={sectionRef} className="flex-center section-padding">
@@ -74,7 +85,21 @@ const Certificates = () => {
         />
 
         <div className="grid-2-cols mt-16 max-w-[960px] mx-auto">
-          {certifications.map((cert) => (
+          {loading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="cert-skeleton arctic-glow-card skeleton-card"
+                >
+                  <div className="skeleton skeleton--circle cert-skeleton-logo" />
+                  <div className="cert-skeleton-body">
+                    <div className="skeleton h-5 w-3/4" />
+                    <div className="skeleton h-4 w-1/2" />
+                    <div className="skeleton h-3 w-2/3" />
+                  </div>
+                </div>
+              ))
+            : visibleCertificates.map((cert) => (
             <div
               key={cert.id}
               className="cert-card arctic-glow-card"
@@ -97,7 +122,7 @@ const Certificates = () => {
                 &#8599;
               </span>
             </div>
-          ))}
+              ))}
         </div>
       </div>
 

@@ -6,6 +6,10 @@ import { useGSAP } from "@gsap/react";
 import TitleHeader from "../components/TitleHeader";
 import ProjectModal from "../components/ProjectModal";
 import { useRecognitionStore } from "../stores/useRecognitionStore";
+import {
+  fallbackRecognitionStats,
+  fallbackRecognitions,
+} from "../constants/fallbacks";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,6 +31,7 @@ const Achievements = () => {
 
   const stats = useRecognitionStore((state) => state.stats);
   const cards = useRecognitionStore((state) => state.cards);
+  const status = useRecognitionStore((state) => state.status);
   const fetchRecognition = useRecognitionStore((state) => state.fetchRecognition);
 
   useEffect(() => {
@@ -34,6 +39,12 @@ const Achievements = () => {
     // it doesn't bubble as an unhandled promise.
     fetchRecognition().catch(() => {});
   }, [fetchRecognition]);
+
+  // Skeletons while the (possibly cold) backend responds; static fallbacks if
+  // it returns nothing, so the section is never empty.
+  const loading = status === "idle" || status === "loading";
+  const visibleStats = stats.length ? stats : fallbackRecognitionStats;
+  const visibleCards = cards.length ? cards : fallbackRecognitions;
 
   const openCard = (card, e) => {
     setOriginRect(e.currentTarget.getBoundingClientRect());
@@ -84,7 +95,7 @@ const Achievements = () => {
         }
       );
     });
-  }, { scope: sectionRef, dependencies: [stats, cards] });
+  }, { scope: sectionRef, dependencies: [visibleStats, visibleCards, loading] });
 
   return (
     <section id="recognitions" ref={sectionRef} className="flex-center section-padding">
@@ -97,17 +108,42 @@ const Achievements = () => {
         <div className="max-w-[960px] mx-auto">
           {/* ── Headline stats ─────────────────────────────────────── */}
           <div className="grid-3-cols mt-16">
-            {stats.map((stat) => (
-              <div key={stat.label} className="recog-stat arctic-glow-card">
-                <p className="recog-stat-value">{stat.value}</p>
-                <p className="recog-stat-label">{stat.label}</p>
-              </div>
-            ))}
+            {loading
+              ? Array.from({ length: 3 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="recog-stat-skeleton arctic-glow-card skeleton-card"
+                  >
+                    <div className="skeleton h-9 w-20" />
+                    <div className="skeleton h-4 w-32" />
+                  </div>
+                ))
+              : visibleStats.map((stat) => (
+                  <div key={stat.label} className="recog-stat arctic-glow-card">
+                    <p className="recog-stat-value">{stat.value}</p>
+                    <p className="recog-stat-label">{stat.label}</p>
+                  </div>
+                ))}
           </div>
 
           {/* ── Recognition timeline ───────────────────────────────── */}
           <div className="mt-8 flex flex-col gap-6">
-            {cards.map((card) => (
+            {loading
+              ? Array.from({ length: 2 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="recog-block-skeleton arctic-glow-card skeleton-card"
+                  >
+                    <div className="skeleton recog-skeleton-thumb" />
+                    <div className="recog-skeleton-body">
+                      <div className="skeleton h-4 w-24" />
+                      <div className="skeleton h-5 w-2/3" />
+                      <div className="skeleton h-4 w-full" />
+                      <div className="skeleton h-4 w-5/6" />
+                    </div>
+                  </div>
+                ))
+              : visibleCards.map((card) => (
               <div
                 key={card.id}
                 className="recog-block arctic-glow-card"
@@ -131,7 +167,7 @@ const Achievements = () => {
                   &#8599;
                 </span>
               </div>
-            ))}
+                ))}
           </div>
         </div>
       </div>

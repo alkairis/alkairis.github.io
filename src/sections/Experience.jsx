@@ -4,6 +4,7 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { getProfessionalExperience } from "../api/api";
+import { fallbackExperiences } from "../constants/fallbacks";
 import TitleHeader from "../components/TitleHeader";
 import GlowCard from "../components/GlowCard";
 
@@ -11,6 +12,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Experience = () => {
   const [experiences, setExperiences] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let active = true;
@@ -20,11 +22,20 @@ const Experience = () => {
       })
       .catch(() => {
         if (active) setExperiences([]);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
       });
     return () => {
       active = false;
     };
   }, []);
+
+  // Never leave the section empty: while the (possibly cold) backend responds
+  // show skeletons, and if it returns nothing fall back to static content.
+  const visibleExperiences = experiences.length
+    ? experiences
+    : fallbackExperiences;
 
   useGSAP(() => {
     gsap.utils.toArray(".timeline-card").forEach((card) => {
@@ -77,7 +88,7 @@ const Experience = () => {
         }
       );
     });
-  }, { dependencies: [experiences] });
+  }, { dependencies: [visibleExperiences, loading] });
 
   return (
     <section
@@ -91,8 +102,26 @@ const Experience = () => {
         />
 
         <div className="mt-32 relative">
+          {loading ? (
+            <div className="relative z-50 xl:space-y-32 space-y-10">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="exp-card-wrapper">
+                  <div className="xl:w-2/6">
+                    <div className="skeleton skeleton-card w-full h-40" />
+                  </div>
+                  <div className="xl:w-4/6 flex flex-col gap-4">
+                    <div className="skeleton h-8 w-2/3" />
+                    <div className="skeleton h-4 w-1/3" />
+                    <div className="skeleton h-4 w-full mt-4" />
+                    <div className="skeleton h-4 w-5/6" />
+                    <div className="skeleton h-4 w-4/6" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
           <div className="relative z-50 xl:space-y-32 space-y-10">
-            {experiences.map((card, index) => (
+            {visibleExperiences.map((card, index) => (
               <div key={card.id} className="exp-card-wrapper">
                 <div className="xl:w-2/6">
                   <GlowCard index={index}>
@@ -160,6 +189,7 @@ const Experience = () => {
               </div>
             ))}
           </div>
+          )}
         </div>
       </div>
     </section>
