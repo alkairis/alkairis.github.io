@@ -361,6 +361,43 @@ export const getAchievements = async (): Promise<Recognition[]> => {
   return Array.isArray(data) ? data.map(normalizeAchievement) : [];
 };
 
+// ─── About / profile ──────────────────────────────────────────────────────────
+
+type AboutDto = {
+  photo_url?: string | null;
+  headline?: string | null;
+  bio?: string | null;
+  location?: string | null;
+  highlights?: string[] | null;
+};
+
+/** Profile shape consumed by the About section. */
+export type About = {
+  photo: string;
+  headline: string;
+  /** Bio copy; may contain multiple paragraphs separated by blank lines. */
+  bio: string;
+  location: string;
+  highlights: string[];
+};
+
+const normalizeAbout = (dto: AboutDto): About => ({
+  photo: dto.photo_url ?? '',
+  headline: dto.headline ?? '',
+  bio: dto.bio ?? '',
+  location: dto.location ?? '',
+  highlights: dto.highlights ?? [],
+});
+
+/**
+ * Fetch the profile bio + photo. Returns null when the backend has no About
+ * record so the section can fall back to bundled static content.
+ */
+export const getAbout = async (): Promise<About | null> => {
+  const { data } = await apiClient.get<AboutDto | null>('/api/about');
+  return data ? normalizeAbout(data) : null;
+};
+
 // ─── Resume ───────────────────────────────────────────────────────────────────
 
 /** Public URL of the resume PDF (backend-managed). */

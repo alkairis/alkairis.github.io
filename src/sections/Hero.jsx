@@ -1,12 +1,12 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { getSocialMedia, getResumeUrl } from "../api/api";
+import { getSocialMedia } from "../api/api";
 import { resolveSocialIcon, socialHref } from "../constants/socialIcons";
+import { useResumeUrl } from "../hooks/useResumeUrl.js";
 import Button from "../components/Button.jsx";
 import Typing from "../components/Typing.jsx";
 import "../components/hero.css";
 import ExpandableIconButton from "../components/ExpandableIconButton.jsx";
 import DownloadButton from "../components/DownloadButton.jsx";
-import { asset } from "../utils/asset";
 
 // The WebGL field is code-split so the three.js chunk only loads when we
 // actually use it (skipped on mobile / reduced-motion / no-WebGL).
@@ -36,8 +36,8 @@ const Hero = () => {
   const roleTimerRef = useRef(null);
   const [socials, setSocials] = useState([]);
   const [useField, setUseField] = useState(false);
-  // Backend-managed resume URL; fall back to the bundled PDF until it loads.
-  const [resumeUrl, setResumeUrl] = useState("");
+  // Backend-managed resume URL, shared across every resume CTA on the page.
+  const resumeUrl = useResumeUrl();
 
   // Decide once, client-side, whether to run the WebGL field or fall back to
   // the lightweight 2D constellation (mobile / reduced-motion / no WebGL).
@@ -55,20 +55,6 @@ const Hero = () => {
       })
       .catch(() => {
         if (active) setSocials([]);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    let active = true;
-    getResumeUrl()
-      .then((url) => {
-        if (active && url) setResumeUrl(url);
-      })
-      .catch(() => {
-        /* keep bundled-PDF fallback */
       });
     return () => {
       active = false;

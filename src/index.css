@@ -246,6 +246,22 @@ section {
         }
       }
     }
+
+    .nav-resume-btn {
+      @apply items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200;
+      color: #0f172a;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1.5px solid rgba(15, 23, 42, 0.28);
+
+      &:hover {
+        background: #0f172a;
+        color: #ffffff;
+        border-color: #0f172a;
+        transform: translateY(-1px);
+      }
+    }
   }
 
   .app-showcase {
@@ -632,6 +648,89 @@ section {
 .arctic-glow-card > :not(.glow) {
   position: relative;
   z-index: 1;
+}
+
+/* ── About section ───────────────────────────────────────────── */
+.about-photo {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  padding: 0.75rem;
+  border-radius: 1.5rem;
+  overflow: hidden;
+}
+
+.about-photo img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 1rem;
+  display: block;
+}
+
+.about-headline {
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.about-bio {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: rgba(15, 23, 42, 0.66);
+}
+
+.about-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: fit-content;
+  padding: 0.4rem 0.95rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(15, 23, 42, 0.7);
+  background: rgba(14, 165, 233, 0.07);
+  border: 1px solid rgba(14, 165, 233, 0.18);
+}
+
+.about-location svg {
+  color: #0ea5e9;
+}
+
+.about-highlights {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.7rem;
+}
+
+@media (min-width: 640px) {
+  .about-highlights {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.about-highlight {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(15, 23, 42, 0.72);
+}
+
+.about-highlight svg {
+  flex: none;
+  padding: 0.28rem;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 999px;
+  color: #0ea5e9;
+  background: rgba(14, 165, 233, 0.1);
+  border: 1px solid rgba(14, 165, 233, 0.2);
 }
 
 /* Tailwind Custom or Global */
