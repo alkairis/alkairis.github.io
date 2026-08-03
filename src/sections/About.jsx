@@ -43,33 +43,50 @@ const About = () => {
 
   useGSAP(() => {
     const photo = sectionRef.current?.querySelector(".about-photo-panel");
-    const body = sectionRef.current?.querySelector(".about-body-panel");
-
     if (photo) {
       gsap.fromTo(
         photo,
-        { x: -45, opacity: 0 },
+        { x: -40, opacity: 0, scale: 0.96 },
         {
           x: 0,
           opacity: 1,
-          duration: 0.85,
+          scale: 1,
+          duration: 0.9,
           ease: "power3.out",
-          scrollTrigger: { trigger: sectionRef.current, start: "top 82%" },
+          scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
         }
       );
     }
 
-    if (body) {
+    const reveals = gsap.utils.toArray(".about-reveal", sectionRef.current);
+    if (reveals.length) {
       gsap.fromTo(
-        body,
-        { x: 45, opacity: 0 },
+        reveals,
+        { y: 26, opacity: 0 },
         {
-          x: 0,
+          y: 0,
           opacity: 1,
-          duration: 0.85,
-          delay: 0.15,
+          duration: 0.7,
+          stagger: 0.12,
           ease: "power3.out",
-          scrollTrigger: { trigger: sectionRef.current, start: "top 82%" },
+          scrollTrigger: { trigger: sectionRef.current, start: "top 78%" },
+        }
+      );
+    }
+
+    const chips = gsap.utils.toArray(".about-highlight", sectionRef.current);
+    if (chips.length) {
+      gsap.fromTo(
+        chips,
+        { y: 18, opacity: 0, scale: 0.9 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.5,
+          stagger: 0.08,
+          ease: "back.out(1.6)",
+          scrollTrigger: { trigger: sectionRef.current, start: "top 68%" },
         }
       );
     }
@@ -77,13 +94,15 @@ const About = () => {
 
   return (
     <section id="about" ref={sectionRef} className="flex-center section-padding">
-      <div className="w-full h-full md:px-10 px-5">
+      <div className="about-decor" aria-hidden="true" />
+
+      <div className="w-full h-full md:px-10 px-5 relative z-10">
         <TitleHeader title="About Me" sub="👋 Get to know me" />
 
         {loading ? (
-          <div className="grid-12-cols mt-16 max-w-[1000px] mx-auto">
+          <div className="grid-12-cols mt-16 max-w-[1040px] mx-auto">
             <div className="xl:col-span-5">
-              <div className="skeleton skeleton-card w-full aspect-square rounded-2xl" />
+              <div className="skeleton skeleton-card w-full max-w-[380px] mx-auto aspect-square rounded-3xl" />
             </div>
             <div className="xl:col-span-7 flex flex-col gap-4">
               <div className="skeleton h-7 w-2/3" />
@@ -95,34 +114,43 @@ const About = () => {
             </div>
           </div>
         ) : (
-          <div className="grid-12-cols mt-16 max-w-[1000px] mx-auto items-center">
+          <div className="grid-12-cols mt-16 max-w-[1040px] mx-auto items-center">
             {/* ── Photo ── */}
             <div className="xl:col-span-5 about-photo-panel">
-              <div className="about-photo arctic-glow-card">
-                <img
-                  src={profile.photo}
-                  alt="Deepak Singh Rajput"
-                  loading="lazy"
-                />
+              <div className="about-photo-frame">
+                <span className="about-photo-glow" aria-hidden="true" />
+                <div className="about-photo arctic-glow-card">
+                  <img
+                    src={profile.photo}
+                    alt="Deepak Singh Rajput"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="about-photo-badge">
+                  <span className="about-badge-dot" aria-hidden="true" />
+                  Open to opportunities
+                </div>
               </div>
             </div>
 
             {/* ── Bio ── */}
             <div className="xl:col-span-7 about-body-panel flex flex-col gap-6">
               {profile.headline && (
-                <h2 className="about-headline">{profile.headline}</h2>
+                <h2 className="about-headline about-reveal">
+                  {profile.headline}
+                </h2>
               )}
 
               <div className="flex flex-col gap-4">
                 {paragraphs.map((para, i) => (
-                  <p key={i} className="about-bio">
+                  <p key={i} className="about-bio about-reveal">
                     {para}
                   </p>
                 ))}
               </div>
 
               {profile.location && (
-                <div className="about-location">
+                <div className="about-location about-reveal">
                   <FontAwesomeIcon icon={faLocationDot} className="w-3.5 h-3.5" />
                   <span>{profile.location}</span>
                 </div>

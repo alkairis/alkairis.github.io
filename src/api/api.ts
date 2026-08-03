@@ -390,12 +390,15 @@ const normalizeAbout = (dto: AboutDto): About => ({
 });
 
 /**
- * Fetch the profile bio + photo. Returns null when the backend has no About
- * record so the section can fall back to bundled static content.
+ * Fetch the profile bio + photo. Returns null when the backend has no usable
+ * About record (missing, wrong-shaped, or contentless) so the section can
+ * fall back to bundled static content.
  */
 export const getAbout = async (): Promise<About | null> => {
   const { data } = await apiClient.get<AboutDto | null>('/api/about');
-  return data ? normalizeAbout(data) : null;
+  if (!data || Array.isArray(data) || typeof data !== 'object') return null;
+  const about = normalizeAbout(data);
+  return about.bio || about.photo || about.headline ? about : null;
 };
 
 // ─── Resume ───────────────────────────────────────────────────────────────────

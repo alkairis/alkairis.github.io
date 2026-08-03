@@ -244,12 +244,7 @@ const Contact = () => {
               </div>
 
               {resumeUrl && (
-                <DownloadButton
-                  href={resumeUrl}
-                  text="Download Resume"
-                  variant="outline"
-                  className="min-w-[11rem]"
-                />
+                <DownloadButton href={resumeUrl} text="Download CV" />
               )}
             </div>
 

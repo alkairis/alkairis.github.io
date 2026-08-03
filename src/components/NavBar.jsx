@@ -56,11 +56,16 @@ const NavBar = () => {
                 download
                 target="_blank"
                 rel="noopener noreferrer"
-                className="nav-resume-btn hidden sm:inline-flex"
-                aria-label="Download résumé"
+                className="contact-btn group hidden sm:flex"
+                aria-label="Download CV"
               >
-                <FontAwesomeIcon icon={faDownload} className="w-3.5 h-3.5" />
-                <span>Resume</span>
+                <div className="inner flex items-center gap-2">
+                  <FontAwesomeIcon
+                    icon={faDownload}
+                    className="w-3.5 h-3.5 transition-transform duration-300 group-hover:-translate-y-0.5"
+                  />
+                  <span>CV</span>
+                </div>
               </a>
             )}
 
@@ -143,13 +148,15 @@ const NavBar = () => {
               onClick={closeMenu}
               className="flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-semibold text-center transition-all duration-200 hover:-translate-y-0.5"
               style={{
-                background: "rgba(255, 255, 255, 0.7)",
-                color: "#0f172a",
-                border: "1.5px solid rgba(15, 23, 42, 0.28)",
+                background: "#0f172a",
+                color: "#ffffff",
+                border: "1.5px solid #0f172a",
               }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "#1e293b"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "#0f172a"; }}
             >
               <FontAwesomeIcon icon={faDownload} className="w-3.5 h-3.5" />
-              <span>Download Resume</span>
+              <span>Download CV</span>
             </a>
           )}
 
