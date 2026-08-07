@@ -1,12 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { faMedium } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useGSAP } from '@gsap/react';
 import TitleHeader from '../components/TitleHeader';
+import AccordionGallery from '../components/AccordionGallery.jsx';
 import { useLoadingTask } from '../context/LoadingContext.jsx';
 import { useBlogStore } from '../stores/useBlogStore';
-import './blog.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,8 +23,7 @@ const fallbackPosts = [
 
 const Blog = () => {
   const { posts, status, error, fetchBlogs } = useBlogStore();
-  const gridRef = useRef(null);
-  const stRef = useRef(null);
+  const sectionRef = useRef(null);
   const loading = status === 'idle' || status === 'loading';
   const visiblePosts = posts.length ? posts : fallbackPosts;
 
@@ -37,41 +35,40 @@ const Blog = () => {
     });
   }, [fetchBlogs]);
 
-  // Animate cards after posts load
-  useEffect(() => {
-    if (loading || !gridRef.current) return;
+  // Feed the accordion each post's cover image, title and keywords. Clicking
+  // the expanded panel opens the post on Medium in a new tab.
+  const galleryItems = visiblePosts.map((post) => ({
+    image: post.image || '',
+    label: post.title,
+    alt: post.title,
+    tags: post.tags,
+  }));
 
-    const cards = gsap.utils.toArray('.blog-card', gridRef.current);
-    if (!cards.length) return;
-
-    stRef.current = gsap.fromTo(
-      cards,
-      { y: 42, opacity: 0 },
+  useGSAP(() => {
+    gsap.fromTo(
+      sectionRef.current,
+      { opacity: 0, y: 20 },
       {
-        y: 0,
         opacity: 1,
-        duration: 0.65,
-        stagger: 0.1,
-        ease: 'power3.out',
+        y: 0,
+        duration: 0.9,
+        ease: 'power2.out',
         scrollTrigger: {
-          trigger: gridRef.current,
-          start: 'top 82%',
+          trigger: sectionRef.current,
+          start: 'top 85%',
         },
       }
     );
+  }, { scope: sectionRef, dependencies: [visiblePosts.length] });
 
-    return () => {
-      stRef.current?.scrollTrigger?.kill();
-    };
-  }, [loading]);
+  const openPost = (post) => {
+    if (post?.link) window.open(post.link, '_blank', 'noopener,noreferrer');
+  };
 
   return (
-    <section id="blogs" className="flex-center section-padding">
+    <section id="blogs" ref={sectionRef} className="flex-center section-padding">
       <div className="w-full h-full md:px-10 px-5">
-        <TitleHeader
-          title="Top Medium Posts"
-          sub={`📝 Published by me`}
-        />
+        <TitleHeader title="Top Medium Posts" sub="📝 Published by me" />
 
         {loading && (
           <p className="text-gray-600 text-center mt-16">Loading top posts...</p>
@@ -81,61 +78,22 @@ const Blog = () => {
           <p className="text-[#839CB5] text-center mt-16">{error}</p>
         )}
 
-        <div ref={gridRef} className="mediacards-grid mt-16">
-          {visiblePosts.map((post, index) => {
-            const openPost = () =>
-              window.open(post.link, '_blank', 'noopener,noreferrer');
-            return (
-              <div
-                key={index}
-                className="blog-card mediacard"
-                role="link"
-                tabIndex={0}
-                aria-label={post.title}
-                onClick={openPost}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    openPost();
-                  }
-                }}
-              >
-                <div className="mediacard-hero">
-                  {post.image && <img src={post.image} alt={post.title} loading="lazy" />}
-                  <div className="mediacard-scrim" aria-hidden="true" />
-                  <h3 className="mediacard-title">{post.title}</h3>
-                </div>
-
-                <div className="mediacard-meta">
-                  {post.pubDate && (
-                    <p className="mediacard-date">
-                      {new Date(post.pubDate).toLocaleDateString()}
-                    </p>
-                  )}
-                  <div className="mediacard-footer">
-                    <div className="mediacard-tags">
-                      {post.tags.map((tag, i) => (
-                        <span key={i} className="mediacard-tag">
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                    <a
-                      className="mediacard-icon-btn"
-                      href={post.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Read on Medium"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <FontAwesomeIcon icon={faMedium} />
-                    </a>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        {!loading && visiblePosts.length > 0 && (
+          <div className="w-full mt-16">
+            <AccordionGallery
+              items={galleryItems}
+              defaultIndex={Math.min(2, visiblePosts.length - 1)}
+              expandRatio={0.52}
+              trigger="hover"
+              accentColor="#0ea5e9"
+              overlayColor="#0f172a"
+              textColor="#ffffff"
+              tilt={0}
+              gap={8}
+              onItemClick={(_item, index) => openPost(visiblePosts[index])}
+            />
+          </div>
+        )}
       </div>
     </section>
   );

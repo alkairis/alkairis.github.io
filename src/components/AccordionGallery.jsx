@@ -42,6 +42,7 @@ const AccordionGallery = ({
   const mediaRefs = useRef([]);
   const barRefs = useRef([]);
   const textRefs = useRef([]);
+  const tagsRefs = useRef([]);
   const tlRef = useRef(null);
   const firstRunRef = useRef(true);
   const mediaSizeRef = useRef(320);
@@ -101,10 +102,12 @@ const AccordionGallery = ({
         }
 
         if (showLabels && bar && text) {
+          const tags = tagsRefs.current[i];
+          const targets = tags ? [bar, text, tags] : [bar, text];
           if (isActive) {
-            tl.to([bar, text], { opacity: 1, x: 0, duration: dur, ease, stagger: prefersReduced ? 0 : stagger }, 0);
+            tl.to(targets, { opacity: 1, x: 0, duration: dur, ease, stagger: prefersReduced ? 0 : stagger }, 0);
           } else {
-            tl.to([bar, text], { opacity: 0, x: -14, duration: dur * 0.6, ease }, 0);
+            tl.to(targets, { opacity: 0, x: -14, duration: dur * 0.6, ease }, 0);
           }
         }
       });
@@ -235,10 +238,21 @@ const AccordionGallery = ({
             </span>
             {showLabels && (
               <span className="ag-panel__label" aria-hidden="true">
-                <span className="ag-panel__bar" ref={el => (barRefs.current[i] = el)} />
-                <span className="ag-panel__text" ref={el => (textRefs.current[i] = el)}>
-                  {item.label}
+                <span className="ag-panel__titlerow">
+                  <span className="ag-panel__bar" ref={el => (barRefs.current[i] = el)} />
+                  <span className="ag-panel__text" ref={el => (textRefs.current[i] = el)}>
+                    {item.label}
+                  </span>
                 </span>
+                {item.tags?.length > 0 && (
+                  <span className="ag-panel__tags" ref={el => (tagsRefs.current[i] = el)}>
+                    {item.tags.map((tag, ti) => (
+                      <span key={ti} className="ag-panel__tag">
+                        #{tag}
+                      </span>
+                    ))}
+                  </span>
+                )}
               </span>
             )}
           </Tag>
