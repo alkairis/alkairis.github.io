@@ -5,13 +5,14 @@
   --ag-gap: 10px;
   --ag-radius: 16px;
   --ag-media-size: 320px;
+  --ag-perspective: 1400px;
 
   display: flex;
   flex-direction: row;
   gap: var(--ag-gap);
   width: 100%;
   max-width: 100%;
-  perspective: 1400px;
+  perspective: var(--ag-perspective);
   perspective-origin: 50% 50%;
 }
 

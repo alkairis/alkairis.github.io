@@ -26,6 +26,7 @@ const AccordionGallery = ({
   ease = 'power3.out',
   parallax = 0.5,
   tilt = 8,
+  perspective = 1400,
   stagger = 0.06,
   trigger = 'hover',
   showLabels = true,
@@ -201,6 +202,7 @@ const AccordionGallery = ({
         '--ag-text': textColor,
         '--ag-gap': `${gap}px`,
         '--ag-radius': `${radius}px`,
+        '--ag-perspective': `${perspective}px`,
         height: vertical ? `${Math.round(height * 1.6)}px` : `${height}px`
       }}
       role="list"
