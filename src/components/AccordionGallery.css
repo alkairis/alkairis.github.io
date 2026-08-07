@@ -6,6 +6,7 @@
   --ag-radius: 16px;
   --ag-media-size: 320px;
   --ag-perspective: 1400px;
+  --ag-tint-color: transparent;
 
   display: flex;
   flex-direction: row;
@@ -50,11 +51,14 @@
   inset: 0;
   overflow: hidden;
   border-radius: inherit;
+  /* Contain the tint's blend so it only recolours this panel's image. */
+  isolation: isolate;
 }
 
 .ag-panel__media {
   --ag-gray: 1;
   --ag-dim: 0.35;
+  --ag-tint: 1;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -62,6 +66,19 @@
   height: 100%;
   filter: grayscale(var(--ag-gray));
   will-change: transform, filter;
+}
+
+/* Blue/white duotone on collapsed panels: recolour the image toward
+   --ag-tint-color while keeping its luminance. Strength follows --ag-tint,
+   which the timeline drives to 0 on the expanded panel. */
+.ag-panel__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ag-tint-color, transparent);
+  mix-blend-mode: color;
+  opacity: var(--ag-tint, 0);
+  pointer-events: none;
 }
 
 .accordion-gallery--vertical .ag-panel__media {
@@ -93,10 +110,18 @@
   bottom: 20px;
   right: 20px;
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
   pointer-events: none;
   z-index: 2;
+}
+
+.ag-panel__titlerow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
 }
 
 .ag-panel__bar {
@@ -120,6 +145,28 @@
   text-overflow: ellipsis;
   opacity: 0;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+}
+
+.ag-panel__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 100%;
+  opacity: 0;
+}
+
+.ag-panel__tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 5px 10px;
+  border-radius: 999px;
+  color: var(--ag-text);
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--ag-accent) 24%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ag-accent) 55%, transparent);
+  backdrop-filter: blur(6px);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
 }
 
 @media (max-width: 520px) {

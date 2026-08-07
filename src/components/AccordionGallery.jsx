@@ -31,6 +31,9 @@ const AccordionGallery = ({
   trigger = 'hover',
   showLabels = true,
   grayscale = true,
+  // Recolour collapsed panels toward this colour (a blue/white duotone instead
+  // of plain grayscale). Empty string leaves them desaturated as before.
+  tintColor = '',
   // Called when a panel is activated by a click/tap. Fires on the panel that is
   // already expanded, so hovering to browse and clicking to open stay separate.
   // Receives (item, index, event) — the event's currentTarget is the panel.
@@ -42,6 +45,7 @@ const AccordionGallery = ({
   const mediaRefs = useRef([]);
   const barRefs = useRef([]);
   const textRefs = useRef([]);
+  const tagsRefs = useRef([]);
   const tlRef = useRef(null);
   const firstRunRef = useRef(true);
   const mediaSizeRef = useRef(320);
@@ -83,7 +87,10 @@ const AccordionGallery = ({
         if (media) {
           const drift = Math.max(-1.5, Math.min(1.5, active - i));
           const shift = drift * parallax * mediaSize * 0.06;
-          const gray = grayscale ? (isActive ? 0 : 1) : 0;
+          // When a tint colour is set, skip the grayscale filter — the colour
+          // blend layer would be desaturated with it — and let the blend alone
+          // produce the monochrome-blue look.
+          const gray = grayscale && !tintColor ? (isActive ? 0 : 1) : 0;
           tl.to(
             media,
             {
@@ -92,7 +99,10 @@ const AccordionGallery = ({
               x: vertical ? 0 : isActive ? 0 : shift,
               y: vertical ? (isActive ? 0 : shift) : 0,
               '--ag-gray': gray,
-              '--ag-dim': isActive ? 0 : 0.35,
+              // Colour tint strength (0 on the open panel, full on collapsed).
+              '--ag-tint': isActive ? 0 : 1,
+              // Collapsed panels lean on the colour tint, so dim them less.
+              '--ag-dim': isActive ? 0 : tintColor ? 0.14 : 0.35,
               duration: dur,
               ease
             },
@@ -101,10 +111,12 @@ const AccordionGallery = ({
         }
 
         if (showLabels && bar && text) {
+          const tags = tagsRefs.current[i];
+          const targets = tags ? [bar, text, tags] : [bar, text];
           if (isActive) {
-            tl.to([bar, text], { opacity: 1, x: 0, duration: dur, ease, stagger: prefersReduced ? 0 : stagger }, 0);
+            tl.to(targets, { opacity: 1, x: 0, duration: dur, ease, stagger: prefersReduced ? 0 : stagger }, 0);
           } else {
-            tl.to([bar, text], { opacity: 0, x: -14, duration: dur * 0.6, ease }, 0);
+            tl.to(targets, { opacity: 0, x: -14, duration: dur * 0.6, ease }, 0);
           }
         }
       });
@@ -121,6 +133,7 @@ const AccordionGallery = ({
       tilt,
       parallax,
       grayscale,
+      tintColor,
       showLabels,
       stagger,
       prefersReduced
@@ -203,6 +216,7 @@ const AccordionGallery = ({
         '--ag-gap': `${gap}px`,
         '--ag-radius': `${radius}px`,
         '--ag-perspective': `${perspective}px`,
+        '--ag-tint-color': tintColor || 'transparent',
         height: vertical ? `${Math.round(height * 1.6)}px` : `${height}px`
       }}
       role="list"
@@ -235,10 +249,21 @@ const AccordionGallery = ({
             </span>
             {showLabels && (
               <span className="ag-panel__label" aria-hidden="true">
-                <span className="ag-panel__bar" ref={el => (barRefs.current[i] = el)} />
-                <span className="ag-panel__text" ref={el => (textRefs.current[i] = el)}>
-                  {item.label}
+                <span className="ag-panel__titlerow">
+                  <span className="ag-panel__bar" ref={el => (barRefs.current[i] = el)} />
+                  <span className="ag-panel__text" ref={el => (textRefs.current[i] = el)}>
+                    {item.label}
+                  </span>
                 </span>
+                {item.tags?.length > 0 && (
+                  <span className="ag-panel__tags" ref={el => (tagsRefs.current[i] = el)}>
+                    {item.tags.map((tag, ti) => (
+                      <span key={ti} className="ag-panel__tag">
+                        #{tag}
+                      </span>
+                    ))}
+                  </span>
+                )}
               </span>
             )}
           </Tag>
