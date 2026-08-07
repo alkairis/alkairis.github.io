@@ -6,6 +6,7 @@
   --ag-radius: 16px;
   --ag-media-size: 320px;
   --ag-perspective: 1400px;
+  --ag-tint-color: transparent;
 
   display: flex;
   flex-direction: row;
@@ -50,11 +51,14 @@
   inset: 0;
   overflow: hidden;
   border-radius: inherit;
+  /* Contain the tint's blend so it only recolours this panel's image. */
+  isolation: isolate;
 }
 
 .ag-panel__media {
   --ag-gray: 1;
   --ag-dim: 0.35;
+  --ag-tint: 1;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -62,6 +66,19 @@
   height: 100%;
   filter: grayscale(var(--ag-gray));
   will-change: transform, filter;
+}
+
+/* Blue/white duotone on collapsed panels: recolour the image toward
+   --ag-tint-color while keeping its luminance. Strength follows --ag-tint,
+   which the timeline drives to 0 on the expanded panel. */
+.ag-panel__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ag-tint-color, transparent);
+  mix-blend-mode: color;
+  opacity: var(--ag-tint, 0);
+  pointer-events: none;
 }
 
 .accordion-gallery--vertical .ag-panel__media {

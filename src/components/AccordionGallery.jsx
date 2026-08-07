@@ -31,6 +31,9 @@ const AccordionGallery = ({
   trigger = 'hover',
   showLabels = true,
   grayscale = true,
+  // Recolour collapsed panels toward this colour (a blue/white duotone instead
+  // of plain grayscale). Empty string leaves them desaturated as before.
+  tintColor = '',
   // Called when a panel is activated by a click/tap. Fires on the panel that is
   // already expanded, so hovering to browse and clicking to open stay separate.
   // Receives (item, index, event) — the event's currentTarget is the panel.
@@ -84,7 +87,10 @@ const AccordionGallery = ({
         if (media) {
           const drift = Math.max(-1.5, Math.min(1.5, active - i));
           const shift = drift * parallax * mediaSize * 0.06;
-          const gray = grayscale ? (isActive ? 0 : 1) : 0;
+          // When a tint colour is set, skip the grayscale filter — the colour
+          // blend layer would be desaturated with it — and let the blend alone
+          // produce the monochrome-blue look.
+          const gray = grayscale && !tintColor ? (isActive ? 0 : 1) : 0;
           tl.to(
             media,
             {
@@ -93,7 +99,10 @@ const AccordionGallery = ({
               x: vertical ? 0 : isActive ? 0 : shift,
               y: vertical ? (isActive ? 0 : shift) : 0,
               '--ag-gray': gray,
-              '--ag-dim': isActive ? 0 : 0.35,
+              // Colour tint strength (0 on the open panel, full on collapsed).
+              '--ag-tint': isActive ? 0 : 1,
+              // Collapsed panels lean on the colour tint, so dim them less.
+              '--ag-dim': isActive ? 0 : tintColor ? 0.14 : 0.35,
               duration: dur,
               ease
             },
@@ -124,6 +133,7 @@ const AccordionGallery = ({
       tilt,
       parallax,
       grayscale,
+      tintColor,
       showLabels,
       stagger,
       prefersReduced
@@ -206,6 +216,7 @@ const AccordionGallery = ({
         '--ag-gap': `${gap}px`,
         '--ag-radius': `${radius}px`,
         '--ag-perspective': `${perspective}px`,
+        '--ag-tint-color': tintColor || 'transparent',
         height: vertical ? `${Math.round(height * 1.6)}px` : `${height}px`
       }}
       role="list"

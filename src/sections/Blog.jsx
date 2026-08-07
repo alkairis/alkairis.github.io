@@ -88,6 +88,7 @@ const Blog = () => {
               accentColor="#0ea5e9"
               overlayColor="#0f172a"
               textColor="#ffffff"
+              tintColor="#0ea5e9"
               tilt={0}
               gap={8}
               onItemClick={(_item, index) => openPost(visiblePosts[index])}
