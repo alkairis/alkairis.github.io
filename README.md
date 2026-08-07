@@ -84,25 +84,7 @@
 git clone https://github.com/alkairis/alkairis.dev.git
 cd alkairis.dev
 npm install
-
-cp .env.example .env   # add your EmailJS credentials
-
-npm run dev             # start dev server
-npm run build           # production build → dist/
-npm run lint             # ESLint check
 ```
-
-### Environment Variables
-
-```env
-VITE_APP_EMAILJS_SERVICE_ID=your_service_id
-VITE_APP_EMAILJS_TEMPLATE_ID=your_template_id
-VITE_APP_EMAILJS_PUBLIC_KEY=your_public_key
-```
-
-Get these from [emailjs.com](https://www.emailjs.com/).
-
----
 
 ## 📝 License
 
