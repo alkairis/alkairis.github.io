@@ -82,7 +82,7 @@ const AppShowcase = () => {
               overlayColor="#0f172a"
               textColor="#ffffff"
               tilt={0}
-              gap={24}
+              gap={14}
               onItemClick={(_item, index, event) =>
                 openProject(
                   projects[index],
