@@ -1,5 +1,5 @@
-import React, { Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
+import React, { Suspense, useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import {
     Decal,
     Float,
@@ -12,12 +12,21 @@ import CanvasLoader from "./CanvasLoader.jsx";
 
 const Ball = (props) => {
     const [decal] = useTexture([props.imgUrl]);
+    const meshRef = useRef(null);
+
+    // Continuously spin the model on its X axis. `delta` keeps the speed
+    // frame-rate independent, and Float still handles the gentle floating.
+    useFrame((_, delta) => {
+        if (meshRef.current) {
+            meshRef.current.rotation.x += delta * 0.6;
+        }
+    });
 
     return (
         <Float speed={1.75} rotationIntensity={1} floatIntensity={2}>
             <ambientLight intensity={0.25} />
             <directionalLight position={[0, 0, 0.05]} />
-            <mesh castShadow receiveShadow scale={2.75}>
+            <mesh ref={meshRef} castShadow receiveShadow scale={2.75}>
                 <icosahedronGeometry args={[1, 1]} />
                 <meshStandardMaterial
                     color='#fff8eb'
@@ -40,7 +49,7 @@ const Ball = (props) => {
 const BallCanvas = ({ icon }) => {
     return (
         <Canvas
-            frameloop='demand'
+            frameloop='always'
             dpr={[1, 2]}
             gl={{ preserveDrawingBuffer: true }}
         >
