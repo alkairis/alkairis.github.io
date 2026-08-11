@@ -124,7 +124,7 @@ function Field({ cols, rows, spacing, pointer, rotation }) {
     if (groupRef.current) {
       const g = groupRef.current;
       // Continuous auto-spin on the Y axis, added on top of any drag rotation.
-      spinRef.current += delta * 0.12;
+      spinRef.current += delta * 2.4;
       g.rotation.y = THREE.MathUtils.lerp(
         g.rotation.y,
         rotation.current.y + pointer.current.x * 0.04 + spinRef.current,
@@ -152,7 +152,9 @@ function Field({ cols, rows, spacing, pointer, rotation }) {
 export default function NoiseInstancedField({ className, quality = "high" }) {
   const wrapRef = useRef(null);
   const pointer = useRef({ x: 0, y: 0 });
-  const rotation = useRef({ x: 0, y: 0, dragging: false, lastX: 0, lastY: 0 });
+  // Seed a resting X tilt so the wave surface faces the viewer at an angle
+  // (matches the desired hero look); drag still adjusts it within its clamp.
+  const rotation = useRef({ x: 0.35, y: 0, dragging: false, lastX: 0, lastY: 0 });
   const [inView, setInView] = useState(true);
   const [dragging, setDragging] = useState(false);
 
