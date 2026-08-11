@@ -123,14 +123,14 @@ function Field({ cols, rows, spacing, pointer, rotation }) {
 
     if (groupRef.current) {
       const g = groupRef.current;
-      // Continuous auto-spin on the X axis, added on top of any drag tilt.
+      // Continuous auto-spin on the Y axis, added on top of any drag rotation.
       spinRef.current += delta * 0.4;
       g.rotation.y = THREE.MathUtils.lerp(
         g.rotation.y,
-        rotation.current.y + pointer.current.x * 0.04,
+        rotation.current.y + pointer.current.x * 0.04 + spinRef.current,
         0.08
       );
-      g.rotation.x = rotation.current.x + spinRef.current;
+      g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, rotation.current.x, 0.08);
     }
   });
 
