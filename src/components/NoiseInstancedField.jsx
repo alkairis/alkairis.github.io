@@ -27,6 +27,7 @@ function Field({ cols, rows, spacing, pointer, rotation }) {
   const meshRef = useRef(null);
   const groupRef = useRef(null);
   const tRef = useRef(0);
+  const spinRef = useRef(0);
   const count = cols * rows;
 
   const halfX = ((cols - 1) * spacing) / 2;
@@ -122,12 +123,14 @@ function Field({ cols, rows, spacing, pointer, rotation }) {
 
     if (groupRef.current) {
       const g = groupRef.current;
+      // Continuous auto-spin on the X axis, added on top of any drag tilt.
+      spinRef.current += delta * 0.4;
       g.rotation.y = THREE.MathUtils.lerp(
         g.rotation.y,
         rotation.current.y + pointer.current.x * 0.04,
         0.08
       );
-      g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, rotation.current.x, 0.08);
+      g.rotation.x = rotation.current.x + spinRef.current;
     }
   });
 
