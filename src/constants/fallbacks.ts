@@ -24,11 +24,11 @@ export const fallbackAbout: About = {
   photo: asset('dsr.png'),
   headline: 'Senior Software Engineer · Generative AI · AWS & GCP',
   bio: [
-    "I'm Deepak Singh Rajput — a Senior Software Engineer based in Indore, India, with 4+ years building production-grade Generative AI and cloud-native systems.",
+    "I'm Deepak Singh Rajput — a Senior Software Engineer based in Bengaluru, India, with 4+ years building production-grade Generative AI and cloud-native systems.",
     'At Impetus Technologies I ship RAG pipelines and agentic LLM workflows with LangChain and LangGraph, and migrate large-scale on-prem data workloads to AWS and Google Cloud (BigQuery, Dataproc, Cloud Composer). I work end to end — Python, FastAPI and TypeScript on the backend, React on the front.',
     "I'm GCP Generative AI Leader certified and always happy to talk about AI systems, data engineering, and scalable cloud architecture.",
   ].join('\n\n'),
-  location: 'Indore, Madhya Pradesh, India',
+  location: 'Bengaluru, Karnataka, India',
   highlights: [
     '4+ years shipping production AI & cloud systems',
     'GCP Generative AI Leader certified',
