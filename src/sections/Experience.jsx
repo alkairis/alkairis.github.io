@@ -134,15 +134,15 @@ const Experience = () => {
                         <h3 className="font-semibold text-3xl">{card.title}</h3>
                         {card.company && (
                           <>
-                          <p className="mt-2 text-lg text-white-50">
+                          <p className="mt-2 text-lg text-ink-700">
                             {card.company}  🗓️&nbsp;{card.date}
                           </p>
-                          <p className="my-5 text-white-50"></p>
+                          <p className="my-5 text-ink-700"></p>
                           </>
                         )}
                         
                         <p className="text-[#839CB5] italic">Responsibilities</p>
-                        <ul className="list-disc ms-5 mt-5 flex flex-col gap-5 text-white-50">
+                        <ul className="list-disc ms-5 mt-5 flex flex-col gap-5 text-ink-700">
                           {card.responsibilities.map((responsibility, i) => (
                             <li key={i} className="text-lg">
                               {responsibility}
@@ -154,7 +154,7 @@ const Experience = () => {
                             <p className="text-[#839CB5] italic mt-8">
                               Recognition
                             </p>
-                            <ul className="list-disc ms-5 mt-5 flex flex-col gap-5 text-white-50">
+                            <ul className="list-disc ms-5 mt-5 flex flex-col gap-5 text-ink-700">
                               {card.recognition.map((item, i) => (
                                 <li key={i} className="text-lg">
                                   {item}
