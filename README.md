@@ -94,7 +94,7 @@ Licensed under the [MIT License](LICENSE) — feel free to use this as a referen
 
 <div align="center">
 
-**Built with ☕ from Indore, India**
+**Built with ☕ from Bengaluru, India**
 
 [![alkairis.github.io](https://img.shields.io/badge/alkairis.github.io-0f172a?style=for-the-badge&logo=vercel&logoColor=4cc9f0)](https://alkairis.github.io)
 
