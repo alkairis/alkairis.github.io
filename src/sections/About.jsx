@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -6,32 +6,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faCheck } from "@fortawesome/free-solid-svg-icons";
 
 import TitleHeader from "../components/TitleHeader";
-import { getAbout } from "../api/api";
+import { useAbout } from "../hooks/resources.js";
 import { fallbackAbout } from "../constants/fallbacks";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const About = () => {
   const sectionRef = useRef(null);
-  const [about, setAbout] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let active = true;
-    getAbout()
-      .then((data) => {
-        if (active) setAbout(data);
-      })
-      .catch(() => {
-        if (active) setAbout(null);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+  const { data: about, loading } = useAbout();
 
   // Never leave the section empty: a null/failed response falls back to
   // bundled static content while the (possibly cold) backend wakes up.

@@ -9,7 +9,7 @@ import TitleHeader from "../components/TitleHeader";
 import DownloadButton from "../components/DownloadButton";
 import { sendContact } from "../api/api";
 import { useResumeUrl } from "../hooks/useResumeUrl.js";
-import { useSocialMedia } from "../hooks/useSocialMedia.js";
+import { useSocialMedia } from "../hooks/resources.js";
 import {
   resolveSocialIcon,
   socialHref,
@@ -32,7 +32,7 @@ const Contact = () => {
   const [status, setStatus] = useState(STATUS.IDLE);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const resumeUrl = useResumeUrl();
-  const socials = useSocialMedia();
+  const { data: socials } = useSocialMedia();
 
   // Only email, contact number and LinkedIn are shown as contact methods here.
   const contactMethods = useMemo(

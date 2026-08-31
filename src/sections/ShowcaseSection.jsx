@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { useProjects } from "../hooks/useProjects.js";
+import { useProjects } from "../hooks/resources.js";
 import TitleHeader from "../components/TitleHeader.jsx";
 import ProjectModal from "../components/ProjectModal.jsx";
 import AccordionGallery from "../components/AccordionGallery.jsx";
@@ -14,7 +14,7 @@ const AppShowcase = () => {
 
   // Shared with the hero, which needs the same list to decide whether to
   // render its "View My Work" CTA. One request serves both.
-  const { projects, loading } = useProjects();
+  const { data: projects, loading } = useProjects();
   const [activeProject, setActiveProject] = useState(null);
   const [originRect, setOriginRect] = useState(null);
 

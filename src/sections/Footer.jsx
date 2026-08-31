@@ -4,13 +4,13 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { resolveSocialIcon, socialHref } from "../constants/socialIcons";
-import { useSocialMedia } from "../hooks/useSocialMedia.js";
+import { useSocialMedia } from "../hooks/resources.js";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Footer = () => {
   const footerRef = useRef(null);
-  const socials = useSocialMedia();
+  const { data: socials } = useSocialMedia();
 
   const socialImgs = useMemo(
     () =>

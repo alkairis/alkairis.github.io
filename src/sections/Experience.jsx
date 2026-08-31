@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import { getProfessionalExperience } from "../api/api";
+import { useExperience } from "../hooks/resources.js";
 import { fallbackExperiences } from "../constants/fallbacks";
 import TitleHeader from "../components/TitleHeader";
 import GlowCard from "../components/GlowCard";
@@ -11,25 +10,7 @@ import GlowCard from "../components/GlowCard";
 gsap.registerPlugin(ScrollTrigger);
 
 const Experience = () => {
-  const [experiences, setExperiences] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let active = true;
-    getProfessionalExperience()
-      .then((data) => {
-        if (active) setExperiences(data);
-      })
-      .catch(() => {
-        if (active) setExperiences([]);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+  const { data: experiences, loading } = useExperience();
 
   // Never leave the section empty: while the (possibly cold) backend responds
   // show skeletons, and if it returns nothing fall back to static content.

@@ -1,8 +1,7 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { resolveSocialIcon, socialHref } from "../constants/socialIcons";
 import { useResumeUrl } from "../hooks/useResumeUrl.js";
-import { useSocialMedia } from "../hooks/useSocialMedia.js";
-import { useProjects } from "../hooks/useProjects.js";
+import { useProjects, useSocialMedia } from "../hooks/resources.js";
 import Button from "../components/Button.jsx";
 import Typing from "../components/Typing.jsx";
 import "../components/hero.css";
@@ -38,12 +37,12 @@ const Hero = () => {
   const [useField, setUseField] = useState(false);
   // Backend-managed resume URL, shared across every resume CTA on the page.
   const resumeUrl = useResumeUrl();
-  const socials = useSocialMedia();
+  const { data: socials } = useSocialMedia();
   // The "View My Work" CTA scrolls to the showcase section, which doesn't
   // render when there are no projects. Keep the CTA while the request is in
   // flight (the common case is that projects exist, so hiding it first would
   // shift the layout) and drop it only once we know there are none.
-  const { projects, loading: projectsLoading } = useProjects();
+  const { data: projects, loading: projectsLoading } = useProjects();
   const hasProjects = projectsLoading || projects.length > 0;
 
   // Decide once, client-side, whether to run the WebGL field or fall back to
