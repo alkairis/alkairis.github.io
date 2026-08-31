@@ -67,7 +67,7 @@ const AppContent = () => {
         <Navbar />
         <Hero />
         <About />
-        {/* <ShowcaseSection /> */}
+        <ShowcaseSection />
         <Experience />
         <Tech />
         <Certificates />

@@ -13,6 +13,7 @@ const AppShowcase = () => {
   const sectionRef = useRef(null);
 
   const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeProject, setActiveProject] = useState(null);
   const [originRect, setOriginRect] = useState(null);
 
@@ -25,6 +26,9 @@ const AppShowcase = () => {
       })
       .catch(() => {
         if (active) setProjects([]);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
       });
     return () => {
       active = false;
@@ -63,6 +67,19 @@ const AppShowcase = () => {
     );
   }, { scope: sectionRef, dependencies: [projects] });
 
+  // Resolving changes this section's height (and drops it entirely when there
+  // are no projects), which invalidates the ScrollTrigger positions cached by
+  // every section below it. Same reason — and same fix — as the footer.
+  useEffect(() => {
+    if (!loading) ScrollTrigger.refresh();
+  }, [loading]);
+
+  // Backend responded with nothing to show: render no section at all rather
+  // than a bare heading over empty space. While the (possibly cold) backend is
+  // still answering we keep the section mounted with a skeleton, so the hero's
+  // "View My Work" CTA always has an anchor to scroll to on first paint.
+  if (!loading && projects.length === 0) return null;
+
   return (
     <div id="work" ref={sectionRef} className="app-showcase">
       <div className="w-full h-full md:px-10 px-5 -mt-20">
@@ -71,7 +88,13 @@ const AppShowcase = () => {
           sub="🔧 Crafted for Scalable, Impactful Solutions 🚀"
         />
 
-        {projects.length > 0 && (
+        {loading ? (
+          <div className="w-full mt-10">
+            {/* Matches AccordionGallery's default height so the swap to real
+                content doesn't shift the page. */}
+            <div className="skeleton skeleton-card w-full h-[460px]" />
+          </div>
+        ) : (
           <div className="w-full mt-10">
             <AccordionGallery
               items={galleryItems}
