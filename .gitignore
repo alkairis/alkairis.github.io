@@ -26,8 +26,6 @@ dist-ssr
 
 .env
 
-package-lock.json
-
 # Claude Code internal files
 .claude/
 

@@ -47,9 +47,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
       - name: Install dependencies
-        run: npm install
+        # `npm ci` installs exactly what package-lock.json pins, so the deployed
+        # build is reproducible and can't silently pick up a different
+        # transitive version between runs.
+        run: npm ci
+
+      - name: Type check
+        # Vite only strips types; this is what actually checks them.
+        run: npm run typecheck
 
       - name: Build
         env:

@@ -1,0 +1,33 @@
+{
+  // Type-checking config for the TypeScript layer (API client, stores,
+  // constants, utils). Vite/esbuild only strips types at build time and never
+  // checks them, so `npm run typecheck` (tsc --noEmit) is what actually
+  // enforces the types in src/api/api.ts and friends — it runs in CI on every
+  // push. No emit happens here; Vite still owns the build.
+  //
+  // Scope is currently the .ts files only. The app's components are .jsx and
+  // aren't type-checked; `jsx` and the .tsx glob below are already configured
+  // so a component can be renamed to .tsx and picked up with no config change.
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "types": ["vite/client"],
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "noEmit": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts"]
+}
