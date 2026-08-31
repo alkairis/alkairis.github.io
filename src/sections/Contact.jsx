@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faClock, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { gsap } from "gsap";
@@ -7,8 +7,9 @@ import { useGSAP } from "@gsap/react";
 
 import TitleHeader from "../components/TitleHeader";
 import DownloadButton from "../components/DownloadButton";
-import { getSocialMedia, sendContact } from "../api/api";
+import { sendContact } from "../api/api";
 import { useResumeUrl } from "../hooks/useResumeUrl.js";
+import { useSocialMedia } from "../hooks/useSocialMedia.js";
 import {
   resolveSocialIcon,
   socialHref,
@@ -30,22 +31,8 @@ const Contact = () => {
   const sectionRef = useRef(null);
   const [status, setStatus] = useState(STATUS.IDLE);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [socials, setSocials] = useState([]);
   const resumeUrl = useResumeUrl();
-
-  useEffect(() => {
-    let active = true;
-    getSocialMedia()
-      .then((data) => {
-        if (active) setSocials(data);
-      })
-      .catch(() => {
-        if (active) setSocials([]);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+  const socials = useSocialMedia();
 
   // Only email, contact number and LinkedIn are shown as contact methods here.
   const contactMethods = useMemo(

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { getProjects } from "../api/api";
+import { useProjects } from "../hooks/useProjects.js";
 import TitleHeader from "../components/TitleHeader.jsx";
 import ProjectModal from "../components/ProjectModal.jsx";
 import AccordionGallery from "../components/AccordionGallery.jsx";
@@ -12,28 +12,11 @@ gsap.registerPlugin(ScrollTrigger);
 const AppShowcase = () => {
   const sectionRef = useRef(null);
 
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Shared with the hero, which needs the same list to decide whether to
+  // render its "View My Work" CTA. One request serves both.
+  const { projects, loading } = useProjects();
   const [activeProject, setActiveProject] = useState(null);
   const [originRect, setOriginRect] = useState(null);
-
-  // Pull every project (name, description, links, tech, image) from the API.
-  useEffect(() => {
-    let active = true;
-    getProjects()
-      .then((data) => {
-        if (active) setProjects(data);
-      })
-      .catch(() => {
-        if (active) setProjects([]);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
 
   const openProject = (project, rect) => {
     setOriginRect(rect);
