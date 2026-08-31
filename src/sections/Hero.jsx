@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { getSocialMedia } from "../api/api";
 import { resolveSocialIcon, socialHref } from "../constants/socialIcons";
 import { useResumeUrl } from "../hooks/useResumeUrl.js";
+import { useProjects, useSocialMedia } from "../hooks/resources.js";
 import Button from "../components/Button.jsx";
 import Typing from "../components/Typing.jsx";
 import "../components/hero.css";
@@ -34,10 +34,16 @@ const Hero = () => {
   const roleRef = useRef(null);
   const roleIndexRef = useRef(0);
   const roleTimerRef = useRef(null);
-  const [socials, setSocials] = useState([]);
   const [useField, setUseField] = useState(false);
   // Backend-managed resume URL, shared across every resume CTA on the page.
   const resumeUrl = useResumeUrl();
+  const { data: socials } = useSocialMedia();
+  // The "View My Work" CTA scrolls to the showcase section, which doesn't
+  // render when there are no projects. Keep the CTA while the request is in
+  // flight (the common case is that projects exist, so hiding it first would
+  // shift the layout) and drop it only once we know there are none.
+  const { data: projects, loading: projectsLoading } = useProjects();
+  const hasProjects = projectsLoading || projects.length > 0;
 
   // Decide once, client-side, whether to run the WebGL field or fall back to
   // the lightweight 2D constellation (mobile / reduced-motion / no WebGL).
@@ -45,20 +51,6 @@ const Hero = () => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const small = window.innerWidth < 768;
     setUseField(!reduce && !small && canUseWebGL());
-  }, []);
-
-  useEffect(() => {
-    let active = true;
-    getSocialMedia()
-      .then((data) => {
-        if (active) setSocials(data);
-      })
-      .catch(() => {
-        if (active) setSocials([]);
-      });
-    return () => {
-      active = false;
-    };
   }, []);
 
   const socialImgs = useMemo(
@@ -130,12 +122,14 @@ const Hero = () => {
         {/* CTAs */}
         <div className="h-ctas h-in" style={{ animationDelay: "360ms" }}>
           <DownloadButton href={resumeUrl} text="Download CV" />
-          <Button variant="outline" scrollTo="work">
-            View My Work
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </Button>
+          {hasProjects && (
+            <Button variant="outline" scrollTo="work">
+              View My Work
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </Button>
+          )}
         </div>
 
         {/* Social icons */}

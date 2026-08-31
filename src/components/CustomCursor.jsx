@@ -75,12 +75,12 @@ function CustomCursor({
     // tokens defined in index.css — no colors beyond the site theme are used.
     // Read live from the CSS custom properties so the cursor tracks the theme.
     const THEME_COLOR_VARS = [
-      "--color-white-50",
-      "--color-black-50",
-      "--color-black-100",
-      "--color-black-200",
-      "--color-blue-50",
-      "--color-blue-100",
+      "--color-ink-700",
+      "--color-mist-200",
+      "--color-mist-50",
+      "--color-mist-300",
+      "--color-steel-500",
+      "--color-mist-100",
     ];
     const themePalette = readThemePalette();
 

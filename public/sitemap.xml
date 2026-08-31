@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  One entry: the portfolio is a single page and every section is an in-page
+  anchor, not a separate document. No <lastmod> on purpose — a hardcoded date
+  goes stale silently, and a wrong one is worse than none.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://alkairis.github.io/</loc>
+  </url>
+</urlset>

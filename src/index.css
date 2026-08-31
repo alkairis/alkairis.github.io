@@ -96,12 +96,19 @@ section {
 
 @theme {
   --font-sans: "Mona Sans", sans-serif;
-  --color-white-50: #1e3a5f;
-  --color-black-50: #dde6f5;
-  --color-black-100: #e8eef8;
-  --color-black-200: #ccd8ef;
-  --color-blue-50: #4a7090;
-  --color-blue-100: #e2eaf6;
+
+  /* Named for the colours they actually are, ordered light to dark.
+     Previously --color-white-50 held a dark navy and --color-black-50/100/200
+     held light blues, so `text-white-50` produced navy text and `bg-black-100`
+     produced a pale blue surface. The old blue-50/blue-100 names also shadowed
+     Tailwind's own blue palette, so `bg-blue-50` silently meant something
+     else here than it does everywhere else. */
+  --color-mist-50: #e8eef8;
+  --color-mist-100: #e2eaf6;
+  --color-mist-200: #dde6f5;
+  --color-mist-300: #ccd8ef;
+  --color-steel-500: #4a7090;
+  --color-ink-700: #1e3a5f;
 }
 
 @layer utilities {
@@ -170,7 +177,7 @@ section {
   }
 
   .hero-badge {
-    @apply bg-black-200 py-2 px-4 rounded-full w-fit text-sm md:text-base text-nowrap;
+    @apply bg-mist-300 py-2 px-4 rounded-full w-fit text-sm md:text-base text-nowrap;
   }
 
   .hero-3d-layout {
@@ -257,21 +264,21 @@ section {
   }
 
   .cta-button {
-    @apply px-4 py-4 rounded-lg bg-black-200 flex justify-center items-center relative cursor-pointer overflow-hidden;
+    @apply px-4 py-4 rounded-lg bg-mist-300 flex justify-center items-center relative cursor-pointer overflow-hidden;
 
     .bg-circle {
       @apply absolute -right-10 origin-center top-1/2 -translate-y-1/2 
         w-[120%] h-[120%] group-hover:size-10 group-hover:right-10
-        rounded-full bg-white-50 transition-all duration-500;
+        rounded-full bg-ink-700 transition-all duration-500;
     }
 
     .text {
       @apply uppercase md:text-lg text-black transition-all duration-500
-        group-hover:text-white-50 group-hover:-translate-x-5 xl:translate-x-0 -translate-x-5;
+        group-hover:text-ink-700 group-hover:-translate-x-5 xl:translate-x-0 -translate-x-5;
     }
 
     .arrow-wrapper {
-      @apply group-hover:bg-white-50 size-10 rounded-full absolute right-10 top-1/2 
+      @apply group-hover:bg-ink-700 size-10 rounded-full absolute right-10 top-1/2 
         -translate-y-1/2 flex justify-center items-center overflow-hidden;
 
       img {
@@ -281,7 +288,7 @@ section {
   }
 
   .card-border {
-    @apply border border-black-50 bg-black-100;
+    @apply border border-mist-200 bg-mist-50;
   }
 
   .marquee-item {
@@ -297,7 +304,7 @@ section {
   }
 
   .timeline-logo {
-    @apply md:size-20 size-10 flex-none rounded-full flex justify-center items-center md:-translate-y-7 border border-black-50 bg-black-100;
+    @apply md:size-20 size-10 flex-none rounded-full flex justify-center items-center md:-translate-y-7 border border-mist-200 bg-mist-50;
   }
 
   .exp-card-wrapper {
@@ -312,7 +319,7 @@ section {
     }
 
     .exp-company-role {
-      @apply text-sm md:text-base text-white-50;
+      @apply text-sm md:text-base text-ink-700;
     }
   }
 
@@ -328,7 +335,7 @@ section {
     @apply flex flex-col md:justify-center items-center xl:gap-5 xl:h-[50vh] overflow-hidden relative z-10 group-hover:cursor-grab;
 
     & p {
-      @apply text-lg 2xl:text-2xl pb-5 xl:pb-0 font-semibold text-white-50 text-center;
+      @apply text-lg 2xl:text-2xl pb-5 xl:pb-0 font-semibold text-ink-700 text-center;
     }
   }
 
@@ -371,7 +378,7 @@ section {
   }
 
   .footer {
-    @apply my-10 md:mt-20 mt-10 text-white-50 px-5 md:px-20 xl:px-20 flex items-center justify-center;
+    @apply my-10 md:mt-20 mt-10 text-ink-700 px-5 md:px-20 xl:px-20 flex items-center justify-center;
 
     .footer-container {
       @apply grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-0 w-full;
@@ -385,7 +392,7 @@ section {
       @apply flex items-center justify-center gap-5;
 
       .icon {
-        @apply border border-black-50 bg-black-100 flex justify-center items-center rounded-xl size-10 md:size-12 cursor-pointer transition-all duration-500 hover:bg-black-50;
+        @apply border border-mist-200 bg-mist-50 flex justify-center items-center rounded-xl size-10 md:size-12 cursor-pointer transition-all duration-500 hover:bg-mist-200;
       }
 
       img {

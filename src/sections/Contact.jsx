@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faClock, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { gsap } from "gsap";
@@ -7,8 +7,9 @@ import { useGSAP } from "@gsap/react";
 
 import TitleHeader from "../components/TitleHeader";
 import DownloadButton from "../components/DownloadButton";
-import { getSocialMedia, sendContact } from "../api/api";
+import { sendContact } from "../api/api";
 import { useResumeUrl } from "../hooks/useResumeUrl.js";
+import { useSocialMedia } from "../hooks/resources.js";
 import {
   resolveSocialIcon,
   socialHref,
@@ -30,22 +31,8 @@ const Contact = () => {
   const sectionRef = useRef(null);
   const [status, setStatus] = useState(STATUS.IDLE);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [socials, setSocials] = useState([]);
   const resumeUrl = useResumeUrl();
-
-  useEffect(() => {
-    let active = true;
-    getSocialMedia()
-      .then((data) => {
-        if (active) setSocials(data);
-      })
-      .catch(() => {
-        if (active) setSocials([]);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+  const { data: socials } = useSocialMedia();
 
   // Only email, contact number and LinkedIn are shown as contact methods here.
   const contactMethods = useMemo(
@@ -223,10 +210,10 @@ const Contact = () => {
           <div className="xl:col-span-7 flex flex-col justify-center gap-8 contact-info-panel">
 
             <div>
-              <h2 className="text-3xl md:text-4xl font-semibold text-[#0f172a] leading-tight">
+              <h3 className="text-3xl md:text-4xl font-semibold text-[#0f172a] leading-tight">
                 Let's build something<br />
                 <span style={{ color: "#0ea5e9" }}>great together.</span>
-              </h2>
+              </h3>
               <p className="mt-4 text-base leading-relaxed max-w-md"
                 style={{ color: "rgba(15,23,42,0.55)" }}>
                 Whether you have a project in mind, a question about my work,

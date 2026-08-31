@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import { getProfessionalExperience } from "../api/api";
+import { useExperience } from "../hooks/resources.js";
 import { fallbackExperiences } from "../constants/fallbacks";
 import TitleHeader from "../components/TitleHeader";
 import GlowCard from "../components/GlowCard";
@@ -11,25 +10,7 @@ import GlowCard from "../components/GlowCard";
 gsap.registerPlugin(ScrollTrigger);
 
 const Experience = () => {
-  const [experiences, setExperiences] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let active = true;
-    getProfessionalExperience()
-      .then((data) => {
-        if (active) setExperiences(data);
-      })
-      .catch(() => {
-        if (active) setExperiences([]);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+  const { data: experiences, loading } = useExperience();
 
   // Never leave the section empty: while the (possibly cold) backend responds
   // show skeletons, and if it returns nothing fall back to static content.
@@ -150,18 +131,18 @@ const Experience = () => {
                         </div>
                       )}
                       <div>
-                        <h1 className="font-semibold text-3xl">{card.title}</h1>
+                        <h3 className="font-semibold text-3xl">{card.title}</h3>
                         {card.company && (
                           <>
-                          <p className="mt-2 text-lg text-white-50">
+                          <p className="mt-2 text-lg text-ink-700">
                             {card.company}  🗓️&nbsp;{card.date}
                           </p>
-                          <p className="my-5 text-white-50"></p>
+                          <p className="my-5 text-ink-700"></p>
                           </>
                         )}
                         
                         <p className="text-[#839CB5] italic">Responsibilities</p>
-                        <ul className="list-disc ms-5 mt-5 flex flex-col gap-5 text-white-50">
+                        <ul className="list-disc ms-5 mt-5 flex flex-col gap-5 text-ink-700">
                           {card.responsibilities.map((responsibility, i) => (
                             <li key={i} className="text-lg">
                               {responsibility}
@@ -173,7 +154,7 @@ const Experience = () => {
                             <p className="text-[#839CB5] italic mt-8">
                               Recognition
                             </p>
-                            <ul className="list-disc ms-5 mt-5 flex flex-col gap-5 text-white-50">
+                            <ul className="list-disc ms-5 mt-5 flex flex-col gap-5 text-ink-700">
                               {card.recognition.map((item, i) => (
                                 <li key={i} className="text-lg">
                                   {item}

@@ -35,9 +35,14 @@ const TitleHeader = ({ title, sub, subtitle }) => {
         <p>{sub}</p>
       </div>
       <div className="th-anim">
-        <h1 className="font-semibold md:text-4xl text-2xl text-center">
-          {title}
-        </h1>
+        {/* h2, not h1: the hero owns the page's single h1, and every section
+            heading sits below it. Guarded so a caller that passes no title
+            doesn't emit an empty heading. */}
+        {title && (
+          <h2 className="font-semibold md:text-4xl text-2xl text-center">
+            {title}
+          </h2>
+        )}
         {subtitle && (
           <p className="text-sm text-center text-gray-500">
             {subtitle}
