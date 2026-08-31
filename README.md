@@ -21,7 +21,7 @@
 
 ## 🧠 About Me
 
-**Deepak Singh Rajput** — Senior Software Engineer based in **Indore, Madhya Pradesh, India**.
+**Deepak Singh Rajput** — Senior Software Engineer based in **Bengaluru, Karnataka, India**.
 
 4+ years at [Impetus Technologies](https://www.impetus.com/) shipping production-grade Generative AI systems — RAG pipelines and agentic LLM workflows (LangChain · LangGraph) — and migrating large-scale on-prem data workloads to GCP. **GCP Generative AI Leader certified.**
 
