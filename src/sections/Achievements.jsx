@@ -101,6 +101,7 @@ const Achievements = () => {
     <section id="recognitions" ref={sectionRef} className="flex-center section-padding">
       <div className="w-full h-full md:px-10 px-5">
         <TitleHeader
+          title="Awards & Recognition"
           sub="🎖️👏 Recognition"
           subtitle="A collection of my professional journey and the recognition I've received for my contributions in Generative AI, Data Engineering, and technical excellence."
         />

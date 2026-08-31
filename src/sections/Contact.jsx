@@ -223,10 +223,10 @@ const Contact = () => {
           <div className="xl:col-span-7 flex flex-col justify-center gap-8 contact-info-panel">
 
             <div>
-              <h2 className="text-3xl md:text-4xl font-semibold text-[#0f172a] leading-tight">
+              <h3 className="text-3xl md:text-4xl font-semibold text-[#0f172a] leading-tight">
                 Let's build something<br />
                 <span style={{ color: "#0ea5e9" }}>great together.</span>
-              </h2>
+              </h3>
               <p className="mt-4 text-base leading-relaxed max-w-md"
                 style={{ color: "rgba(15,23,42,0.55)" }}>
                 Whether you have a project in mind, a question about my work,

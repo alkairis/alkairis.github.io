@@ -136,9 +136,9 @@ const About = () => {
             {/* ── Bio ── */}
             <div className="xl:col-span-7 about-body-panel flex flex-col gap-6">
               {profile.headline && (
-                <h2 className="about-headline about-reveal">
+                <h3 className="about-headline about-reveal">
                   {profile.headline}
-                </h2>
+                </h3>
               )}
 
               <div className="flex flex-col gap-4">
