@@ -9,7 +9,7 @@
   background:
     radial-gradient(ellipse 90% 55% at 50% -10%, rgba(14, 165, 233, 0.1), transparent 62%),
     #f0f6ff;
-  font-family: "Mona Sans", sans-serif;
+  font-family: var(--font-sans);
   color: #0f172a;
 }
 
@@ -157,7 +157,7 @@
   min-height: 100vh;
   display: flex;
   background: #f0f6ff;
-  font-family: "Mona Sans", sans-serif;
+  font-family: var(--font-sans);
   color: #0f172a;
 }
 

@@ -154,7 +154,8 @@ const Experience = () => {
                         {card.company && (
                           <>
                           <p className="mt-2 text-lg text-white-50">
-                            {card.company}  🗓️&nbsp;{card.date}
+                            {card.company}  🗓️&nbsp;
+                            <span className="exp-date">{card.date}</span>
                           </p>
                           <p className="my-5 text-white-50"></p>
                           </>

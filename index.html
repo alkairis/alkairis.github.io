@@ -5,6 +5,14 @@
     <link rel="icon" type="image/svg+xml" href="/dsr.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!--
+      The webfonts are pulled in from src/index.css, which the browser only
+      discovers after the stylesheet parses. Opening the connections here saves
+      that round trip on first paint.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
     <title>Deepak Singh Rajput — Senior Software Engineer · Generative AI · AWS &amp; GCP</title>
 
     <!-- Primary meta -->
