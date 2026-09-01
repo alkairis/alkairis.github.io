@@ -108,8 +108,9 @@
 }
 
 .pmodal-tech-chip {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 500;
+  letter-spacing: -0.01em;
   padding: 0.32rem 0.75rem;
   border-radius: 999px;
   color: #0369a1;

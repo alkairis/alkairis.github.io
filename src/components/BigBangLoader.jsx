@@ -180,7 +180,7 @@ const BigBangLoader = ({ isLoading = false }) => {
 
           ctx.globalAlpha = p.life * twinkle;
           if (p.isBit) {
-            ctx.font = `${Math.max(9, p.size * 6)}px monospace`;
+            ctx.font = `${Math.max(9, p.size * 6)}px "JetBrains Mono", monospace`;
             ctx.fillStyle = p.color;
             ctx.fillText(p.bitChar, p.x - 3, p.y + 3);
           } else {
@@ -254,7 +254,7 @@ const BigBangLoader = ({ isLoading = false }) => {
       <div className="bigbang-scene">
         <canvas ref={canvasRef} className="bigbang-canvas" aria-hidden="true" />
         <div className="bigbang-content">
-          <span className="bigbang-logo font-audiowide">ALKAIRIS</span>
+          <span className="bigbang-logo font-brand">ALKAIRIS</span>
         </div>
       </div>
     </div>

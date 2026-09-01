@@ -68,7 +68,7 @@
 
 .h-role {
     min-width: 160px;
-    max-width: 240px;
+    max-width: 290px;
     transition: opacity 0.35s ease, transform 0.35s ease;
     opacity: 1;
     transform: translateY(0);
@@ -92,10 +92,10 @@
 /* ── Name ────────────────────────────────────── */
 .h-name {
     font-size: clamp(1.5rem, 4.5vw, 3.25rem);
-    font-weight: 400;
+    font-weight: 700;
     color: #0f172a;
     line-height: 1.05;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.03em;
     min-height: 1.1em;
 }
 

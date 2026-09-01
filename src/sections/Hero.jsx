@@ -114,7 +114,7 @@ const Hero = () => {
         </div>
 
         {/* Name */}
-        <h1 className="h-name font-audiowide h-in" style={{ animationDelay: "120ms" }}>
+        <h1 className="h-name font-brand h-in" style={{ animationDelay: "120ms" }}>
           <Typing titles={["Deepak Singh Rajput", "Alkairis"]} />
         </h1>
 
