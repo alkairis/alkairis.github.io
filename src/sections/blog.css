@@ -164,6 +164,8 @@
   transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
+/* The whole card is the link now, so the icon reacts to hovering the card. */
+.mediacard:hover .mediacard-icon-btn,
 .mediacard-icon-btn:hover {
   background: #1e293b;
   transform: translateY(-2px);

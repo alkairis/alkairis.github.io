@@ -1,0 +1,132 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDownload } from "@fortawesome/free-solid-svg-icons";
+import clsx from "clsx";
+import type { MouseEvent } from "react";
+import type { ButtonVariant } from "../types/ui";
+
+type DownloadButtonProps = {
+  variant?: ButtonVariant;
+  text?: string;
+  /** URL of the file to download. Renders an <a> when set, a <button> otherwise. */
+  href?: string;
+  onClick?: (event: MouseEvent<HTMLElement>) => void;
+  className?: string;
+  /**
+   * Renders the CTA visibly inert. Use while `href` is still resolving so the
+   * button keeps its place in the layout instead of popping in.
+   */
+  disabled?: boolean;
+};
+
+const DownloadButton = ({
+  variant = "primary",
+  text = "Download",
+  href,
+  onClick,
+  className = "",
+  disabled = false,
+}: DownloadButtonProps) => {
+  // useResumeUrl returns "" until the backend answers, and Hero renders this
+  // CTA unconditionally. Passing that straight through produced React's
+  // "empty string was passed to the href attribute" warning on every load, so
+  // the attribute is omitted entirely rather than sent as "".
+  const isLink = Boolean(href) && !disabled;
+
+  const Component = isLink ? "a" : "button";
+
+  return (
+    <Component
+      href={isLink ? href : undefined}
+      onClick={onClick}
+      download
+      // A <button> defaults to type="submit"; harmless on the anchor branch,
+      // and it stops the button branch submitting any form it sits in.
+      type={isLink ? undefined : "button"}
+      disabled={isLink ? undefined : disabled}
+      aria-disabled={disabled || undefined}
+      className={clsx(
+        `
+        group
+        relative
+        inline-flex
+        min-w-[10rem]
+        overflow-hidden
+        leading-[1.25]
+
+        btn btn-${variant}
+
+        transition-all
+        duration-300
+
+        active:scale-95
+      `,
+        disabled && "opacity-50 cursor-not-allowed pointer-events-none",
+        className
+      )}
+    >
+      {/* Sliding Content */}
+      <span
+        className="
+          block
+          h-[1.25em]
+          w-full
+          overflow-hidden
+        "
+      >
+        <span
+          className="
+            flex
+            flex-col
+            transition-transform
+            duration-300
+            ease-in-out
+            translate-y-0
+            group-hover:-translate-y-1/2
+          "
+        >
+          {/* Text State */}
+          <span
+            className="
+              flex
+              h-[1.25em]
+              w-full
+              shrink-0
+              items-center
+              justify-center
+              font-medium
+            "
+          >
+            {text}
+          </span>
+
+          {/* Icon State */}
+          <span
+            className="
+              flex
+              h-[1.25em]
+              w-full
+              shrink-0
+              items-center
+              justify-center
+            "
+          >
+            <FontAwesomeIcon
+              icon={faDownload}
+              className="
+                h-4
+                w-4
+
+                transition-transform
+                duration-300
+
+                group-hover:scale-110
+              "
+            />
+          </span>
+        </span>
+      </span>
+    </Component>
+  );
+};
+
+export default DownloadButton;

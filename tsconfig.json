@@ -1,13 +1,14 @@
 {
-  // Type-checking config for the TypeScript layer (API client, stores,
-  // constants, utils). Vite/esbuild only strips types at build time and never
-  // checks them, so `npm run typecheck` (tsc --noEmit) is what actually
-  // enforces the types in src/api/api.ts and friends — it runs in CI on every
-  // push. No emit happens here; Vite still owns the build.
+  // Type-checking config for the app. Vite/esbuild only strips types at build
+  // time and never checks them, so `npm run typecheck` (tsc --noEmit) is what
+  // actually enforces them — it runs in CI on every push. No emit happens
+  // here; Vite still owns the build.
   //
-  // Scope is currently the .ts files only. The app's components are .jsx and
-  // aren't type-checked; `jsx` and the .tsx glob below are already configured
-  // so a component can be renamed to .tsx and picked up with no config change.
+  // allowJs is still on for one file: src/components/splashCursor.js, the
+  // vendored WebGL fluid simulation. Its contract is declared by hand in
+  // splashCursor.d.ts, so the app's typed surface is complete without
+  // annotating a thousand lines of third-party shader code. checkJs stays off
+  // so that file is resolved but never checked.
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
@@ -21,6 +22,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    "allowJs": true,
+    "checkJs": false,
 
     "noEmit": true,
     "isolatedModules": true,

@@ -55,6 +55,9 @@ jobs:
         # transitive version between runs.
         run: npm ci
 
+      - name: Lint
+        run: npm run lint
+
       - name: Type check
         # Vite only strips types; this is what actually checks them.
         run: npm run typecheck

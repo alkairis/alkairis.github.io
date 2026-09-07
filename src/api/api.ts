@@ -15,6 +15,18 @@ export type ApiError = {
   originalError: AxiosError<ApiErrorResponse>;
 };
 
+/**
+ * Narrow an unknown catch value to the rejection shape the response
+ * interceptor produces. Every rejected request from this module rejects with an
+ * ApiError, but `catch (err)` is typed unknown, so callers that read err.status
+ * or err.data.detail need this to do it safely.
+ */
+export const isApiError = (error: unknown): error is ApiError =>
+  typeof error === 'object' &&
+  error !== null &&
+  'status' in error &&
+  'isNetworkError' in error;
+
 export type BlogDto = {
   title: string;
   link: string;
@@ -126,7 +138,7 @@ apiClient.interceptors.response.use(
 const normalizeBlog = (blog: BlogDto): BlogPost => ({
   title: blog.title,
   link: blog.link,
-  image: blog.image,
+  image: blog.image ?? null,
   tags: blog.keywords ?? [],
   pubDate: blog.pub_date ?? '',
 });
