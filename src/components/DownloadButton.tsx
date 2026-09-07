@@ -20,16 +20,22 @@ const DownloadButton = ({
   onClick,
   className = "",
 }: DownloadButtonProps) => {
-  const Component = href ? "a" : "button";
+  // useResumeUrl returns "" until the backend answers, and Hero renders this
+  // CTA unconditionally. Passing that straight through produced React's
+  // "empty string was passed to the href attribute" warning on every load, so
+  // the attribute is omitted entirely rather than sent as "".
+  const isLink = Boolean(href);
+
+  const Component = isLink ? "a" : "button";
 
   return (
     <Component
-      href={href}
+      href={isLink ? href : undefined}
       onClick={onClick}
       download
       // A <button> defaults to type="submit"; harmless on the anchor branch,
       // and it stops the button branch submitting any form it sits in.
-      type={href ? undefined : "button"}
+      type={isLink ? undefined : "button"}
       className={clsx(
         `
         group
