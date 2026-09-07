@@ -28,7 +28,13 @@ function CustomCursor({
   useEffect(() => {
     // Respect users who prefer reduced motion — skip the animated fluid entirely.
     const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
+    // A fluid *cursor* has no cursor to follow on a touch device: the full-screen
+    // WebGL simulation would run (and drain battery) for an effect built around
+    // pointer movement nobody is making. Small viewports are skipped for the
+    // same reason the hero field is, and by the same test.
+    const coarsePointer = window.matchMedia?.("(pointer: coarse)").matches;
+    const small = window.innerWidth < 768;
+    if (reduced || coarsePointer || small) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -1013,7 +1019,11 @@ function CustomCursor({
     }
 
     function scaleByPixelRatio(input) {
-      const pixelRatio = window.devicePixelRatio || 1;
+      // Cap the ratio: simulation cost scales with the pixel count, so an
+      // uncapped 3x display pays roughly 2.25x what a 2x one does for a soft,
+      // heavily blurred effect where those extra pixels aren't visible. The
+      // hero's WebGL field caps itself at 1.75 for the same reason.
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
       return Math.floor(input * pixelRatio);
     }
 
