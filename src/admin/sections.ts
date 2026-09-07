@@ -1,9 +1,48 @@
 // Declarative config for every admin section. Each entry drives both the
 // read table and the create form, so adding a section is config-only.
-//
-// Field types: text | textarea | url | date | list (semicolon-separated -> array) | bool
 
-export const SECTIONS = [
+/**
+ * How a field is rendered and how its value round-trips to the API.
+ *  - text / url:  a single-line input; sent as a trimmed string
+ *  - textarea:    a multi-line input; sent as a trimmed string
+ *  - date:        <input type="date">; sent as the raw YYYY-MM-DD string
+ *  - list:        semicolon-separated input <-> string[] on the wire
+ *  - bool:        a checkbox <-> boolean on the wire
+ */
+export type FieldType = 'text' | 'textarea' | 'url' | 'date' | 'list' | 'bool';
+
+export type SectionField = {
+  name: string;
+  label: string;
+  type: FieldType;
+  required?: boolean;
+  placeholder?: string;
+  hint?: string;
+};
+
+export type SectionConfig = {
+  key: string;
+  label: string;
+  endpoint: string;
+  /** Upsert of a single record (resume) — no id in the URL, no create/delete by id. */
+  single?: boolean;
+  fields: SectionField[];
+};
+
+/**
+ * A field's value while it is being edited. Every type is held as a string in
+ * the form except `bool`, which is held as a boolean — `list` is only split
+ * into an array on the way out, in toPayload.
+ */
+export type FieldValue = string | boolean;
+
+/** Form state: one entry per field in the section, keyed by field name. */
+export type SectionForm = Record<string, FieldValue>;
+
+/** A record as it comes back from the API. Shape varies by section. */
+export type SectionRow = Record<string, unknown> & { id?: string };
+
+export const SECTIONS: SectionConfig[] = [
   {
     key: 'social-media',
     label: 'Social Media',
@@ -99,17 +138,21 @@ export const SECTIONS = [
   },
 ];
 
-export const getSection = (key) => SECTIONS.find((section) => section.key === key);
+export const getSection = (key: string | undefined): SectionConfig | undefined =>
+  SECTIONS.find((section) => section.key === key);
 
 // Build an empty form state from a section's fields.
-export const emptyForm = (section) =>
+export const emptyForm = (section: SectionConfig): SectionForm =>
   Object.fromEntries(
     section.fields.map((field) => [field.name, field.type === 'bool' ? false : ''])
   );
 
 // Convert form state into the JSON payload the backend expects.
-export const toPayload = (section, form) => {
-  const payload = {};
+export const toPayload = (
+  section: SectionConfig,
+  form: SectionForm
+): Record<string, unknown> => {
+  const payload: Record<string, unknown> = {};
   for (const field of section.fields) {
     const raw = form[field.name];
 
@@ -140,7 +183,7 @@ export const toPayload = (section, form) => {
 };
 
 // Build form state from an existing record (inverse of toPayload) for editing.
-export const formFromRow = (section, row) =>
+export const formFromRow = (section: SectionConfig, row: SectionRow): SectionForm =>
   Object.fromEntries(
     section.fields.map((field) => {
       const raw = row[field.name];
@@ -152,7 +195,7 @@ export const formFromRow = (section, row) =>
   );
 
 // Render a single record cell value for the read table.
-export const formatCell = (value) => {
+export const formatCell = (value: unknown): string => {
   if (value == null || value === '') return '—';
   if (Array.isArray(value)) return value.join(', ');
   if (typeof value === 'boolean') return value ? 'Yes' : 'No';
