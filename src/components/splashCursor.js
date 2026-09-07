@@ -1016,7 +1016,11 @@ export function startSplashCursor(canvas, options) {
     }
 
     function scaleByPixelRatio(input) {
-      const pixelRatio = window.devicePixelRatio || 1;
+      // Cap the ratio: simulation cost scales with the pixel count, so an
+      // uncapped 3x display pays roughly 2.25x what a 2x one does for a soft,
+      // heavily blurred effect where those extra pixels aren't visible. The
+      // hero's WebGL field caps itself at 1.75 for the same reason.
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
       return Math.floor(input * pixelRatio);
     }
 

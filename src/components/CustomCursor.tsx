@@ -46,7 +46,14 @@ const CustomCursor = (props: CustomCursorProps) => {
 
   useEffect(() => {
     // Respect users who prefer reduced motion — skip the animated fluid entirely.
-    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    // A fluid *cursor* has no cursor to follow on a touch device: the full-screen
+    // WebGL simulation would run (and drain battery) for an effect built around
+    // pointer movement nobody is making. Small viewports are skipped for the
+    // same reason the hero field is, and by the same test.
+    const coarsePointer = window.matchMedia?.("(pointer: coarse)").matches;
+    const small = window.innerWidth < 768;
+    if (reduced || coarsePointer || small) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
