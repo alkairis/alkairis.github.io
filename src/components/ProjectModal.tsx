@@ -3,6 +3,11 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { faArrowUpRightFromSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMorphModal } from "../hooks/useMorphModal";
+import type {
+  ModalAnimationVariant,
+  ModalProject,
+  ModalSpeed,
+} from "../types/ui";
 import "./projectModal.css";
 
 /**
@@ -26,6 +31,20 @@ import "./projectModal.css";
  *  - closeOnBackdrop:  close when the backdrop is clicked (default true)
  *  - showCloseButton:  render the rotating close button (default true)
  */
+type ProjectModalProps = {
+  /** Project to display, or null when closed. */
+  project: ModalProject | null;
+  /** DOMRect of the clicked card — the origin of the morph. */
+  originRect?: DOMRect | null;
+  /** Called once the exit animation completes. */
+  onClose?: () => void;
+  animationVariant?: ModalAnimationVariant;
+  animationSpeed?: ModalSpeed;
+  closeOnEscape?: boolean;
+  closeOnBackdrop?: boolean;
+  showCloseButton?: boolean;
+};
+
 const ProjectModal = ({
   project,
   originRect,
@@ -35,7 +54,7 @@ const ProjectModal = ({
   closeOnEscape = true,
   closeOnBackdrop = true,
   showCloseButton = true,
-}) => {
+}: ProjectModalProps) => {
   const { render, panelRef, backdropRef, contentRef, closeBtnRef, close } =
     useMorphModal({
       item: project,
@@ -56,7 +75,7 @@ const ProjectModal = ({
       className="pmodal-overlay"
       role="presentation"
       onMouseDown={(e) => {
-        if (closeOnBackdrop && !panelRef.current?.contains(e.target)) close();
+        if (closeOnBackdrop && !panelRef.current?.contains(e.target as Node)) close();
       }}
     >
       <div ref={backdropRef} className="pmodal-backdrop" aria-hidden="true" />
@@ -91,7 +110,7 @@ const ProjectModal = ({
           <div className="pmodal-detail">
             <p className="pmodal-description">{render.description}</p>
 
-            {render.technologies?.length > 0 && (
+            {render.technologies && render.technologies.length > 0 && (
               <div className="pmodal-tech">
                 {render.technologies.map((tech) => (
                   <span key={tech} className="pmodal-tech-chip">

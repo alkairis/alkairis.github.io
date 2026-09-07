@@ -12,8 +12,13 @@ const PlusIcon = () => (
   </svg>
 );
 
-const CornerPreloader = ({ isLoading = false }) => {
-  const rootRef = useRef(null);
+type CornerPreloaderProps = {
+  /** True while app data is still in flight; holds the counter just shy of 100%. */
+  isLoading?: boolean;
+};
+
+const CornerPreloader = ({ isLoading = false }: CornerPreloaderProps) => {
+  const rootRef = useRef<HTMLDivElement | null>(null);
   const isLoadingRef = useRef(isLoading);
   isLoadingRef.current = isLoading;
 
@@ -42,24 +47,44 @@ const CornerPreloader = ({ isLoading = false }) => {
     }
 
     const root = rootRef.current;
-    const count = root.querySelector(".pre-count");
-    const icon = root.querySelector(".pre-icon");
-    const fillLeft = root.querySelector(".fill-left");
-    const fillRight = root.querySelector(".fill-right");
-    const fillTop = root.querySelector(".fill-top");
-    const fillBottom = root.querySelector(".fill-bottom");
-    const masks = [".mask-tl", ".mask-tr", ".mask-bl", ".mask-br"].map((s) => root.querySelector(s));
+    if (!root) return;
+
+    const q = (selector: string) => root.querySelector<HTMLElement>(selector);
+    const count = q(".pre-count");
+    const icon = q(".pre-icon");
+    const fillLeft = q(".fill-left");
+    const fillRight = q(".fill-right");
+    const fillTop = q(".fill-top");
+    const fillBottom = q(".fill-bottom");
+    const masks = [".mask-tl", ".mask-tr", ".mask-bl", ".mask-br"].map(q);
+
+    // Every one of these was dereferenced unguarded. They are all rendered by
+    // this component so they are present in practice, but a single markup or
+    // class rename would have thrown inside a requestAnimationFrame callback —
+    // leaving the loader stuck on screen over a locked page, with the failure
+    // buried in the console. Bail out cleanly instead.
+    const [maskTl, maskTr, maskBl, maskBr] = masks;
+    if (
+      !count || !icon || !fillLeft || !fillRight || !fillTop || !fillBottom ||
+      !maskTl || !maskTr || !maskBl || !maskBr
+    ) {
+      setVisible(false);
+      return;
+    }
 
     const start = performance.now();
-    const timers = [];
-    let rafId, finished = false;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    let rafId = 0;
+    let finished = false;
 
     const openLoader = () => {
-      masks.forEach((mask) => (mask.style.transition = "transform 0.85s cubic-bezier(0.77, 0, 0.175, 1)"));
-      masks[0].style.transform = "scaleY(0)"; // tl
-      masks[1].style.transform = "scaleX(0)"; // tr
-      masks[2].style.transform = "scaleX(0)"; // bl
-      masks[3].style.transform = "scaleY(0)"; // br
+      for (const mask of [maskTl, maskTr, maskBl, maskBr]) {
+        mask.style.transition = "transform 0.85s cubic-bezier(0.77, 0, 0.175, 1)";
+      }
+      maskTl.style.transform = "scaleY(0)";
+      maskTr.style.transform = "scaleX(0)";
+      maskBl.style.transform = "scaleX(0)";
+      maskBr.style.transform = "scaleY(0)";
       root.style.transition = "opacity 0.35s ease";
       timers.push(setTimeout(() => (root.style.opacity = "0"), 780));
       timers.push(setTimeout(() => setVisible(false), 1200));
@@ -72,7 +97,7 @@ const CornerPreloader = ({ isLoading = false }) => {
       icon.style.transform = "rotate(45deg)";
     };
 
-    const runLoader = (now) => {
+    const runLoader = (now: number) => {
       // Hold just shy of 100% while app data is still loading, then release.
       const t = (now - start) / LOAD_TIME;
       const progress = Math.min(isLoadingRef.current ? Math.min(t, 0.99) : t, 1);

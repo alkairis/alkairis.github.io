@@ -1,9 +1,50 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
+import type { CSSProperties, KeyboardEvent, MouseEvent } from 'react';
 import { gsap } from 'gsap';
 
 import './AccordionGallery.css';
 
-const DEFAULT_ITEMS = [
+export type AccordionItem = {
+  image: string;
+  label?: string;
+  /** When set the panel becomes a link. Omit to route clicks through onItemClick. */
+  link?: string;
+  alt?: string;
+  tags?: string[];
+};
+
+export type AccordionGalleryProps = {
+  items?: AccordionItem[];
+  defaultIndex?: number;
+  accentColor?: string;
+  overlayColor?: string;
+  textColor?: string;
+  height?: number;
+  gap?: number;
+  radius?: number;
+  expandRatio?: number;
+  orientation?: 'horizontal' | 'vertical';
+  duration?: number;
+  ease?: string;
+  parallax?: number;
+  tilt?: number;
+  perspective?: number;
+  stagger?: number;
+  trigger?: 'hover' | 'click';
+  showLabels?: boolean;
+  grayscale?: boolean;
+  /** Recolour collapsed panels toward this colour. Empty leaves them desaturated. */
+  tintColor?: string;
+  /** Fired when an already-expanded panel is activated by click or keyboard. */
+  onItemClick?: (
+    item: AccordionItem,
+    index: number,
+    event: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>
+  ) => void;
+  className?: string;
+};
+
+const DEFAULT_ITEMS: AccordionItem[] = [
   { image: 'https://picsum.photos/id/1015/900/1200', label: 'Canyon', link: '#' },
   { image: 'https://picsum.photos/id/1018/900/1200', label: 'Ridgeline', link: '#' },
   { image: 'https://picsum.photos/id/1039/900/1200', label: 'Falls', link: '#' },
@@ -39,14 +80,14 @@ const AccordionGallery = ({
   // Receives (item, index, event) — the event's currentTarget is the panel.
   onItemClick,
   className = ''
-}) => {
-  const rootRef = useRef(null);
-  const panelRefs = useRef([]);
-  const mediaRefs = useRef([]);
-  const barRefs = useRef([]);
-  const textRefs = useRef([]);
-  const tagsRefs = useRef([]);
-  const tlRef = useRef(null);
+}: AccordionGalleryProps) => {
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const panelRefs = useRef<(HTMLElement | null)[]>([]);
+  const mediaRefs = useRef<(HTMLElement | null)[]>([]);
+  const barRefs = useRef<(HTMLElement | null)[]>([]);
+  const textRefs = useRef<(HTMLElement | null)[]>([]);
+  const tagsRefs = useRef<(HTMLElement | null)[]>([]);
+  const tlRef = useRef<gsap.core.Timeline | null>(null);
   const firstRunRef = useRef(true);
   const mediaSizeRef = useRef(320);
 
@@ -60,7 +101,7 @@ const AccordionGallery = ({
       : false;
 
   const applyLayout = useCallback(
-    animate => {
+    (animate: boolean) => {
       const panels = panelRefs.current;
       if (!panels.length) return;
 
@@ -172,11 +213,11 @@ const AccordionGallery = ({
     []
   );
 
-  const handleEnter = i => {
+  const handleEnter = (i: number) => {
     if (trigger === 'hover') setActive(i);
   };
 
-  const handleClick = (i, e) => {
+  const handleClick = (i: number, e: MouseEvent<HTMLElement>) => {
     // First interaction expands the panel; a click on the already-open panel
     // is treated as a selection — navigate its link, or defer to onItemClick.
     if (i !== active) {
@@ -185,13 +226,14 @@ const AccordionGallery = ({
       return;
     }
 
-    if (onItemClick) {
+    const item = items[i];
+    if (onItemClick && item) {
       e.preventDefault();
-      onItemClick(items[i], i, e);
+      onItemClick(item, i, e);
     }
   };
 
-  const handleKeyDown = (i, e) => {
+  const handleKeyDown = (i: number, e: KeyboardEvent<HTMLElement>) => {
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
       e.preventDefault();
       setActive((i + 1) % count);
@@ -200,8 +242,10 @@ const AccordionGallery = ({
       setActive((i - 1 + count) % count);
     } else if ((e.key === 'Enter' || e.key === ' ') && onItemClick && i === active) {
       // Keyboard parity with a click on the open panel.
+      const item = items[i];
+      if (!item) return;
       e.preventDefault();
-      onItemClick(items[i], i, e);
+      onItemClick(item, i, e);
     }
   };
 
@@ -209,56 +253,73 @@ const AccordionGallery = ({
     <div
       ref={rootRef}
       className={`accordion-gallery${vertical ? ' accordion-gallery--vertical' : ''}${className ? ` ${className}` : ''}`}
-      style={{
-        '--ag-accent': accentColor,
-        '--ag-overlay': overlayColor,
-        '--ag-text': textColor,
-        '--ag-gap': `${gap}px`,
-        '--ag-radius': `${radius}px`,
-        '--ag-perspective': `${perspective}px`,
-        '--ag-tint-color': tintColor || 'transparent',
-        height: vertical ? `${Math.round(height * 1.6)}px` : `${height}px`
-      }}
+      style={
+        {
+          '--ag-accent': accentColor,
+          '--ag-overlay': overlayColor,
+          '--ag-text': textColor,
+          '--ag-gap': `${gap}px`,
+          '--ag-radius': `${radius}px`,
+          '--ag-perspective': `${perspective}px`,
+          '--ag-tint-color': tintColor || 'transparent',
+          height: vertical ? `${Math.round(height * 1.6)}px` : `${height}px`
+        } as CSSProperties
+      }
       role="list"
       aria-label="Image accordion gallery"
     >
       {items.map((item, i) => {
         const isActive = i === active;
-        const Tag = item.link ? 'a' : 'div';
-        return (
-          <Tag
-            key={i}
-            ref={el => (panelRefs.current[i] = el)}
-            className={`ag-panel${isActive ? ' ag-panel--active' : ''}`}
-            style={{ borderRadius: `${radius}px` }}
-            href={item.link || undefined}
-            onClick={e => handleClick(i, e)}
-            onMouseEnter={() => handleEnter(i)}
-            onFocus={() => setActive(i)}
-            onKeyDown={e => handleKeyDown(i, e)}
-            role="listitem"
-            tabIndex={0}
-            aria-current={isActive ? 'true' : undefined}
-            aria-label={item.label}
-          >
+
+        // Every ref here used to be `ref={el => (refs.current[i] = el)}`. An
+        // assignment expression evaluates to the assigned value, and React 19
+        // treats a ref callback's return value as a cleanup function — so React
+        // would try to call the DOM node as a function on unmount. Block bodies
+        // return undefined, which is what a ref callback must do.
+        const panelRef = (el: HTMLElement | null) => {
+          panelRefs.current[i] = el;
+        };
+
+        const inner = (
+          <>
             <span className="ag-panel__frame">
-              <span className="ag-panel__media" ref={el => (mediaRefs.current[i] = el)}>
-                <img src={item.image} alt={item.alt || item.label || ''} draggable="false" />
+              <span
+                className="ag-panel__media"
+                ref={el => {
+                  mediaRefs.current[i] = el;
+                }}
+              >
+                <img src={item.image} alt={item.alt || item.label || ''} draggable={false} />
               </span>
               <span className="ag-panel__overlay" aria-hidden="true" />
             </span>
             {showLabels && (
               <span className="ag-panel__label" aria-hidden="true">
                 <span className="ag-panel__titlerow">
-                  <span className="ag-panel__bar" ref={el => (barRefs.current[i] = el)} />
-                  <span className="ag-panel__text" ref={el => (textRefs.current[i] = el)}>
+                  <span
+                    className="ag-panel__bar"
+                    ref={el => {
+                      barRefs.current[i] = el;
+                    }}
+                  />
+                  <span
+                    className="ag-panel__text"
+                    ref={el => {
+                      textRefs.current[i] = el;
+                    }}
+                  >
                     {item.label}
                   </span>
                 </span>
-                {item.tags?.length > 0 && (
-                  <span className="ag-panel__tags" ref={el => (tagsRefs.current[i] = el)}>
-                    {item.tags.map((tag, ti) => (
-                      <span key={ti} className="ag-panel__tag">
+                {item.tags && item.tags.length > 0 && (
+                  <span
+                    className="ag-panel__tags"
+                    ref={el => {
+                      tagsRefs.current[i] = el;
+                    }}
+                  >
+                    {item.tags.map(tag => (
+                      <span key={tag} className="ag-panel__tag">
                         #{tag}
                       </span>
                     ))}
@@ -266,7 +327,44 @@ const AccordionGallery = ({
                 )}
               </span>
             )}
-          </Tag>
+          </>
+        );
+
+        // A panel is a real control: it responds to click and to Enter/Space, so
+        // it is announced as a link when it navigates and as a button when it
+        // opens the modal. It was previously role="listitem" with tabIndex={0},
+        // which announced an interactive element as static list content.
+        const shared = {
+          className: `ag-panel${isActive ? ' ag-panel--active' : ''}`,
+          style: { borderRadius: `${radius}px` },
+          onMouseEnter: () => handleEnter(i),
+          onFocus: () => setActive(i),
+          onKeyDown: (e: KeyboardEvent<HTMLElement>) => handleKeyDown(i, e),
+          'aria-current': isActive ? ('true' as const) : undefined,
+          'aria-label': item.label
+        };
+
+        return item.link ? (
+          <a
+            key={item.link}
+            {...shared}
+            ref={panelRef}
+            href={item.link}
+            onClick={e => handleClick(i, e)}
+          >
+            {inner}
+          </a>
+        ) : (
+          <div
+            key={item.label ?? i}
+            {...shared}
+            ref={panelRef}
+            role={onItemClick ? 'button' : undefined}
+            tabIndex={0}
+            onClick={e => handleClick(i, e)}
+          >
+            {inner}
+          </div>
         );
       })}
     </div>

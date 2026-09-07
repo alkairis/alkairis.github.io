@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import type { KeyboardEvent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCommentDots,
@@ -7,7 +8,22 @@ import {
   faRobot,
 } from "@fortawesome/free-solid-svg-icons";
 
-const INITIAL_MESSAGE = {
+type ChatRole = "user" | "bot";
+
+type ChatMessage = {
+  role: ChatRole;
+  id: number;
+  text: string;
+};
+
+/** The reply shapes the backend may use; first non-empty one wins. */
+type ChatResponse = {
+  reply?: string;
+  message?: string;
+  answer?: string;
+};
+
+const INITIAL_MESSAGE: ChatMessage = {
   role: "bot",
   id: 0,
   text: "Hi! I'm Alkairis' AI assistant. Ask me anything about his experience, skills, projects, or availability.",
@@ -21,12 +37,12 @@ const SUGGESTIONS = [
 
 const ChatBot = () => {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState([INITIAL_MESSAGE]);
+  const [messages, setMessages] = useState<ChatMessage[]>([INITIAL_MESSAGE]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(true);
-  const bottomRef = useRef(null);
-  const inputRef = useRef(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (open) {
@@ -39,7 +55,7 @@ const ChatBot = () => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  const sendMessage = async (text) => {
+  const sendMessage = async (text: string) => {
     const trimmed = text.trim();
     if (!trimmed || loading) return;
 
@@ -62,7 +78,7 @@ const ChatBot = () => {
       });
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
+      const data: ChatResponse = await res.json();
 
       setMessages((prev) => [
         ...prev,
@@ -86,7 +102,7 @@ const ChatBot = () => {
     }
   };
 
-  const handleKey = (e) => {
+  const handleKey = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage(input);
@@ -100,7 +116,12 @@ const ChatBot = () => {
         className={`chatbot-window ${open ? "chatbot-open" : ""}`}
         role="dialog"
         aria-label="Chat with Alkairis AI"
-        aria-hidden={!open}
+        // The window is hidden with opacity + pointer-events, not display:none,
+        // so while closed its input and buttons stayed in the tab order inside
+        // an aria-hidden container — keyboard users landed in an invisible
+        // form. `inert` removes the subtree from both the tab order and the
+        // accessibility tree, which is what aria-hidden alone could not do.
+        inert={!open}
       >
         {/* Header */}
         <div className="chatbot-header">
@@ -122,6 +143,7 @@ const ChatBot = () => {
           </div>
 
           <button
+            type="button"
             onClick={() => setOpen(false)}
             className="chatbot-close"
             aria-label="Close chat"
@@ -158,6 +180,7 @@ const ChatBot = () => {
               {SUGGESTIONS.map((s) => (
                 <button
                   key={s}
+                  type="button"
                   className="chatbot-chip"
                   onClick={() => sendMessage(s)}
                 >
@@ -184,6 +207,7 @@ const ChatBot = () => {
             aria-label="Chat message"
           />
           <button
+            type="button"
             onClick={() => sendMessage(input)}
             disabled={loading || !input.trim()}
             className="chatbot-send"
@@ -196,6 +220,7 @@ const ChatBot = () => {
 
       {/* ── FAB ── */}
       <button
+        type="button"
         onClick={() => setOpen((prev) => !prev)}
         className={`chatbot-fab ${open ? "chatbot-fab-active" : ""}`}
         aria-label={open ? "Close chat" : "Chat with Alkairis AI"}

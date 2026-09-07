@@ -2,6 +2,7 @@ import { createPortal } from "react-dom";
 import { faArrowUpRightFromSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMorphModal } from "../hooks/useMorphModal";
+import type { Certificate } from "../api/api";
 import "./certificateModal.css";
 
 /**
@@ -21,13 +22,24 @@ import "./certificateModal.css";
  *  - originRect:   DOMRect of the clicked card (origin of the morph)
  *  - onClose:      called after the exit animation completes
  */
+type CertificateModalProps = {
+  /** Certification to display, or null when closed. */
+  certificate: Certificate | null;
+  /** DOMRect of the clicked card — the origin of the morph. */
+  originRect?: DOMRect | null;
+  /** Called once the exit animation completes. */
+  onClose?: () => void;
+  closeOnEscape?: boolean;
+  closeOnBackdrop?: boolean;
+};
+
 const CertificateModal = ({
   certificate,
   originRect,
   onClose,
   closeOnEscape = true,
   closeOnBackdrop = true,
-}) => {
+}: CertificateModalProps) => {
   const { render, panelRef, backdropRef, contentRef, closeBtnRef, close } =
     useMorphModal({ item: certificate, originRect, onClose, closeOnEscape });
 
@@ -45,7 +57,7 @@ const CertificateModal = ({
       className="cmodal-overlay"
       role="presentation"
       onMouseDown={(e) => {
-        if (closeOnBackdrop && !panelRef.current?.contains(e.target)) close();
+        if (closeOnBackdrop && !panelRef.current?.contains(e.target as Node)) close();
       }}
     >
       <div ref={backdropRef} className="cmodal-backdrop" aria-hidden="true" />

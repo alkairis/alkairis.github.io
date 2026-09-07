@@ -1,7 +1,28 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { PointerEvent as ReactPointerEvent, RefObject } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import "./noiseField.css";
+
+/** Normalised cursor position, -1..1 on both axes. */
+type Pointer = { x: number; y: number };
+
+/** Orbit state driven by drag, read by the render loop. */
+type Rotation = {
+  x: number;
+  y: number;
+  dragging: boolean;
+  lastX: number;
+  lastY: number;
+};
+
+type FieldProps = {
+  cols: number;
+  rows: number;
+  spacing: number;
+  pointer: RefObject<Pointer>;
+  rotation: RefObject<Rotation>;
+};
 
 /**
  * Flowing water field.
@@ -23,9 +44,9 @@ const FLOOR_Y = -2.2;
 const WAVE_AMP = 1.1;     // shallow waves (HEIGHT at minimum)
 const BLOCK_FILL = 0.55;  // block width as a fraction of the cell
 
-function Field({ cols, rows, spacing, pointer, rotation }) {
-  const meshRef = useRef(null);
-  const groupRef = useRef(null);
+function Field({ cols, rows, spacing, pointer, rotation }: FieldProps) {
+  const meshRef = useRef<THREE.InstancedMesh | null>(null);
+  const groupRef = useRef<THREE.Group | null>(null);
   const tRef = useRef(0);
   const spinRef = useRef(0);
   const count = cols * rows;
@@ -65,7 +86,7 @@ function Field({ cols, rows, spacing, pointer, rotation }) {
     const mesh = meshRef.current;
     if (!mesh) return;
     mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-    const arr = mesh.instanceMatrix.array;
+    const arr = mesh.instanceMatrix.array as Float32Array;
     const cLow = new THREE.Color("#3b82f6");
     const cHigh = new THREE.Color("#7dd3fc");
     const tmp = new THREE.Color();
@@ -88,11 +109,11 @@ function Field({ cols, rows, spacing, pointer, rotation }) {
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
   }, [count, base, blockW, halfZ]);
 
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     const mesh = meshRef.current;
     if (!mesh) return;
     const t = (tRef.current += delta);
-    const arr = mesh.instanceMatrix.array;
+    const arr = mesh.instanceMatrix.array as Float32Array;
 
     const mx = pointer.current.x * halfX * 1.1;
     const mz = pointer.current.y * halfZ * 1.1;
@@ -149,10 +170,19 @@ function Field({ cols, rows, spacing, pointer, rotation }) {
   );
 }
 
-export default function NoiseInstancedField({ className, quality = "high" }) {
-  const wrapRef = useRef(null);
-  const pointer = useRef({ x: 0, y: 0 });
-  const rotation = useRef({ x: 0, y: 0, dragging: false, lastX: 0, lastY: 0 });
+type NoiseInstancedFieldProps = {
+  className?: string;
+  /** "low" halves the grid density for weaker GPUs. */
+  quality?: "low" | "high";
+};
+
+export default function NoiseInstancedField({
+  className,
+  quality = "high",
+}: NoiseInstancedFieldProps) {
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const pointer = useRef<Pointer>({ x: 0, y: 0 });
+  const rotation = useRef<Rotation>({ x: 0, y: 0, dragging: false, lastX: 0, lastY: 0 });
   const [inView, setInView] = useState(true);
   const [dragging, setDragging] = useState(false);
 
@@ -163,7 +193,7 @@ export default function NoiseInstancedField({ className, quality = "high" }) {
 
   // Track the cursor globally for the parallax swell.
   useEffect(() => {
-    const onMove = (e) => {
+    const onMove = (e: MouseEvent) => {
       pointer.current.x = (e.clientX / window.innerWidth) * 2 - 1;
       pointer.current.y = (e.clientY / window.innerHeight) * 2 - 1;
     };
@@ -176,7 +206,7 @@ export default function NoiseInstancedField({ className, quality = "high" }) {
     const el = wrapRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
     const io = new IntersectionObserver(
-      ([entry]) => setInView(entry.isIntersecting),
+      ([entry]) => setInView(entry?.isIntersecting ?? true),
       { threshold: 0.01 }
     );
     io.observe(el);
@@ -185,13 +215,13 @@ export default function NoiseInstancedField({ className, quality = "high" }) {
 
   // Drag-to-pan (orbit); the canvas below stays pointer-events:none so hero
   // buttons remain clickable.
-  const onPointerDown = (e) => {
+  const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     rotation.current.dragging = true;
     rotation.current.lastX = e.clientX;
     rotation.current.lastY = e.clientY;
     setDragging(true);
   };
-  const onPointerMove = (e) => {
+  const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
     const r = rotation.current;
     if (!r.dragging) return;
     r.y += (e.clientX - r.lastX) * 0.005;

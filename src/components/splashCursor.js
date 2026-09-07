@@ -1,37 +1,40 @@
-import { useEffect, useRef } from "react";
+// Vendored WebGL fluid simulation, adapted from
+// reactbits.dev/animations/splash-cursor.
+//
+// Deliberately kept as plain JavaScript. It is ~1000 lines of third-party
+// shader and numerical code with no consumer-facing surface of its own — every
+// value it handles is internal to the simulation, so strict types would add
+// hundreds of annotations and no safety, while making it harder to re-sync with
+// upstream. The typed boundary the app actually uses is the signature declared
+// in splashCursor.d.ts, consumed by the CustomCursor.tsx wrapper.
+//
+// tsconfig has checkJs:false, so this file is resolved but never type-checked.
 
-// Fluid "splash cursor" WebGL effect (adapted from reactbits.dev/animations/splash-cursor).
-// Tuned with the parameters:
-//   VELOCITY_DISSIPATION=4.5  PRESSURE=0.2  DENSITY_DISSIPATION=2.5
-//   CURL=22  COLOR_UPDATE_SPEED=20  SPLAT_FORCE=5000
-function CustomCursor({
-  SIM_RESOLUTION = 128,
-  DYE_RESOLUTION = 1440,
-  CAPTURE_RESOLUTION = 512,
-  DENSITY_DISSIPATION = 2.5,
-  VELOCITY_DISSIPATION = 4.5,
-  PRESSURE = 0.2,
-  PRESSURE_ITERATIONS = 20,
-  CURL = 22,
-  SPLAT_RADIUS = 0.2,
-  SPLAT_FORCE = 5000,
-  SHADING = true,
-  COLOR_UPDATE_SPEED = 20,
-  BACK_COLOR = { r: 0.5, g: 0, b: 0 },
-  TRANSPARENT = true,
-  RAINBOW_MODE = true,
-  COLOR = "#ff0000",
-}) {
-  const canvasRef = useRef(null);
-  const animationFrameId = useRef(null);
+/**
+ * Starts the fluid simulation on a canvas.
+ * Returns a teardown function that cancels the loop and removes its listeners.
+ */
+export function startSplashCursor(canvas, options) {
+  const {
+    SIM_RESOLUTION,
+    DYE_RESOLUTION,
+    CAPTURE_RESOLUTION,
+    DENSITY_DISSIPATION,
+    VELOCITY_DISSIPATION,
+    PRESSURE,
+    PRESSURE_ITERATIONS,
+    CURL,
+    SPLAT_RADIUS,
+    SPLAT_FORCE,
+    SHADING,
+    COLOR_UPDATE_SPEED,
+    BACK_COLOR,
+    TRANSPARENT,
+    RAINBOW_MODE,
+    COLOR,
+  } = options;
 
-  useEffect(() => {
-    // Respect users who prefer reduced motion — skip the animated fluid entirely.
-    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
-
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  let animationFrameId = null;
 
     // Track if the effect is still active for cleanup
     let isActive = true;
@@ -706,7 +709,7 @@ function CustomCursor({
       applyInputs();
       step(dt);
       render(null);
-      animationFrameId.current = requestAnimationFrame(updateFrame);
+      animationFrameId = requestAnimationFrame(updateFrame);
     }
 
     function calcDeltaTime() {
@@ -1092,9 +1095,9 @@ function CustomCursor({
       isActive = false;
 
       // Cancel animation frame
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-        animationFrameId.current = null;
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
       }
 
       // Remove event listeners
@@ -1104,32 +1107,4 @@ function CustomCursor({
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        zIndex: 50,
-        pointerEvents: "none",
-        width: "100%",
-        height: "100%",
-      }}
-    >
-      <canvas
-        ref={canvasRef}
-        id="fluid"
-        style={{
-          width: "100vw",
-          height: "100vh",
-          display: "block",
-        }}
-      />
-    </div>
-  );
 }
-
-export default CustomCursor;
