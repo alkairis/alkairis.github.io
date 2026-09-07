@@ -7,6 +7,22 @@ import {
   getSocialMedia,
   getTechnicalSkills,
 } from "../api/api";
+import type {
+  About,
+  Certificate,
+  Experience,
+  Project,
+  SocialMedia,
+  TechnicalSkill,
+} from "../api/api";
+
+/** What a resource hook hands its caller. */
+export type Resource<T> = {
+  /** The fetched value, or `emptyValue` while loading and after a failure. */
+  data: T;
+  /** True until the first request settles. Distinguishes "fetching" from "empty". */
+  loading: boolean;
+};
 
 /**
  * Builds a hook around a single GET endpoint: a module-level cache, one shared
@@ -18,13 +34,18 @@ import {
  * load. Same caching approach as useResumeUrl, which predates this.
  *
  * `emptyValue` is what callers see before the request resolves and if it
- * fails — [] for list endpoints, null for single records.
+ * fails — [] for list endpoints, null for single records. It's typed as the
+ * same T the fetcher resolves to, which is what lets one factory serve both:
+ * T is `Project[]` for the list endpoints and `About | null` for the profile.
  */
-const createResourceHook = (fetcher, emptyValue) => {
-  let cached = null;
-  let inFlight = null;
+const createResourceHook = <T,>(
+  fetcher: () => Promise<T>,
+  emptyValue: T
+): (() => Resource<T>) => {
+  let cached: T | null = null;
+  let inFlight: Promise<T> | null = null;
 
-  const load = () => {
+  const load = (): Promise<T> => {
     if (cached !== null) return Promise.resolve(cached);
     if (!inFlight) {
       inFlight = fetcher()
@@ -43,8 +64,8 @@ const createResourceHook = (fetcher, emptyValue) => {
   };
 
   // Named rather than anonymous so the react-hooks lint rules recognise it.
-  return function useResource() {
-    const [data, setData] = useState(cached ?? emptyValue);
+  return function useResource(): Resource<T> {
+    const [data, setData] = useState<T>(cached ?? emptyValue);
     const [loading, setLoading] = useState(cached === null);
 
     useEffect(() => {
@@ -65,9 +86,15 @@ const createResourceHook = (fetcher, emptyValue) => {
   };
 };
 
-export const useAbout = createResourceHook(getAbout, null);
-export const useCertificates = createResourceHook(getCertificates, []);
-export const useExperience = createResourceHook(getProfessionalExperience, []);
-export const useProjects = createResourceHook(getProjects, []);
-export const useSocialMedia = createResourceHook(getSocialMedia, []);
-export const useTechnicalSkills = createResourceHook(getTechnicalSkills, []);
+export const useAbout = createResourceHook<About | null>(getAbout, null);
+export const useCertificates = createResourceHook<Certificate[]>(getCertificates, []);
+export const useExperience = createResourceHook<Experience[]>(
+  getProfessionalExperience,
+  []
+);
+export const useProjects = createResourceHook<Project[]>(getProjects, []);
+export const useSocialMedia = createResourceHook<SocialMedia[]>(getSocialMedia, []);
+export const useTechnicalSkills = createResourceHook<TechnicalSkill[]>(
+  getTechnicalSkills,
+  []
+);

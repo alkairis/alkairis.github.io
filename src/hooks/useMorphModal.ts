@@ -1,7 +1,38 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { RefObject } from "react";
 import { gsap } from "gsap";
+import type { ModalAnimationVariant, ModalSpeed } from "../types/ui";
 
-const SPEED_MS = { slow: 700, normal: 460, fast: 280 };
+const SPEED_MS: Record<ModalSpeed, number> = { slow: 700, normal: 460, fast: 280 };
+
+/** Selector for the elements the focus trap cycles between. */
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+export type UseMorphModalOptions<T> = {
+  /** The record to display, or null when closed. */
+  item: T | null;
+  /** DOMRect of the clicked card — the origin the panel morphs out of. */
+  originRect?: DOMRect | null;
+  /** Called once the exit animation completes. */
+  onClose?: () => void;
+  variant?: ModalAnimationVariant;
+  speed?: ModalSpeed;
+  closeOnEscape?: boolean;
+};
+
+export type UseMorphModalResult<T> = {
+  /**
+   * The record to render. Held locally so content stays on screen through the
+   * exit animation, and cleared only once the morph finishes.
+   */
+  render: T | null;
+  panelRef: RefObject<HTMLDivElement | null>;
+  backdropRef: RefObject<HTMLDivElement | null>;
+  contentRef: RefObject<HTMLDivElement | null>;
+  closeBtnRef: RefObject<HTMLButtonElement | null>;
+  close: () => void;
+};
 
 /**
  * Shared behaviour for the morphing modals.
@@ -11,40 +42,29 @@ const SPEED_MS = { slow: 700, normal: 460, fast: 280 };
  * Escape to close, a Tab/Shift+Tab focus trap, and returning focus to the
  * trigger element afterwards.
  *
- * `item` is whatever the caller renders (a project, a certificate). It's held
- * in local state as `render` so the content stays on screen through the exit
- * animation, and only clears once the morph finishes.
- *
- * Params:
- *  - item:          the record to display, or null when closed
- *  - originRect:    DOMRect of the clicked card (origin of the morph)
- *  - onClose:       called once the exit animation completes
- *  - variant:       "scale-morph" (default) | "scale" | "fade"
- *  - speed:         "slow" | "normal" (default) | "fast"
- *  - closeOnEscape: close when Escape is pressed (default true)
- *
- * Returns the refs the caller must attach (panel, backdrop, content, close
- * button), the `render` record, and a `close` handler.
+ * Generic over the record being displayed, so ProjectModal gets a ModalProject
+ * back out and CertificateModal gets a Certificate — the hook never widens
+ * either to a shared shape.
  */
-export const useMorphModal = ({
+export const useMorphModal = <T,>({
   item,
   originRect,
   onClose,
   variant = "scale-morph",
   speed = "normal",
   closeOnEscape = true,
-}) => {
-  const [render, setRender] = useState(item);
+}: UseMorphModalOptions<T>): UseMorphModalResult<T> => {
+  const [render, setRender] = useState<T | null>(item);
 
-  const originRef = useRef(null);
-  const panelRef = useRef(null);
-  const backdropRef = useRef(null);
-  const contentRef = useRef(null);
-  const closeBtnRef = useRef(null);
-  const lastFocusedRef = useRef(null);
-  const tweenRef = useRef(null);
+  const originRef = useRef<DOMRect | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
+  const backdropRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const closeBtnRef = useRef<HTMLButtonElement | null>(null);
+  const lastFocusedRef = useRef<HTMLElement | null>(null);
+  const tweenRef = useRef<gsap.core.Tween | null>(null);
 
-  const duration = (SPEED_MS[speed] ?? SPEED_MS.normal) / 1000;
+  const duration = SPEED_MS[speed] / 1000;
 
   const close = useCallback(() => {
     const panel = panelRef.current;
@@ -59,7 +79,7 @@ export const useMorphModal = ({
 
     const finish = () => {
       setRender(null);
-      lastFocusedRef.current?.focus?.();
+      lastFocusedRef.current?.focus();
       onClose?.();
     };
 
@@ -98,7 +118,10 @@ export const useMorphModal = ({
   useEffect(() => {
     if (item) {
       originRef.current = originRect ?? null;
-      lastFocusedRef.current = document.activeElement;
+      // Only an HTMLElement can be refocused on close; SVG and other elements
+      // are ignored rather than optional-called on a method that may not exist.
+      const active = document.activeElement;
+      lastFocusedRef.current = active instanceof HTMLElement ? active : null;
       setRender(item);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -150,7 +173,7 @@ export const useMorphModal = ({
       tweenRef.current = gsap.to(panel, { scale: 1, opacity: 1, duration, ease: "power3.out" });
     }
 
-    closeBtnRef.current?.focus?.();
+    closeBtnRef.current?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [render]);
 
@@ -159,7 +182,7 @@ export const useMorphModal = ({
     if (!render) return;
     document.body.style.overflow = "hidden";
 
-    const onKeyDown = (e) => {
+    const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && closeOnEscape) {
         e.preventDefault();
         close();
@@ -171,12 +194,10 @@ export const useMorphModal = ({
       if (e.key === "Tab") {
         const panel = panelRef.current;
         if (!panel) return;
-        const focusable = panel.querySelectorAll(
-          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-        );
-        if (!focusable.length) return;
+        const focusable = panel.querySelectorAll<HTMLElement>(FOCUSABLE);
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
+        if (!first || !last) return;
         const activeEl = document.activeElement;
 
         if (e.shiftKey) {
