@@ -1,0 +1,121 @@
+/* ─── Scroll reveals ─────────────────────────────────────────────────────────
+ *
+ * Replaces the per-section GSAP + ScrollTrigger fade-ins with native CSS
+ * scroll-driven animations.
+ *
+ * Two rules govern everything below, and both are load-bearing:
+ *
+ * 1. THE HIDDEN STATE ONLY EXISTS WHERE THE ANIMATION CAN RUN.
+ *    Every hidden start state lives inside `@supports (animation-timeline: view())`.
+ *    If a browser can't drive the animation, it never sees `opacity: 0` either,
+ *    and the page renders fully visible and static. Putting the start state
+ *    outside the guard is how this pattern blanks a page on older browsers.
+ *
+ * 2. REDUCED MOTION MEANS NO ANIMATION AT ALL.
+ *    The whole block sits inside `prefers-reduced-motion: no-preference`, so a
+ *    reduced-motion visitor also lands on the plain visible page rather than a
+ *    faster version of the same movement.
+ *
+ * `view()` — not `scroll()` — is the right timeline here: it tracks an
+ * element's own progress through the scrollport, which is what "reveal as it
+ * comes into view" means. `scroll()` tracks the scroller's total progress and
+ * would fire everything against the page's global scroll position.
+ *
+ * Note `animation-delay` has no effect on a scroll-driven animation. Stagger is
+ * expressed by offsetting `animation-range-start` per item via `--reveal-i`.
+ */
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* Shared driver. Each element gets its own view timeline, so items animate
+     * as they individually cross into the viewport.
+     *
+     * The range completes at `entry 70%` rather than at the end of `cover`:
+     * the reveal finishes shortly after the element clears the fold and then
+     * holds at its end state for the rest of the scroll, instead of scrubbing
+     * back and forth under the reader. */
+    .reveal,
+    .reveal-left,
+    .reveal-right,
+    .reveal-pop,
+    .reveal-stagger > * {
+      /* Longhands, not the `animation` shorthand. The shorthand with no time
+       * component sets animation-duration to 0s, which on a scroll timeline
+       * means the animation is already complete at the start of its range —
+       * the element renders permanently at its end state and nothing ever
+       * animates. Scroll-driven animations need `auto`, which maps the
+       * keyframes across the whole range. */
+      animation-name: reveal-up;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 5% entry 70%;
+    }
+
+    .reveal-left  { animation-name: reveal-left; }
+    .reveal-right { animation-name: reveal-right; }
+    .reveal-pop   { animation-name: reveal-pop; }
+
+    /* Stagger for items in a row or grid, which would otherwise cross the
+     * threshold together. The index comes from nth-child rather than an inline
+     * custom property, so the markup stays free of style objects. Past the
+     * ninth child the offset stops growing — by then the delay would be longer
+     * than the reveal itself. */
+    .reveal-stagger > * {
+      animation-range: entry 5% entry 75%;
+    }
+
+    .reveal-stagger > *:nth-child(2) { animation-range-start: entry 9%; }
+    .reveal-stagger > *:nth-child(3) { animation-range-start: entry 13%; }
+    .reveal-stagger > *:nth-child(4) { animation-range-start: entry 17%; }
+    .reveal-stagger > *:nth-child(5) { animation-range-start: entry 21%; }
+    .reveal-stagger > *:nth-child(6) { animation-range-start: entry 25%; }
+    .reveal-stagger > *:nth-child(7) { animation-range-start: entry 29%; }
+    .reveal-stagger > *:nth-child(8) { animation-range-start: entry 33%; }
+    .reveal-stagger > *:nth-child(n + 9) { animation-range-start: entry 37%; }
+
+    /* Stagger variants for rows that read better sideways. */
+    .reveal-stagger-left > *  { animation-name: reveal-left; }
+    .reveal-stagger-pop > *   { animation-name: reveal-pop; }
+
+    /* The experience timeline's progress line: genuinely scroll-linked, so it
+     * scrubs across the whole time the card is on screen rather than snapping.
+     * This one was GSAP's only `scrub: true` and is the clearest win — a
+     * progress line IS a scroll-driven animation. */
+    .gradient-line {
+      transform: scaleY(0);
+      animation-name: line-grow;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 60%;
+    }
+  }
+}
+
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(1.5rem); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes reveal-left {
+  from { opacity: 0; transform: translateX(-2rem); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes reveal-right {
+  from { opacity: 0; transform: translateX(2rem); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes reveal-pop {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes line-grow {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}

@@ -1,8 +1,5 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import type { KeyboardEvent, MouseEvent } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 
 import TitleHeader from "../components/TitleHeader";
 import CertificateModal from "../components/CertificateModal";
@@ -10,10 +7,7 @@ import { useCertificates } from "../hooks/resources";
 import type { Certificate } from "../api/api";
 import { fallbackCertificates } from "../constants/fallbacks";
 
-gsap.registerPlugin(ScrollTrigger);
-
 const Certificates = () => {
-  const sectionRef = useRef<HTMLElement | null>(null);
   const { data: certifications, loading } = useCertificates();
   const [activeCert, setActiveCert] = useState<Certificate | null>(null);
   const [originRect, setOriginRect] = useState<DOMRect | null>(null);
@@ -46,32 +40,15 @@ const Certificates = () => {
     },
   });
 
-  useGSAP(() => {
-    gsap.utils.toArray<HTMLElement>(".cert-card").forEach((el, i) => {
-      gsap.fromTo(
-        el,
-        { y: 34, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.7,
-          delay: 0.08 * i,
-          ease: "power3.out",
-          scrollTrigger: { trigger: el, start: "top 90%" },
-        }
-      );
-    });
-  }, { scope: sectionRef, dependencies: [visibleCertificates, loading] });
-
   return (
-    <section id="certifications" ref={sectionRef} className="flex-center section-padding">
+    <section id="certifications" className="flex-center section-padding">
       <div className="w-full h-full md:px-10 px-5">
         <TitleHeader
           title="Professional Certifications"
           sub="🎓📜 Credentials"
         />
 
-        <div className="grid-2-cols mt-16 max-w-[960px] mx-auto">
+        <div className="grid-2-cols mt-16 max-w-[960px] mx-auto reveal-stagger">
           {loading
             ? Array.from({ length: 4 }).map((_, i) => (
                 <div

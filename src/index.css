@@ -1,15 +1,28 @@
 @import url("https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Pixelify+Sans:wght@400..700&display=swap');
 @import "tailwindcss";
+@import "./styles/reveal.css";
 
 :root {
   --gradient: radial-gradient(circle, #e5e5e5 0%, #fff 100%);
 }
 
-html,
-body {
+html {
   width: 100dvw;
   overflow-x: hidden;
+}
+
+body {
+  width: 100dvw;
+  /* `clip`, not `hidden`. Both prevent horizontal overflow, but `hidden`
+     establishes a scroll container — and because <body> never actually
+     scrolls, every `animation-timeline: view()` inside it resolved against a
+     scrollport with no scroll range and sat pinned at 100%, so the reveals
+     rendered fully-shown and never animated. `clip` clips without creating a
+     scroll container, so view() resolves to the document scroller.
+     <html> keeps `hidden`: it is the element that actually scrolls, and
+     useScrollLock locks it. */
+  overflow-x: clip;
   background-color: #f0f6ff;
   color: #0f172a;
   scroll-behavior: smooth;
@@ -446,7 +459,10 @@ section {
 
 .gradient-line {
   width: 2px;
-  transform: scaleY(0);
+  /* No `transform: scaleY(0)` here on purpose. The collapsed start state lives
+     with the animation in styles/reveal.css, inside the support + motion
+     guards — pre-hiding it here left the line invisible for anyone the
+     animation never runs for. */
   transform-origin: top;
   will-change: transform;
   background: linear-gradient(

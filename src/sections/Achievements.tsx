@@ -1,8 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { KeyboardEvent, MouseEvent } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 
 import TitleHeader from "../components/TitleHeader";
 import ProjectModal from "../components/ProjectModal";
@@ -13,8 +10,6 @@ import {
   fallbackRecognitionStats,
   fallbackRecognitions,
 } from "../constants/fallbacks";
-
-gsap.registerPlugin(ScrollTrigger);
 
 // Map a recognition entry onto the shape ProjectModal expects so it reuses the
 // exact same morphing modal as the Projects section.
@@ -28,7 +23,6 @@ const toModalProject = (card: Recognition): ModalProject => ({
 });
 
 const Achievements = () => {
-  const sectionRef = useRef<HTMLElement | null>(null);
   const [activeCard, setActiveCard] = useState<ModalProject | null>(null);
   const [originRect, setOriginRect] = useState<DOMRect | null>(null);
 
@@ -72,39 +66,8 @@ const Achievements = () => {
     },
   });
 
-  useGSAP(() => {
-    gsap.utils.toArray<HTMLElement>(".recog-stat").forEach((el, i) => {
-      gsap.fromTo(
-        el,
-        { y: 32, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.7,
-          delay: 0.1 * i,
-          ease: "power3.out",
-          scrollTrigger: { trigger: el, start: "top 90%" },
-        }
-      );
-    });
-
-    gsap.utils.toArray<HTMLElement>(".recog-block").forEach((el) => {
-      gsap.fromTo(
-        el,
-        { x: -45, opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          duration: 0.75,
-          ease: "power3.out",
-          scrollTrigger: { trigger: el, start: "top 85%" },
-        }
-      );
-    });
-  }, { scope: sectionRef, dependencies: [visibleStats, visibleCards, loading] });
-
   return (
-    <section id="recognitions" ref={sectionRef} className="flex-center section-padding">
+    <section id="recognitions" className="flex-center section-padding">
       <div className="w-full h-full md:px-10 px-5">
         <TitleHeader
           title="Awards & Recognition"
@@ -114,7 +77,7 @@ const Achievements = () => {
 
         <div className="max-w-[960px] mx-auto">
           {/* ── Headline stats ─────────────────────────────────────── */}
-          <div className="grid-3-cols mt-16">
+          <div className="grid-3-cols mt-16 reveal-stagger reveal-stagger-pop">
             {loading
               ? Array.from({ length: 3 }).map((_, i) => (
                   <div
@@ -134,7 +97,7 @@ const Achievements = () => {
           </div>
 
           {/* ── Recognition timeline ───────────────────────────────── */}
-          <div className="mt-8 flex flex-col gap-6">
+          <div className="mt-8 flex flex-col gap-6 reveal-stagger reveal-stagger-left">
             {loading
               ? Array.from({ length: 2 }).map((_, i) => (
                   <div
