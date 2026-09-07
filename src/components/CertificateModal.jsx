@@ -1,7 +1,7 @@
 import { createPortal } from "react-dom";
 import { faArrowUpRightFromSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useMorphModal } from "../hooks/useMorphModal.js";
+import { useMorphModal } from "../hooks/useMorphModal";
 import "./certificateModal.css";
 
 /**

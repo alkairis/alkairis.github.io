@@ -3,16 +3,16 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import './index.css'
-import App from './App.jsx'
-import ProtectedRoute from './components/ProtectedRoute.jsx'
+import App from './App'
+import ProtectedRoute from './components/ProtectedRoute'
 
 // The CMS is reachable only by typing its URL, so there's no reason to ship it
 // to the visitors who never will. Splitting these routes keeps the admin
 // pages, their forms and admin.css out of the public bundle.
-const Login = lazy(() => import('./pages/Login.jsx'))
-const AdminLayout = lazy(() => import('./pages/AdminLayout.jsx'))
-const AdminHome = lazy(() => import('./pages/AdminHome.jsx'))
-const SectionPage = lazy(() => import('./pages/SectionPage.jsx'))
+const Login = lazy(() => import('./pages/Login'))
+const AdminLayout = lazy(() => import('./pages/AdminLayout'))
+const AdminHome = lazy(() => import('./pages/AdminHome'))
+const SectionPage = lazy(() => import('./pages/SectionPage'))
 
 // Inline styles: admin.css ships with the chunk this is waiting on.
 const routeFallback = (

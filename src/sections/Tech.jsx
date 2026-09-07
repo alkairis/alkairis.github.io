@@ -2,9 +2,9 @@ import { useMemo, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { useTechnicalSkills } from "../hooks/resources.js";
+import { useTechnicalSkills } from "../hooks/resources";
 import { fallbackSkills } from "../constants/fallbacks";
-import TitleHeader from "../components/TitleHeader.jsx";
+import TitleHeader from "../components/TitleHeader";
 
 gsap.registerPlugin(ScrollTrigger);
 

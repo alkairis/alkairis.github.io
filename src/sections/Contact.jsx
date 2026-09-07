@@ -8,8 +8,8 @@ import { useGSAP } from "@gsap/react";
 import TitleHeader from "../components/TitleHeader";
 import DownloadButton from "../components/DownloadButton";
 import { sendContact } from "../api/api";
-import { useResumeUrl } from "../hooks/useResumeUrl.js";
-import { useSocialMedia } from "../hooks/resources.js";
+import { useResumeUrl } from "../hooks/useResumeUrl";
+import { useSocialMedia } from "../hooks/resources";
 import {
   resolveSocialIcon,
   socialHref,

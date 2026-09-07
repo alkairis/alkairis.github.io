@@ -1,13 +1,16 @@
 {
-  // Type-checking config for the TypeScript layer (API client, stores,
-  // constants, utils). Vite/esbuild only strips types at build time and never
-  // checks them, so `npm run typecheck` (tsc --noEmit) is what actually
-  // enforces the types in src/api/api.ts and friends — it runs in CI on every
-  // push. No emit happens here; Vite still owns the build.
+  // Type-checking config for the app. Vite/esbuild only strips types at build
+  // time and never checks them, so `npm run typecheck` (tsc --noEmit) is what
+  // actually enforces them — it runs in CI on every push. No emit happens
+  // here; Vite still owns the build.
   //
-  // Scope is currently the .ts files only. The app's components are .jsx and
-  // aren't type-checked; `jsx` and the .tsx glob below are already configured
-  // so a component can be renamed to .tsx and picked up with no config change.
+  // MIGRATION BRIDGE (remove once src/ has no .js/.jsx left):
+  //   allowJs + checkJs:false let an already-converted .tsx import a module
+  //   that is still .jsx. Without it the first converted component fails to
+  //   resolve its not-yet-converted imports and CI goes red, which would force
+  //   the whole migration into one unreviewable commit. The .jsx files are
+  //   resolved and inferred, never type-checked, so they cost nothing until
+  //   they're converted.
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
@@ -21,6 +24,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+
+    "allowJs": true,
+    "checkJs": false,
 
     "noEmit": true,
     "isolatedModules": true,

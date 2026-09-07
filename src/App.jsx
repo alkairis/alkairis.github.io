@@ -1,19 +1,19 @@
 import { useEffect, useRef } from "react";
-import Footer from "./sections/Footer.jsx";
-import Contact from "./sections/Contact.jsx";
-import Experience from "./sections/Experience.jsx";
-import Hero from "./sections/Hero.jsx";
-import About from "./sections/About.jsx";
-import ShowcaseSection from "./sections/ShowcaseSection.jsx";
-import Navbar from "./components/NavBar.jsx";
-import Tech from "./sections/Tech.jsx";
-import Blog from "./sections/Blog.jsx";
-import ChatBot from "./components/ChatBot.jsx";
-import CornerPreloader from "./components/CornerPreloader.jsx";
-import CustomCursor from "./components/CustomCursor.jsx";
-import { LoadingProvider, useAppLoading } from "./context/LoadingContext.jsx";
-import Certificates from "./sections/Certificates.jsx";
-import Achievements from "./sections/Achievements.jsx";
+import Footer from "./sections/Footer";
+import Contact from "./sections/Contact";
+import Experience from "./sections/Experience";
+import Hero from "./sections/Hero";
+import About from "./sections/About";
+import ShowcaseSection from "./sections/ShowcaseSection";
+import Navbar from "./components/NavBar";
+import Tech from "./sections/Tech";
+import Blog from "./sections/Blog";
+import ChatBot from "./components/ChatBot";
+import CornerPreloader from "./components/CornerPreloader";
+import CustomCursor from "./components/CustomCursor";
+import { LoadingProvider, useAppLoading } from "./context/LoadingContext";
+import Certificates from "./sections/Certificates";
+import Achievements from "./sections/Achievements";
 
 const AppContent = () => {
   const { isLoading } = useAppLoading();

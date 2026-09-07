@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import { navLinks } from "../constants/";
-import { useResumeUrl } from "../hooks/useResumeUrl.js";
+import { useResumeUrl } from "../hooks/useResumeUrl";
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);

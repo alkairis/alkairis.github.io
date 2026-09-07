@@ -4,7 +4,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { resolveSocialIcon, socialHref } from "../constants/socialIcons";
-import { useSocialMedia } from "../hooks/resources.js";
+import { useSocialMedia } from "../hooks/resources";
 
 gsap.registerPlugin(ScrollTrigger);
 

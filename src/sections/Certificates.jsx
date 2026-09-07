@@ -5,7 +5,7 @@ import { useGSAP } from "@gsap/react";
 
 import TitleHeader from "../components/TitleHeader";
 import CertificateModal from "../components/CertificateModal";
-import { useCertificates } from "../hooks/resources.js";
+import { useCertificates } from "../hooks/resources";
 import { fallbackCertificates } from "../constants/fallbacks";
 
 gsap.registerPlugin(ScrollTrigger);

@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { useProjects } from "../hooks/resources.js";
-import TitleHeader from "../components/TitleHeader.jsx";
-import ProjectModal from "../components/ProjectModal.jsx";
-import AccordionGallery from "../components/AccordionGallery.jsx";
+import { useProjects } from "../hooks/resources";
+import TitleHeader from "../components/TitleHeader";
+import ProjectModal from "../components/ProjectModal";
+import AccordionGallery from "../components/AccordionGallery";
 
 gsap.registerPlugin(ScrollTrigger);
 

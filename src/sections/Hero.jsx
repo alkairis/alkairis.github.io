@@ -1,17 +1,17 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { resolveSocialIcon, socialHref } from "../constants/socialIcons";
-import { useResumeUrl } from "../hooks/useResumeUrl.js";
-import { useProjects, useSocialMedia } from "../hooks/resources.js";
-import Button from "../components/Button.jsx";
-import Typing from "../components/Typing.jsx";
+import { useResumeUrl } from "../hooks/useResumeUrl";
+import { useProjects, useSocialMedia } from "../hooks/resources";
+import Button from "../components/Button";
+import Typing from "../components/Typing";
 import "../components/hero.css";
-import ExpandableIconButton from "../components/ExpandableIconButton.jsx";
-import DownloadButton from "../components/DownloadButton.jsx";
+import ExpandableIconButton from "../components/ExpandableIconButton";
+import DownloadButton from "../components/DownloadButton";
 
 // The WebGL field is code-split so the three.js chunk only loads when we
 // actually use it (skipped on mobile / reduced-motion / no-WebGL).
 const NoiseInstancedField = lazy(() =>
-  import("../components/NoiseInstancedField.jsx")
+  import("../components/NoiseInstancedField")
 );
 
 const ROLES = ["Senior Software Engineer", "AI & Cloud Builder", "Open to Opportunities"];

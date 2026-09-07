@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faCheck } from "@fortawesome/free-solid-svg-icons";
 
 import TitleHeader from "../components/TitleHeader";
-import { useAbout } from "../hooks/resources.js";
+import { useAbout } from "../hooks/resources";
 import { fallbackAbout } from "../constants/fallbacks";
 
 gsap.registerPlugin(ScrollTrigger);

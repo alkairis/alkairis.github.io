@@ -2,7 +2,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import { useExperience } from "../hooks/resources.js";
+import { useExperience } from "../hooks/resources";
 import { fallbackExperiences } from "../constants/fallbacks";
 import TitleHeader from "../components/TitleHeader";
 import GlowCard from "../components/GlowCard";
