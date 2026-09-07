@@ -2,9 +2,6 @@ import { useMemo, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faClock, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 
 import TitleHeader from "../components/TitleHeader";
 import DownloadButton from "../components/DownloadButton";
@@ -18,8 +15,6 @@ import {
   isContactMethod,
 } from "../constants/socialIcons";
 
-gsap.registerPlugin(ScrollTrigger);
-
 const STATUS = {
   IDLE: "idle",
   LOADING: "loading",
@@ -29,7 +24,6 @@ const STATUS = {
 
 const Contact = () => {
   const formRef = useRef<HTMLFormElement | null>(null);
-  const sectionRef = useRef<HTMLElement | null>(null);
   const [status, setStatus] = useState(STATUS.IDLE);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const resumeUrl = useResumeUrl();
@@ -47,65 +41,6 @@ const Contact = () => {
       })),
     [socials]
   );
-
-  useGSAP(() => {
-    const formPanel = sectionRef.current?.querySelector(".contact-form-panel");
-    const infoPanel = sectionRef.current?.querySelector(".contact-info-panel");
-
-    if (formPanel) {
-      gsap.fromTo(
-        formPanel,
-        { x: -45, opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          duration: 0.85,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 82%",
-          },
-        }
-      );
-    }
-
-    if (infoPanel) {
-      gsap.fromTo(
-        infoPanel,
-        { x: 45, opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          duration: 0.85,
-          ease: "power3.out",
-          delay: 0.15,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 82%",
-          },
-        }
-      );
-    }
-
-    const contactCards = gsap.utils.toArray<HTMLElement>(".contact-method-card", sectionRef.current);
-    if (contactCards.length) {
-      gsap.fromTo(
-        contactCards,
-        { y: 22, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.55,
-          stagger: 0.1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 75%",
-          },
-        }
-      );
-    }
-  }, { scope: sectionRef, dependencies: [contactMethods] });
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -133,7 +68,7 @@ const Contact = () => {
   const isLoading = status === STATUS.LOADING;
 
   return (
-    <section id="contact" ref={sectionRef} className="flex-center section-padding">
+    <section id="contact" className="flex-center section-padding">
       <div className="w-full h-full md:px-10 px-5">
         <TitleHeader
           title="Get in Touch – Let's Connect"
@@ -143,7 +78,7 @@ const Contact = () => {
         <div className="grid-12-cols mt-16">
 
           {/* ── Contact form ── */}
-          <div className="xl:col-span-5 contact-form-panel">
+          <div className="xl:col-span-5 contact-form-panel reveal-left">
             <div className="arctic-glow-card rounded-xl p-8 md:p-10 flex flex-col gap-0">
 
               {status === STATUS.SUCCESS && (
@@ -210,7 +145,7 @@ const Contact = () => {
           </div>
 
           {/* ── Info panel ── */}
-          <div className="xl:col-span-7 flex flex-col justify-center gap-8 contact-info-panel">
+          <div className="xl:col-span-7 flex flex-col justify-center gap-8 contact-info-panel reveal-right">
 
             <div>
               <h3 className="text-3xl md:text-4xl font-semibold text-[#0f172a] leading-tight">
@@ -238,7 +173,7 @@ const Contact = () => {
               )}
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 reveal-stagger">
               {contactMethods.map((m) => (
                 <a
                   key={m.id}

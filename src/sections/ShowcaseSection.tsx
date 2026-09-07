@@ -1,17 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import { useState } from "react";
 import { useProjects } from "../hooks/resources";
 import type { Project } from "../api/api";
 import TitleHeader from "../components/TitleHeader";
 import ProjectModal from "../components/ProjectModal";
 import AccordionGallery from "../components/AccordionGallery";
 
-gsap.registerPlugin(ScrollTrigger);
-
 const AppShowcase = () => {
-  const sectionRef = useRef<HTMLDivElement | null>(null);
 
   // Shared with the hero, which needs the same list to decide whether to
   // render its "View My Work" CTA. One request serves both.
@@ -33,31 +27,6 @@ const AppShowcase = () => {
     alt: project.name,
   }));
 
-  useGSAP(() => {
-    // Fade in section on scroll.
-    gsap.fromTo(
-      sectionRef.current,
-      { opacity: 0, y: 20 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.9,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 85%",
-        },
-      }
-    );
-  }, { scope: sectionRef, dependencies: [projects] });
-
-  // Resolving changes this section's height (and drops it entirely when there
-  // are no projects), which invalidates the ScrollTrigger positions cached by
-  // every section below it. Same reason — and same fix — as the footer.
-  useEffect(() => {
-    if (!loading) ScrollTrigger.refresh();
-  }, [loading]);
-
   // Backend responded with nothing to show: render no section at all rather
   // than a bare heading over empty space. While the (possibly cold) backend is
   // still answering we keep the section mounted with a skeleton, so the hero's
@@ -65,7 +34,7 @@ const AppShowcase = () => {
   if (!loading && projects.length === 0) return null;
 
   return (
-    <div id="work" ref={sectionRef} className="app-showcase">
+    <div id="work" className="app-showcase">
       <div className="w-full h-full md:px-10 px-5 -mt-20">
         <TitleHeader
           title="Project Portfolio"

@@ -1,13 +1,7 @@
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 import { useExperience } from "../hooks/resources";
 import { fallbackExperiences } from "../constants/fallbacks";
 import TitleHeader from "../components/TitleHeader";
 import GlowCard from "../components/GlowCard";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const Experience = () => {
   const { data: experiences, loading } = useExperience();
@@ -17,59 +11,6 @@ const Experience = () => {
   const visibleExperiences = experiences.length
     ? experiences
     : fallbackExperiences;
-
-  useGSAP(() => {
-    gsap.utils.toArray<HTMLElement>(".timeline-card").forEach((card) => {
-      gsap.fromTo(
-        card,
-        { x: -55, opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: card,
-            start: "top 82%",
-          },
-        }
-      );
-    });
-
-    gsap.utils.toArray<HTMLElement>(".timeline-wrapper").forEach((wrapper) => {
-      const line = wrapper.querySelector(".gradient-line");
-      if (!line) return;
-
-      gsap.to(line, {
-        scaleY: 1,
-        transformOrigin: "top top",
-        ease: "none",
-        scrollTrigger: {
-          trigger: wrapper,
-          start: "top 85%",
-          end: "bottom 60%",
-          scrub: true,
-        },
-      });
-    });
-
-    gsap.utils.toArray<HTMLElement>(".expText").forEach((text) => {
-      gsap.fromTo(
-        text,
-        { x: 40, opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: text,
-            start: "top 82%",
-          },
-        }
-      );
-    });
-  }, { dependencies: [visibleExperiences, loading] });
 
   return (
     <section
@@ -104,7 +45,7 @@ const Experience = () => {
           <div className="relative z-50 xl:space-y-32 space-y-10">
             {visibleExperiences.map((card) => (
               <div key={card.id} className="exp-card-wrapper">
-                <div className="xl:w-2/6">
+                <div className="xl:w-2/6 reveal-left">
                   <GlowCard>
                     {card.bannerImage ? (
                       <div>
@@ -124,7 +65,7 @@ const Experience = () => {
                       <div className="timeline" />
                       <div className="gradient-line w-1 h-full" />
                     </div>
-                    <div className="expText flex xl:gap-20 md:gap-10 gap-5 relative z-20">
+                    <div className="expText reveal-right flex xl:gap-20 md:gap-10 gap-5 relative z-20">
                       {card.logo && (
                         <div className="timeline-logo">
                           <img src={card.logo} alt={`${card.company} logo`} />

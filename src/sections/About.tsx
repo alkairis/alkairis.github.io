@@ -1,7 +1,3 @@
-import { useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faCheck } from "@fortawesome/free-solid-svg-icons";
 
@@ -9,10 +5,7 @@ import TitleHeader from "../components/TitleHeader";
 import { useAbout } from "../hooks/resources";
 import { fallbackAbout } from "../constants/fallbacks";
 
-gsap.registerPlugin(ScrollTrigger);
-
 const About = () => {
-  const sectionRef = useRef<HTMLElement | null>(null);
   const { data: about, loading } = useAbout();
 
   // Never leave the section empty: a null/failed response falls back to
@@ -23,59 +16,8 @@ const About = () => {
     .map((p) => p.trim())
     .filter(Boolean);
 
-  useGSAP(() => {
-    const photo = sectionRef.current?.querySelector(".about-photo-panel");
-    if (photo) {
-      gsap.fromTo(
-        photo,
-        { x: -40, opacity: 0, scale: 0.96 },
-        {
-          x: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.9,
-          ease: "power3.out",
-          scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
-        }
-      );
-    }
-
-    const reveals = gsap.utils.toArray<HTMLElement>(".about-reveal", sectionRef.current);
-    if (reveals.length) {
-      gsap.fromTo(
-        reveals,
-        { y: 26, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.7,
-          stagger: 0.12,
-          ease: "power3.out",
-          scrollTrigger: { trigger: sectionRef.current, start: "top 78%" },
-        }
-      );
-    }
-
-    const chips = gsap.utils.toArray<HTMLElement>(".about-highlight", sectionRef.current);
-    if (chips.length) {
-      gsap.fromTo(
-        chips,
-        { y: 18, opacity: 0, scale: 0.9 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.5,
-          stagger: 0.08,
-          ease: "back.out(1.6)",
-          scrollTrigger: { trigger: sectionRef.current, start: "top 68%" },
-        }
-      );
-    }
-  }, { scope: sectionRef, dependencies: [profile, loading] });
-
   return (
-    <section id="about" ref={sectionRef} className="flex-center section-padding">
+    <section id="about" className="flex-center section-padding">
       <div className="about-decor" aria-hidden="true" />
 
       <div className="w-full h-full md:px-10 px-5 relative z-10">
@@ -98,7 +40,7 @@ const About = () => {
         ) : (
           <div className="grid-12-cols mt-16 max-w-[1040px] mx-auto items-center">
             {/* ── Photo ── */}
-            <div className="xl:col-span-5 about-photo-panel">
+            <div className="xl:col-span-5 about-photo-panel reveal-left">
               <div className="about-photo-frame">
                 <span className="about-photo-glow" aria-hidden="true" />
                 <div className="about-photo arctic-glow-card">
@@ -116,7 +58,7 @@ const About = () => {
             </div>
 
             {/* ── Bio ── */}
-            <div className="xl:col-span-7 about-body-panel flex flex-col gap-6">
+            <div className="xl:col-span-7 about-body-panel flex flex-col gap-6 reveal-right">
               {profile.headline && (
                 <h3 className="about-headline about-reveal">
                   {profile.headline}
@@ -139,7 +81,7 @@ const About = () => {
               )}
 
               {profile.highlights.length > 0 && (
-                <ul className="about-highlights">
+                <ul className="about-highlights reveal-stagger reveal-stagger-pop">
                   {profile.highlights.map((item, i) => (
                     <li key={i} className="about-highlight">
                       <FontAwesomeIcon icon={faCheck} className="w-3 h-3" />

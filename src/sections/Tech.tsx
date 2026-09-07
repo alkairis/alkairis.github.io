@@ -1,16 +1,10 @@
-import { useMemo, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import { useMemo } from "react";
 import { useTechnicalSkills } from "../hooks/resources";
 import type { TechnicalSkill } from "../api/api";
 import { fallbackSkills } from "../constants/fallbacks";
 import TitleHeader from "../components/TitleHeader";
 
-gsap.registerPlugin(ScrollTrigger);
-
 const Tech = () => {
-  const gridRef = useRef<HTMLDivElement | null>(null);
   const { data: skills, loading } = useTechnicalSkills();
 
   // Group by skill_type, preserving first-seen order. Fall back to a static
@@ -26,27 +20,6 @@ const Tech = () => {
     }
     return Array.from(map, ([type, items]) => ({ type, items }));
   }, [skills]);
-
-  useGSAP(() => {
-    const panels = gsap.utils.toArray(".skill-group");
-    if (!panels.length) return;
-
-    gsap.fromTo(
-      panels,
-      { y: 40, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.6,
-        stagger: 0.12,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: gridRef.current,
-          start: "top 82%",
-        },
-      }
-    );
-  }, { scope: gridRef, dependencies: [groups, loading] });
 
   return (
     <div id="skills" className="flex-center section-padding">
@@ -72,7 +45,7 @@ const Tech = () => {
             ))}
           </div>
         ) : (
-        <div ref={gridRef} className="skill-groups mt-14">
+        <div className="skill-groups mt-14 reveal-stagger">
           {groups.map(({ type, items }) => (
             <div key={type} className="skill-group">
               <header className="skill-group-head">

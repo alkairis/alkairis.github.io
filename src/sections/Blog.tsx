@@ -1,6 +1,4 @@
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useEffect } from 'react';
 import { faMedium } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TitleHeader from '../components/TitleHeader';
@@ -8,8 +6,6 @@ import { useLoadingTask } from '../context/loadingContext';
 import { useBlogStore } from '../stores/useBlogStore';
 import type { BlogPost } from '../api/api';
 import './blog.css';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const MEDIUM_USERNAME = 'alkairis';
 const MEDIUM_PROFILE_URL = `https://${MEDIUM_USERNAME}.medium.com`;
@@ -25,8 +21,6 @@ const fallbackPosts: BlogPost[] = [
 
 const Blog = () => {
   const { posts, status, error, fetchBlogs } = useBlogStore();
-  const gridRef = useRef<HTMLDivElement | null>(null);
-  const stRef = useRef<gsap.core.Tween | null>(null);
   const loading = status === 'idle' || status === 'loading';
   const visiblePosts = posts.length ? posts : fallbackPosts;
 
@@ -37,34 +31,6 @@ const Blog = () => {
       console.warn('Failed to fetch blogs:', err);
     });
   }, [fetchBlogs]);
-
-  // Animate cards after posts load
-  useEffect(() => {
-    if (loading || !gridRef.current) return;
-
-    const cards = gsap.utils.toArray<HTMLElement>('.blog-card', gridRef.current);
-    if (!cards.length) return;
-
-    stRef.current = gsap.fromTo(
-      cards,
-      { y: 42, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.65,
-        stagger: 0.1,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: gridRef.current,
-          start: 'top 82%',
-        },
-      }
-    );
-
-    return () => {
-      stRef.current?.scrollTrigger?.kill();
-    };
-  }, [loading]);
 
   return (
     <section id="blogs" className="flex-center section-padding">
@@ -82,7 +48,7 @@ const Blog = () => {
           <p className="text-[#839CB5] text-center mt-16">{error}</p>
         )}
 
-        <div ref={gridRef} className="mediacards-grid mt-16">
+        <div className="mediacards-grid mt-16 reveal-stagger">
           {/* Each card is a single <a>. It used to be a div[role="link"] with a
               manual Enter/Space handler wrapping a second, real anchor to the
               same URL — an interactive element inside an interactive element,
