@@ -1,4 +1,40 @@
-import * as brandIcons from "@fortawesome/free-brands-svg-icons";
+import {
+  faBehance,
+  faBitbucket,
+  faBluesky,
+  faCodepen,
+  faDev,
+  faDiscord,
+  faDocker,
+  faDribbble,
+  faFacebook,
+  faFacebookF,
+  faFigma,
+  faGithub,
+  faGithubAlt,
+  faGitlab,
+  faGoogle,
+  faHashnode,
+  faInstagram,
+  faKaggle,
+  faLinkedin,
+  faLinkedinIn,
+  faMastodon,
+  faMedium,
+  faMediumM,
+  faNpm,
+  faOrcid,
+  faReddit,
+  faSlack,
+  faSpotify,
+  faStackOverflow,
+  faTelegram,
+  faThreads,
+  faTwitter,
+  faWhatsapp,
+  faXTwitter,
+  faYoutube,
+} from "@fortawesome/free-brands-svg-icons";
 import {
   faLink,
   faAt,
@@ -10,10 +46,51 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 // The social-media API stores `icon` as a Font Awesome export name, e.g.
-// "faLinkedinIn", "faMedium", "faAt". The full brands pack is imported as a
-// map so any brand icon referenced in the database resolves by name; a small
-// curated set of solid icons covers non-brand contact entries (email, phone,
-// website). This avoids pulling the multi-megabyte solid pack into the bundle.
+// "faLinkedinIn", "faMedium", "faAt".
+//
+// Both packs are imported icon by icon rather than as a namespace. A
+// namespace import plus a computed lookup (brandIcons[name]) is unanalysable
+// by the bundler, so it defeats tree-shaking and ships all 609 brand icons to
+// resolve the handful actually in use. The trade-off is that a platform
+// missing from these maps renders the generic link icon — add its export name
+// here to give it a real one.
+const BRAND_ICONS = {
+  faBehance,
+  faBitbucket,
+  faBluesky,
+  faCodepen,
+  faDev,
+  faDiscord,
+  faDocker,
+  faDribbble,
+  faFacebook,
+  faFacebookF,
+  faFigma,
+  faGithub,
+  faGithubAlt,
+  faGitlab,
+  faGoogle,
+  faHashnode,
+  faInstagram,
+  faKaggle,
+  faLinkedin,
+  faLinkedinIn,
+  faMastodon,
+  faMedium,
+  faMediumM,
+  faNpm,
+  faOrcid,
+  faReddit,
+  faSlack,
+  faSpotify,
+  faStackOverflow,
+  faTelegram,
+  faThreads,
+  faTwitter,
+  faWhatsapp,
+  faXTwitter,
+  faYoutube,
+};
 const SOLID_ICONS = {
   faAt,
   faEnvelope,
@@ -23,11 +100,6 @@ const SOLID_ICONS = {
   faLocationDot,
   faLink,
 };
-
-// A Font Awesome icon definition looks like { prefix, iconName, icon: [...] };
-// the pack module also exports helpers (prefix, fab, ...) that we must skip.
-const isIconDefinition = (value) =>
-  value && typeof value === "object" && Array.isArray(value.icon);
 
 /**
  * Convert an icon token to its Font Awesome export name. Accepts an export
@@ -63,7 +135,7 @@ export const resolveSocialIcon = (icon) => {
   const exportName = toExportName(nameToken);
   if (!exportName) return faLink;
 
-  if (isIconDefinition(brandIcons[exportName])) return brandIcons[exportName];
+  if (BRAND_ICONS[exportName]) return BRAND_ICONS[exportName];
   if (SOLID_ICONS[exportName]) return SOLID_ICONS[exportName];
 
   return faLink;

@@ -1,38 +1,20 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 import TitleHeader from "../components/TitleHeader";
 import CertificateModal from "../components/CertificateModal";
-import { getCertificates } from "../api/api";
+import { useCertificates } from "../hooks/resources.js";
 import { fallbackCertificates } from "../constants/fallbacks";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Certificates = () => {
   const sectionRef = useRef(null);
-  const [certifications, setCertifications] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: certifications, loading } = useCertificates();
   const [activeCert, setActiveCert] = useState(null);
   const [originRect, setOriginRect] = useState(null);
-
-  useEffect(() => {
-    let active = true;
-    getCertificates()
-      .then((data) => {
-        if (active) setCertifications(data);
-      })
-      .catch(() => {
-        if (active) setCertifications([]);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
 
   // Show static credentials rather than an empty grid while the backend cold
   // starts or if it returns nothing.

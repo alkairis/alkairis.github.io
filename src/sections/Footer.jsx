@@ -1,30 +1,16 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { getSocialMedia } from "../api/api";
 import { resolveSocialIcon, socialHref } from "../constants/socialIcons";
+import { useSocialMedia } from "../hooks/resources.js";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Footer = () => {
   const footerRef = useRef(null);
-  const [socials, setSocials] = useState([]);
-
-  useEffect(() => {
-    let active = true;
-    getSocialMedia()
-      .then((data) => {
-        if (active) setSocials(data);
-      })
-      .catch(() => {
-        if (active) setSocials([]);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+  const { data: socials } = useSocialMedia();
 
   const socialImgs = useMemo(
     () =>

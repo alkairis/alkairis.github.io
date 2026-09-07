@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { getBlogs, type ApiError, type BlogPost } from '../api/api';
+import { getBlogs, type BlogPost } from '../api/api';
 
 type AsyncStatus = 'idle' | 'loading' | 'success' | 'error';
 
@@ -18,19 +18,10 @@ type BlogStore = {
 
 let activeBlogRequest: Promise<BlogPost[]> | null = null;
 
-const getApiErrorMessage = (error: unknown): string => {
-  if (!error || typeof error !== 'object') {
-    return 'Blog posts are temporarily unavailable.';
-  }
-
-  const apiError = error as Partial<ApiError>;
-
-  if (apiError.isNetworkError) {
-    return 'Blog posts are temporarily unavailable.';
-  }
-
-  return apiError.message || 'Blog posts are temporarily unavailable.';
-};
+// One plain sentence for visitors. The underlying axios text ("Request failed
+// with status code 500") was being rendered straight into the page, which is
+// console material, not something to show someone reading the site.
+const BLOG_ERROR_MESSAGE = 'Blog posts are temporarily unavailable.';
 
 export const useBlogStore = create<BlogStore>((set, get) => ({
   posts: [],
@@ -63,8 +54,7 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
         return blogPosts;
       })
       .catch((error: unknown) => {
-        const message = getApiErrorMessage(error);
-        set({ status: 'error', error: message });
+        set({ status: 'error', error: BLOG_ERROR_MESSAGE });
         throw error;
       })
       .finally(() => {

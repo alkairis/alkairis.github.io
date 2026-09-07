@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { getTechnicalSkills } from "../api/api";
+import { useTechnicalSkills } from "../hooks/resources.js";
 import { fallbackSkills } from "../constants/fallbacks";
 import TitleHeader from "../components/TitleHeader.jsx";
 
@@ -10,25 +10,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Tech = () => {
   const gridRef = useRef(null);
-  const [skills, setSkills] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let active = true;
-    getTechnicalSkills()
-      .then((data) => {
-        if (active) setSkills(data);
-      })
-      .catch(() => {
-        if (active) setSkills([]);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+  const { data: skills, loading } = useTechnicalSkills();
 
   // Group by skill_type, preserving first-seen order. Fall back to a static
   // toolkit when the (possibly cold) backend returns nothing, so the section
