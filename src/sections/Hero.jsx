@@ -137,11 +137,8 @@ const Hero = () => {
           {socialImgs.map((s) => (
             <ExpandableIconButton
               key={s.name}
-              variant="icon"
               href={s.link}
-              target={"_blank"}
-              rel="noopener noreferrer"
-              aria-label={s.name}
+              target="_blank"
               text={s.name}
               icon={s.icon}
             />

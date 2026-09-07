@@ -102,10 +102,10 @@ const Experience = () => {
             </div>
           ) : (
           <div className="relative z-50 xl:space-y-32 space-y-10">
-            {visibleExperiences.map((card, index) => (
+            {visibleExperiences.map((card) => (
               <div key={card.id} className="exp-card-wrapper">
                 <div className="xl:w-2/6">
-                  <GlowCard index={index}>
+                  <GlowCard>
                     {card.bannerImage ? (
                       <div>
                         <img src={card.bannerImage} alt={`${card.company} banner`} />

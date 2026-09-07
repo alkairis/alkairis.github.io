@@ -1,5 +1,20 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import clsx from "clsx";
+import type { MouseEvent } from "react";
+import type { IconProp } from "@fortawesome/fontawesome-svg-core";
+
+type ExpandableIconButtonProps = {
+  /** Icon definition, e.g. from resolveSocialIcon(). */
+  icon: IconProp;
+  /** Label revealed on hover. Also used as the accessible name. */
+  text: string;
+  /** Renders an <a> when set, a <button> otherwise. */
+  href?: string;
+  onClick?: (event: MouseEvent<HTMLElement>) => void;
+  target?: string;
+  className?: string;
+  iconClassName?: string;
+};
 
 const ExpandableIconButton = ({
   icon,
@@ -9,7 +24,7 @@ const ExpandableIconButton = ({
   target,
   className = "",
   iconClassName = "",
-}) => {
+}: ExpandableIconButtonProps) => {
   const Component = href ? "a" : "button";
 
   return (
@@ -17,6 +32,7 @@ const ExpandableIconButton = ({
       href={href}
       onClick={onClick}
       target={target}
+      type={href ? undefined : "button"}
       rel={target === "_blank" ? "noopener noreferrer" : undefined}
       aria-label={text}
       className={clsx(

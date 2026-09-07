@@ -1,6 +1,17 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import clsx from "clsx";
+import type { MouseEvent } from "react";
+import type { ButtonVariant } from "../types/ui";
+
+type DownloadButtonProps = {
+  variant?: ButtonVariant;
+  text?: string;
+  /** URL of the file to download. Renders an <a> when set, a <button> otherwise. */
+  href?: string;
+  onClick?: (event: MouseEvent<HTMLElement>) => void;
+  className?: string;
+};
 
 const DownloadButton = ({
   variant = "primary",
@@ -8,7 +19,7 @@ const DownloadButton = ({
   href,
   onClick,
   className = "",
-}) => {
+}: DownloadButtonProps) => {
   const Component = href ? "a" : "button";
 
   return (
@@ -16,6 +27,9 @@ const DownloadButton = ({
       href={href}
       onClick={onClick}
       download
+      // A <button> defaults to type="submit"; harmless on the anchor branch,
+      // and it stops the button branch submitting any form it sits in.
+      type={href ? undefined : "button"}
       className={clsx(
         `
         group

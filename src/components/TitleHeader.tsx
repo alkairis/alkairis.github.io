@@ -5,8 +5,17 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const TitleHeader = ({ title, sub, subtitle }) => {
-  const containerRef = useRef(null);
+type TitleHeaderProps = {
+  /** Section heading. Rendered as an h2 — the hero owns the page's only h1. */
+  title?: string;
+  /** Small badge line above the heading. */
+  sub?: string;
+  /** Optional supporting line below the heading. */
+  subtitle?: string;
+};
+
+const TitleHeader = ({ title, sub, subtitle }: TitleHeaderProps) => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useGSAP(() => {
     const els = containerRef.current?.querySelectorAll(".th-anim");
