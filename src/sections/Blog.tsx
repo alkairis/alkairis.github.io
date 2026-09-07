@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TitleHeader from '../components/TitleHeader';
 import { useLoadingTask } from '../context/LoadingContext';
 import { useBlogStore } from '../stores/useBlogStore';
+import type { BlogPost } from '../api/api';
 import './blog.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -13,7 +14,7 @@ gsap.registerPlugin(ScrollTrigger);
 const MEDIUM_USERNAME = 'alkairis';
 const MEDIUM_PROFILE_URL = `https://${MEDIUM_USERNAME}.medium.com`;
 
-const fallbackPosts = [
+const fallbackPosts: BlogPost[] = [
   {
     title: 'Read my latest posts on Medium',
     link: MEDIUM_PROFILE_URL,
@@ -24,8 +25,8 @@ const fallbackPosts = [
 
 const Blog = () => {
   const { posts, status, error, fetchBlogs } = useBlogStore();
-  const gridRef = useRef(null);
-  const stRef = useRef(null);
+  const gridRef = useRef<HTMLDivElement | null>(null);
+  const stRef = useRef<gsap.core.Tween | null>(null);
   const loading = status === 'idle' || status === 'loading';
   const visiblePosts = posts.length ? posts : fallbackPosts;
 
@@ -41,7 +42,7 @@ const Blog = () => {
   useEffect(() => {
     if (loading || !gridRef.current) return;
 
-    const cards = gsap.utils.toArray('.blog-card', gridRef.current);
+    const cards = gsap.utils.toArray<HTMLElement>('.blog-card', gridRef.current);
     if (!cards.length) return;
 
     stRef.current = gsap.fromTo(

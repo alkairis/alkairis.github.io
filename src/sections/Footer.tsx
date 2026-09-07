@@ -9,7 +9,7 @@ import { useSocialMedia } from "../hooks/resources";
 gsap.registerPlugin(ScrollTrigger);
 
 const Footer = () => {
-  const footerRef = useRef(null);
+  const footerRef = useRef<HTMLElement | null>(null);
   const { data: socials } = useSocialMedia();
 
   const socialImgs = useMemo(

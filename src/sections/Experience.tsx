@@ -19,7 +19,7 @@ const Experience = () => {
     : fallbackExperiences;
 
   useGSAP(() => {
-    gsap.utils.toArray(".timeline-card").forEach((card) => {
+    gsap.utils.toArray<HTMLElement>(".timeline-card").forEach((card) => {
       gsap.fromTo(
         card,
         { x: -55, opacity: 0 },
@@ -36,7 +36,7 @@ const Experience = () => {
       );
     });
 
-    gsap.utils.toArray(".timeline-wrapper").forEach((wrapper) => {
+    gsap.utils.toArray<HTMLElement>(".timeline-wrapper").forEach((wrapper) => {
       const line = wrapper.querySelector(".gradient-line");
       if (!line) return;
 
@@ -53,7 +53,7 @@ const Experience = () => {
       });
     });
 
-    gsap.utils.toArray(".expText").forEach((text) => {
+    gsap.utils.toArray<HTMLElement>(".expText").forEach((text) => {
       gsap.fromTo(
         text,
         { x: 40, opacity: 0 },

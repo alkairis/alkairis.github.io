@@ -68,7 +68,7 @@ const Hero = () => {
   // The swap is now driven by state, and the fade timeout is cleared on
   // unmount instead of being left to fire against a gone component.
   useEffect(() => {
-    let fadeTimer;
+    let fadeTimer: ReturnType<typeof setTimeout>;
 
     const cycleRole = () => {
       setRoleShown(false);

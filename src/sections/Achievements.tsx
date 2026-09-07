@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import type { KeyboardEvent, MouseEvent } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -6,6 +7,8 @@ import { useGSAP } from "@gsap/react";
 import TitleHeader from "../components/TitleHeader";
 import ProjectModal from "../components/ProjectModal";
 import { useRecognitionStore } from "../stores/useRecognitionStore";
+import type { Recognition } from "../api/api";
+import type { ModalProject } from "../types/ui";
 import {
   fallbackRecognitionStats,
   fallbackRecognitions,
@@ -15,7 +18,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 // Map a recognition entry onto the shape ProjectModal expects so it reuses the
 // exact same morphing modal as the Projects section.
-const toModalProject = (card) => ({
+const toModalProject = (card: Recognition): ModalProject => ({
   id: card.id,
   name: card.title,
   description: card.description,
@@ -25,9 +28,9 @@ const toModalProject = (card) => ({
 });
 
 const Achievements = () => {
-  const sectionRef = useRef(null);
-  const [activeCard, setActiveCard] = useState(null);
-  const [originRect, setOriginRect] = useState(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [activeCard, setActiveCard] = useState<ModalProject | null>(null);
+  const [originRect, setOriginRect] = useState<DOMRect | null>(null);
 
   const stats = useRecognitionStore((state) => state.stats);
   const cards = useRecognitionStore((state) => state.cards);
@@ -46,19 +49,22 @@ const Achievements = () => {
   const visibleStats = stats.length ? stats : fallbackRecognitionStats;
   const visibleCards = cards.length ? cards : fallbackRecognitions;
 
-  const openCard = (card, e) => {
+  const openCard = (
+    card: Recognition,
+    e: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>
+  ) => {
     setOriginRect(e.currentTarget.getBoundingClientRect());
     setActiveCard(toModalProject(card));
   };
 
   // Click + keyboard accessibility, mirroring the Projects showcase cards.
-  const blockProps = (card) => ({
-    role: "button",
+  const blockProps = (card: Recognition) => ({
+    role: "button" as const,
     tabIndex: 0,
-    "aria-haspopup": "dialog",
+    "aria-haspopup": "dialog" as const,
     "aria-label": `View details for ${card.title}`,
-    onClick: (e) => openCard(card, e),
-    onKeyDown: (e) => {
+    onClick: (e: MouseEvent<HTMLElement>) => openCard(card, e),
+    onKeyDown: (e: KeyboardEvent<HTMLElement>) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         openCard(card, e);
@@ -67,7 +73,7 @@ const Achievements = () => {
   });
 
   useGSAP(() => {
-    gsap.utils.toArray(".recog-stat").forEach((el, i) => {
+    gsap.utils.toArray<HTMLElement>(".recog-stat").forEach((el, i) => {
       gsap.fromTo(
         el,
         { y: 32, opacity: 0 },
@@ -82,7 +88,7 @@ const Achievements = () => {
       );
     });
 
-    gsap.utils.toArray(".recog-block").forEach((el) => {
+    gsap.utils.toArray<HTMLElement>(".recog-block").forEach((el) => {
       gsap.fromTo(
         el,
         { x: -45, opacity: 0 },

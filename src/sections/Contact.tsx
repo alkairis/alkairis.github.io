@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faClock, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { gsap } from "gsap";
@@ -27,8 +28,8 @@ const STATUS = {
 };
 
 const Contact = () => {
-  const formRef = useRef(null);
-  const sectionRef = useRef(null);
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const [status, setStatus] = useState(STATUS.IDLE);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const resumeUrl = useResumeUrl();
@@ -86,7 +87,7 @@ const Contact = () => {
       );
     }
 
-    const contactCards = gsap.utils.toArray(".contact-method-card", sectionRef.current);
+    const contactCards = gsap.utils.toArray<HTMLElement>(".contact-method-card", sectionRef.current);
     if (contactCards.length) {
       gsap.fromTo(
         contactCards,
@@ -106,12 +107,14 @@ const Contact = () => {
     }
   }, { scope: sectionRef, dependencies: [contactMethods] });
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus(STATUS.LOADING);
 

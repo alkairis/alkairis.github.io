@@ -12,7 +12,7 @@ import { fallbackAbout } from "../constants/fallbacks";
 gsap.registerPlugin(ScrollTrigger);
 
 const About = () => {
-  const sectionRef = useRef(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const { data: about, loading } = useAbout();
 
   // Never leave the section empty: a null/failed response falls back to
@@ -40,7 +40,7 @@ const About = () => {
       );
     }
 
-    const reveals = gsap.utils.toArray(".about-reveal", sectionRef.current);
+    const reveals = gsap.utils.toArray<HTMLElement>(".about-reveal", sectionRef.current);
     if (reveals.length) {
       gsap.fromTo(
         reveals,
@@ -56,7 +56,7 @@ const About = () => {
       );
     }
 
-    const chips = gsap.utils.toArray(".about-highlight", sectionRef.current);
+    const chips = gsap.utils.toArray<HTMLElement>(".about-highlight", sectionRef.current);
     if (chips.length) {
       gsap.fromTo(
         chips,

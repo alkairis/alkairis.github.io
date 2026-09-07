@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useProjects } from "../hooks/resources";
+import type { Project } from "../api/api";
 import TitleHeader from "../components/TitleHeader";
 import ProjectModal from "../components/ProjectModal";
 import AccordionGallery from "../components/AccordionGallery";
@@ -10,15 +11,15 @@ import AccordionGallery from "../components/AccordionGallery";
 gsap.registerPlugin(ScrollTrigger);
 
 const AppShowcase = () => {
-  const sectionRef = useRef(null);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
 
   // Shared with the hero, which needs the same list to decide whether to
   // render its "View My Work" CTA. One request serves both.
   const { data: projects, loading } = useProjects();
-  const [activeProject, setActiveProject] = useState(null);
-  const [originRect, setOriginRect] = useState(null);
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
+  const [originRect, setOriginRect] = useState<DOMRect | null>(null);
 
-  const openProject = (project, rect) => {
+  const openProject = (project: Project, rect: DOMRect) => {
     setOriginRect(rect);
     setActiveProject(project);
   };

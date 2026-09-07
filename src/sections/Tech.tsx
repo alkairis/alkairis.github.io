@@ -3,13 +3,14 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useTechnicalSkills } from "../hooks/resources";
+import type { TechnicalSkill } from "../api/api";
 import { fallbackSkills } from "../constants/fallbacks";
 import TitleHeader from "../components/TitleHeader";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Tech = () => {
-  const gridRef = useRef(null);
+  const gridRef = useRef<HTMLDivElement | null>(null);
   const { data: skills, loading } = useTechnicalSkills();
 
   // Group by skill_type, preserving first-seen order. Fall back to a static
@@ -17,10 +18,11 @@ const Tech = () => {
   // is never blank.
   const groups = useMemo(() => {
     const source = skills.length ? skills : fallbackSkills;
-    const map = new Map();
+    const map = new Map<string, TechnicalSkill[]>();
     for (const skill of source) {
-      if (!map.has(skill.skill_type)) map.set(skill.skill_type, []);
-      map.get(skill.skill_type).push(skill);
+      const group = map.get(skill.skill_type);
+      if (group) group.push(skill);
+      else map.set(skill.skill_type, [skill]);
     }
     return Array.from(map, ([type, items]) => ({ type, items }));
   }, [skills]);

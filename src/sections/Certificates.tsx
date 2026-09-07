@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import type { KeyboardEvent, MouseEvent } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -6,15 +7,16 @@ import { useGSAP } from "@gsap/react";
 import TitleHeader from "../components/TitleHeader";
 import CertificateModal from "../components/CertificateModal";
 import { useCertificates } from "../hooks/resources";
+import type { Certificate } from "../api/api";
 import { fallbackCertificates } from "../constants/fallbacks";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Certificates = () => {
-  const sectionRef = useRef(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const { data: certifications, loading } = useCertificates();
-  const [activeCert, setActiveCert] = useState(null);
-  const [originRect, setOriginRect] = useState(null);
+  const [activeCert, setActiveCert] = useState<Certificate | null>(null);
+  const [originRect, setOriginRect] = useState<DOMRect | null>(null);
 
   // Show static credentials rather than an empty grid while the backend cold
   // starts or if it returns nothing.
@@ -22,18 +24,21 @@ const Certificates = () => {
     ? certifications
     : fallbackCertificates;
 
-  const openCert = (cert, e) => {
+  const openCert = (
+    cert: Certificate,
+    e: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>
+  ) => {
     setOriginRect(e.currentTarget.getBoundingClientRect());
     setActiveCert(cert);
   };
 
-  const cardProps = (cert) => ({
-    role: "button",
+  const cardProps = (cert: Certificate) => ({
+    role: "button" as const,
     tabIndex: 0,
-    "aria-haspopup": "dialog",
+    "aria-haspopup": "dialog" as const,
     "aria-label": `View details for ${cert.name}`,
-    onClick: (e) => openCert(cert, e),
-    onKeyDown: (e) => {
+    onClick: (e: MouseEvent<HTMLElement>) => openCert(cert, e),
+    onKeyDown: (e: KeyboardEvent<HTMLElement>) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         openCert(cert, e);
@@ -42,7 +47,7 @@ const Certificates = () => {
   });
 
   useGSAP(() => {
-    gsap.utils.toArray(".cert-card").forEach((el, i) => {
+    gsap.utils.toArray<HTMLElement>(".cert-card").forEach((el, i) => {
       gsap.fromTo(
         el,
         { y: 34, opacity: 0 },
