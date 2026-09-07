@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useScrollLock } from "../hooks/useScrollLock";
 import "./cornerPreloader.css";
 
 const STORAGE_KEY = "alkairis-preloader-seen";
@@ -28,6 +29,9 @@ const CornerPreloader = ({ isLoading = false }) => {
     return !reduced && !seen;
   });
 
+  // Hold scroll through the shared lock for as long as the loader covers the page.
+  useScrollLock(visible);
+
   useEffect(() => {
     if (!visible) return;
 
@@ -36,8 +40,6 @@ const CornerPreloader = ({ isLoading = false }) => {
     } catch {
       /* ignore */
     }
-
-    document.body.style.overflow = "hidden";
 
     const root = rootRef.current;
     const count = root.querySelector(".pre-count");
@@ -94,7 +96,6 @@ const CornerPreloader = ({ isLoading = false }) => {
     return () => {
       cancelAnimationFrame(rafId);
       timers.forEach(clearTimeout);
-      document.body.style.overflow = "";
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible]);

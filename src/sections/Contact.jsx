@@ -176,7 +176,7 @@ const Contact = () => {
                   <label htmlFor="message">Your Message</label>
                   <textarea id="message" name="message" value={form.message}
                     onChange={handleChange} placeholder="How can I help you?"
-                    rows="5" required disabled={isLoading} />
+                    rows={5} required disabled={isLoading} />
                 </div>
 
                 <button

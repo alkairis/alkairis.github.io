@@ -82,23 +82,19 @@ const Blog = () => {
         )}
 
         <div ref={gridRef} className="mediacards-grid mt-16">
-          {visiblePosts.map((post, index) => {
-            const openPost = () =>
-              window.open(post.link, '_blank', 'noopener,noreferrer');
-            return (
-              <div
-                key={index}
+          {/* Each card is a single <a>. It used to be a div[role="link"] with a
+              manual Enter/Space handler wrapping a second, real anchor to the
+              same URL — an interactive element inside an interactive element,
+              which is both invalid and a focus-order trap. One anchor gives
+              keyboard activation, a focus ring and the correct announcement
+              for free, and the icon below is now decorative. */}
+          {visiblePosts.map((post) => (
+              <a
+                key={post.link}
                 className="blog-card mediacard"
-                role="link"
-                tabIndex={0}
-                aria-label={post.title}
-                onClick={openPost}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    openPost();
-                  }
-                }}
+                href={post.link}
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <div className="mediacard-hero">
                   {post.image && <img src={post.image} alt={post.title} loading="lazy" />}
@@ -120,21 +116,13 @@ const Blog = () => {
                         </span>
                       ))}
                     </div>
-                    <a
-                      className="mediacard-icon-btn"
-                      href={post.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Read on Medium"
-                      onClick={(e) => e.stopPropagation()}
-                    >
+                    <span className="mediacard-icon-btn" aria-hidden="true">
                       <FontAwesomeIcon icon={faMedium} />
-                    </a>
+                    </span>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              </a>
+          ))}
         </div>
       </div>
     </section>

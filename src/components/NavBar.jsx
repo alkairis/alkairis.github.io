@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import { navLinks } from "../constants/";
 import { useResumeUrl } from "../hooks/useResumeUrl";
+import { useScrollLock } from "../hooks/useScrollLock";
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -17,13 +18,9 @@ const NavBar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Lock body scroll when mobile menu is open
-  useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [menuOpen]);
+  // Lock body scroll when the mobile menu is open. Shared, reference-counted
+  // lock — a modal opened on top of the drawer must not clear it on close.
+  useScrollLock(menuOpen);
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -56,7 +53,9 @@ const NavBar = () => {
                 download
                 target="_blank"
                 rel="noopener noreferrer"
-                className="contact-btn group hidden sm:flex"
+                className={`contact-btn group hidden sm:flex ${
+                  menuOpen ? "max-lg:!hidden" : ""
+                }`}
                 aria-label="Download CV"
               >
                 <div className="inner flex items-center gap-2">
@@ -69,7 +68,13 @@ const NavBar = () => {
               </a>
             )}
 
-            <a href="#contact" className="contact-btn group">
+            {/* Hidden while the drawer is open: the header now sits above the
+                drawer (so its close button stays tappable), which would
+                otherwise leave two "Contact me" CTAs on screen at once. */}
+            <a
+              href="#contact"
+              className={`contact-btn group ${menuOpen ? "max-lg:!hidden" : ""}`}
+            >
               <div className="inner">
                 <span>Contact me</span>
               </div>
@@ -77,6 +82,7 @@ const NavBar = () => {
 
             {/* Hamburger — mobile only */}
             <button
+              type="button"
               className="lg:hidden flex flex-col justify-center items-center gap-[5px] w-8 h-8 z-[110] relative"
               onClick={() => setMenuOpen((prev) => !prev)}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
@@ -112,8 +118,14 @@ const NavBar = () => {
       />
 
       {/* Mobile drawer panel */}
+      {/* z-[95], below the header's z-[100]. The header creates its own stacking
+          context, so the hamburger's z-[110] is scoped inside it and cannot rise
+          above this drawer — at z-[100] the drawer painted over the very button
+          that closes it, leaving the backdrop as the only way out on mobile.
+          The drawer's pt-24 already clears the header, so ordering it underneath
+          is what the layout expects. */}
       <nav
-        className={`fixed top-0 right-0 h-full w-72 z-[100] border-l
+        className={`fixed top-0 right-0 h-full w-72 z-[95] border-l
           flex flex-col pt-24 pb-10 px-8 gap-8 transition-transform duration-300 ease-in-out lg:hidden
           ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
         style={{

@@ -8,7 +8,6 @@ import ShowcaseSection from "./sections/ShowcaseSection";
 import Navbar from "./components/NavBar";
 import Tech from "./sections/Tech";
 import Blog from "./sections/Blog";
-import ChatBot from "./components/ChatBot";
 import CornerPreloader from "./components/CornerPreloader";
 import CustomCursor from "./components/CustomCursor";
 import { LoadingProvider, useAppLoading } from "./context/LoadingContext";
@@ -77,7 +76,9 @@ const AppContent = () => {
         <Footer />
       </div>
 
-      {/* <ChatBot /> */}
+      {/* ChatBot is built but not shipped: it needs VITE_CHATBOT_API_URL and a
+          backend to answer. Re-enable by importing ./components/ChatBot and
+          rendering it here. */}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { resolveSocialIcon, socialHref } from "../constants/socialIcons";
 import { useResumeUrl } from "../hooks/useResumeUrl";
 import { useProjects, useSocialMedia } from "../hooks/resources";
@@ -31,9 +31,8 @@ const canUseWebGL = () => {
 };
 
 const Hero = () => {
-  const roleRef = useRef(null);
-  const roleIndexRef = useRef(0);
-  const roleTimerRef = useRef(null);
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [roleShown, setRoleShown] = useState(true);
   const [useField, setUseField] = useState(false);
   // Backend-managed resume URL, shared across every resume CTA on the page.
   const resumeUrl = useResumeUrl();
@@ -63,24 +62,27 @@ const Hero = () => {
     [socials]
   );
 
+  // Role cycling with a fade. This used to write el.textContent directly into
+  // a node React renders, which only worked because nothing else re-rendered
+  // the hero — any future re-render would have reverted the label mid-cycle.
+  // The swap is now driven by state, and the fade timeout is cleared on
+  // unmount instead of being left to fire against a gone component.
   useEffect(() => {
-    // Role cycling with fade
+    let fadeTimer;
+
     const cycleRole = () => {
-      const el = roleRef.current;
-      if (!el) return;
-      el.style.opacity = "0";
-      el.style.transform = "translateY(6px)";
-      setTimeout(() => {
-        roleIndexRef.current = (roleIndexRef.current + 1) % ROLES.length;
-        el.textContent = ROLES[roleIndexRef.current];
-        el.style.opacity = "1";
-        el.style.transform = "translateY(0)";
+      setRoleShown(false);
+      fadeTimer = setTimeout(() => {
+        setRoleIndex((prev) => (prev + 1) % ROLES.length);
+        setRoleShown(true);
       }, 350);
     };
-    roleTimerRef.current = setInterval(cycleRole, 3000);
+
+    const interval = setInterval(cycleRole, 3000);
 
     return () => {
-      clearInterval(roleTimerRef.current);
+      clearInterval(interval);
+      clearTimeout(fadeTimer);
     };
   }, []);
 
@@ -102,7 +104,20 @@ const Hero = () => {
         {/* Status badge */}
         <div className="h-badge h-in" style={{ animationDelay: "0ms" }}>
           <span className="h-dot" />
-          <span ref={roleRef} className="h-role">{ROLES[0]}</span>
+          {/* The visible label is hidden from assistive tech: a live region
+              cycling every 3 seconds would interrupt a screen reader forever.
+              The full list is exposed once, statically, instead. */}
+          <span
+            className="h-role"
+            aria-hidden="true"
+            style={{
+              opacity: roleShown ? 1 : 0,
+              transform: roleShown ? "translateY(0)" : "translateY(6px)",
+            }}
+          >
+            {ROLES[roleIndex]}
+          </span>
+          <span className="sr-only">{ROLES.join(". ")}</span>
         </div>
 
         {/* Name */}
@@ -121,7 +136,14 @@ const Hero = () => {
 
         {/* CTAs */}
         <div className="h-ctas h-in" style={{ animationDelay: "360ms" }}>
-          <DownloadButton href={resumeUrl} text="Download CV" />
+          {/* useResumeUrl returns "" until the backend answers. Keep the CTA in
+              place (hiding it would shift the hero on load) but inert, so it
+              never looks clickable while there is nothing to download. */}
+          <DownloadButton
+            href={resumeUrl}
+            text="Download CV"
+            disabled={!resumeUrl}
+          />
           {hasProjects && (
             <Button variant="outline" scrollTo="work">
               View My Work

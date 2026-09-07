@@ -11,6 +11,11 @@ type DownloadButtonProps = {
   href?: string;
   onClick?: (event: MouseEvent<HTMLElement>) => void;
   className?: string;
+  /**
+   * Renders the CTA visibly inert. Use while `href` is still resolving so the
+   * button keeps its place in the layout instead of popping in.
+   */
+  disabled?: boolean;
 };
 
 const DownloadButton = ({
@@ -19,12 +24,13 @@ const DownloadButton = ({
   href,
   onClick,
   className = "",
+  disabled = false,
 }: DownloadButtonProps) => {
   // useResumeUrl returns "" until the backend answers, and Hero renders this
   // CTA unconditionally. Passing that straight through produced React's
   // "empty string was passed to the href attribute" warning on every load, so
   // the attribute is omitted entirely rather than sent as "".
-  const isLink = Boolean(href);
+  const isLink = Boolean(href) && !disabled;
 
   const Component = isLink ? "a" : "button";
 
@@ -36,6 +42,8 @@ const DownloadButton = ({
       // A <button> defaults to type="submit"; harmless on the anchor branch,
       // and it stops the button branch submitting any form it sits in.
       type={isLink ? undefined : "button"}
+      disabled={isLink ? undefined : disabled}
+      aria-disabled={disabled || undefined}
       className={clsx(
         `
         group
@@ -52,6 +60,7 @@ const DownloadButton = ({
 
         active:scale-95
       `,
+        disabled && "opacity-50 cursor-not-allowed pointer-events-none",
         className
       )}
     >

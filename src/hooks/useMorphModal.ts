@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
 import { gsap } from "gsap";
+import { useScrollLock } from "./useScrollLock";
 import type { ModalAnimationVariant, ModalSpeed } from "../types/ui";
 
 const SPEED_MS: Record<ModalSpeed, number> = { slow: 700, normal: 460, fast: 280 };
@@ -177,10 +178,13 @@ export const useMorphModal = <T,>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [render]);
 
-  // Lock body scroll + Escape handling and focus trap while the modal is open.
+  // Body scroll is held through the shared reference-counted lock so a modal
+  // opened over the mobile nav drawer doesn't fight it for ownership.
+  useScrollLock(Boolean(render));
+
+  // Escape handling and focus trap while the modal is open.
   useEffect(() => {
     if (!render) return;
-    document.body.style.overflow = "hidden";
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && closeOnEscape) {
@@ -214,7 +218,6 @@ export const useMorphModal = <T,>({
     window.addEventListener("keydown", onKeyDown);
 
     return () => {
-      document.body.style.overflow = "";
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [render, closeOnEscape, close]);
