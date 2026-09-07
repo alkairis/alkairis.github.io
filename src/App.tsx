@@ -10,19 +10,20 @@ import Tech from "./sections/Tech";
 import Blog from "./sections/Blog";
 import CornerPreloader from "./components/CornerPreloader";
 import CustomCursor from "./components/CustomCursor";
-import { LoadingProvider, useAppLoading } from "./context/LoadingContext";
+import { LoadingProvider } from "./context/LoadingProvider";
+import { useAppLoading } from "./context/loadingContext";
 import Certificates from "./sections/Certificates";
 import Achievements from "./sections/Achievements";
 
 const AppContent = () => {
   const { isLoading } = useAppLoading();
-  const orbRef = useRef(null);
+  const orbRef = useRef<HTMLDivElement | null>(null);
   const mouseRef = useRef({ x: 0.5, y: 0.5 });
   const posRef = useRef({ x: 0.5, y: 0.5 });
-  const rafRef = useRef(null);
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const onMove = (e) => {
+    const onMove = (e: MouseEvent) => {
       mouseRef.current.x = e.clientX / window.innerWidth;
       mouseRef.current.y = e.clientY / window.innerHeight;
     };
@@ -46,7 +47,7 @@ const AppContent = () => {
 
     return () => {
       window.removeEventListener("mousemove", onMove);
-      cancelAnimationFrame(rafRef.current);
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
   }, []);
 

@@ -112,7 +112,7 @@ const toExportName = (token: string): string => {
   if (/^fa[A-Z]/.test(token)) return token;
   const parts = token.replace(/^fa-/, "").split("-").filter(Boolean);
   if (!parts.length) return "";
-  return "fa" + parts.map((p) => p[0].toUpperCase() + p.slice(1)).join("");
+  return "fa" + parts.map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join("");
 };
 
 /**

@@ -14,9 +14,9 @@ export type UseMorphModalOptions<T> = {
   /** The record to display, or null when closed. */
   item: T | null;
   /** DOMRect of the clicked card — the origin the panel morphs out of. */
-  originRect?: DOMRect | null;
+  originRect?: DOMRect | null | undefined;
   /** Called once the exit animation completes. */
-  onClose?: () => void;
+  onClose?: (() => void) | undefined;
   variant?: ModalAnimationVariant;
   speed?: ModalSpeed;
   closeOnEscape?: boolean;

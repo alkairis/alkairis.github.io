@@ -4,7 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { faMedium } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TitleHeader from '../components/TitleHeader';
-import { useLoadingTask } from '../context/LoadingContext';
+import { useLoadingTask } from '../context/loadingContext';
 import { useBlogStore } from '../stores/useBlogStore';
 import type { BlogPost } from '../api/api';
 import './blog.css';

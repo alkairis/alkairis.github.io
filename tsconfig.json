@@ -4,13 +4,11 @@
   // actually enforces them — it runs in CI on every push. No emit happens
   // here; Vite still owns the build.
   //
-  // MIGRATION BRIDGE (remove once src/ has no .js/.jsx left):
-  //   allowJs + checkJs:false let an already-converted .tsx import a module
-  //   that is still .jsx. Without it the first converted component fails to
-  //   resolve its not-yet-converted imports and CI goes red, which would force
-  //   the whole migration into one unreviewable commit. The .jsx files are
-  //   resolved and inferred, never type-checked, so they cost nothing until
-  //   they're converted.
+  // allowJs is still on for one file: src/components/splashCursor.js, the
+  // vendored WebGL fluid simulation. Its contract is declared by hand in
+  // splashCursor.d.ts, so the app's typed surface is complete without
+  // annotating a thousand lines of third-party shader code. checkJs stays off
+  // so that file is resolved but never checked.
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
@@ -24,6 +22,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
 
     "allowJs": true,
     "checkJs": false,

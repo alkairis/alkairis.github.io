@@ -14,8 +14,8 @@ export default [
     },
   },
   {
-    // Plain JS/JSX. Shrinks as the migration proceeds; delete this block once
-    // src/ has no .js/.jsx left.
+    // Only src/components/splashCursor.js remains: vendored WebGL, kept as JS on
+    // purpose. Config files land here too.
     files: ['**/*.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 2020,
@@ -41,8 +41,7 @@ export default [
     },
   },
   {
-    // TypeScript. These files were previously matched by no block at all, so
-    // api.ts and the stores shipped unlinted.
+    // TypeScript — now the whole application.
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,

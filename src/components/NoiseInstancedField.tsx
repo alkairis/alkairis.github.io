@@ -91,17 +91,21 @@ function Field({ cols, rows, spacing, pointer, rotation }: FieldProps) {
     const cHigh = new THREE.Color("#7dd3fc");
     const tmp = new THREE.Color();
 
+    // noUncheckedIndexedAccess types every typed-array read as number|undefined.
+    // These loops run i < count over Float32Arrays allocated with exactly
+    // `count` elements, so the reads are provably in bounds; asserting is
+    // correct here and keeps the per-frame path free of branches it never takes.
     for (let i = 0; i < count; i++) {
       const o = i * 16;
       for (let k = 0; k < 16; k++) arr[o + k] = 0;
       arr[o + 0] = blockW;        // scale x
       arr[o + 10] = blockW;       // scale z
       arr[o + 5] = 1;             // scale y (updated per frame)
-      arr[o + 12] = base.bx[i];   // pos x
-      arr[o + 14] = base.bz[i];   // pos z
+      arr[o + 12] = base.bx[i]!;  // pos x
+      arr[o + 14] = base.bz[i]!;  // pos z
       arr[o + 15] = 1;
 
-      const zt = halfZ > 0 ? (base.bz[i] + halfZ) / (2 * halfZ) : 0.5;
+      const zt = halfZ > 0 ? (base.bz[i]! + halfZ) / (2 * halfZ) : 0.5;
       tmp.copy(cLow).lerp(cHigh, 0.3 + 0.45 * zt);
       mesh.setColorAt(i, tmp);
     }
@@ -119,8 +123,9 @@ function Field({ cols, rows, spacing, pointer, rotation }: FieldProps) {
     const mz = pointer.current.y * halfZ * 1.1;
 
     for (let i = 0; i < count; i++) {
-      const x = base.bx[i];
-      const z = base.bz[i];
+      // In bounds for the same reason as the setup loop above.
+      const x = base.bx[i]!;
+      const z = base.bz[i]!;
 
       // All wave vectors are oblique (mix x & z) with incommensurate
       // frequencies, so crest ridges interfere instead of forming straight

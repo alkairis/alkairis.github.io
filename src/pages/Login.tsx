@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 
-import { login, isAuthenticated } from '../api/api';
+import { login, isApiError, isAuthenticated } from '../api/api';
 import '../admin/admin.css';
 
 // URL-only login page (/sign-me). Not linked anywhere in the public UI.
@@ -17,7 +18,7 @@ const Login = () => {
     return <Navigate to="/admin-me" replace />;
   }
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!username.trim() || !password) {
       setError('Please enter your username and password.');
@@ -31,12 +32,13 @@ const Login = () => {
       await login(username.trim(), password);
       navigate('/admin-me', { replace: true });
     } catch (err) {
-      const status = err?.status;
-      setError(
-        status === 401
-          ? 'Invalid username or password.'
-          : err?.message || 'Unable to sign in right now.'
-      );
+      if (isApiError(err) && err.status === 401) {
+        setError('Invalid username or password.');
+      } else {
+        setError(
+          (isApiError(err) && err.message) || 'Unable to sign in right now.'
+        );
+      }
     } finally {
       setSubmitting(false);
     }

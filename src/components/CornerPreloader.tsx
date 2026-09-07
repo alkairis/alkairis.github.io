@@ -122,7 +122,6 @@ const CornerPreloader = ({ isLoading = false }: CornerPreloaderProps) => {
       cancelAnimationFrame(rafId);
       timers.forEach(clearTimeout);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible]);
 
   if (!visible) return null;

@@ -91,12 +91,15 @@ const AppShowcase = () => {
               tintColor="#0ea5e9"
               tilt={0}
               gap={8}
-              onItemClick={(_item, index, event) =>
-                openProject(
-                  projects[index],
-                  event.currentTarget.getBoundingClientRect()
-                )
-              }
+              onItemClick={(_item, index, event) => {
+                // The gallery reports the index of the panel it was given, so
+                // this is in range in practice — but it is an index from
+                // another component into this one's array, which is exactly the
+                // lookup worth guarding rather than asserting.
+                const project = projects[index];
+                if (!project) return;
+                openProject(project, event.currentTarget.getBoundingClientRect());
+              }}
             />
           </div>
         )}

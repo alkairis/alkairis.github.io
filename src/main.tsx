@@ -29,7 +29,12 @@ const routeFallback = (
   </div>
 )
 
-createRoot(document.getElementById('root')).render(
+// getElementById returns HTMLElement | null. The element is in index.html, so
+// a miss means the shell is broken — fail loudly rather than passing null in.
+const rootElement = document.getElementById('root')
+if (!rootElement) throw new Error('Root element #root not found in index.html')
+
+createRoot(rootElement).render(
   <StrictMode>
     <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, "") || "/"}>
       <Suspense fallback={routeFallback}>

@@ -35,8 +35,12 @@ export type ModalProject = {
   id: string;
   name: string;
   description: string;
-  image_url?: string;
-  technologies?: string[];
-  github_url?: string;
-  demo_url?: string;
+  // Explicit `| undefined` rather than a bare `?`: callers build these objects
+  // with expressions like `card.link || undefined`, and under
+  // exactOptionalPropertyTypes an optional property may be absent but may not
+  // be present-and-undefined unless it says so.
+  image_url?: string | undefined;
+  technologies?: string[] | undefined;
+  github_url?: string | undefined;
+  demo_url?: string | undefined;
 };

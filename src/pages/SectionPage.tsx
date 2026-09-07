@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { FormEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { apiCreate, apiDelete, apiGet, apiUpdate } from '../api/api';
+import { apiCreate, apiDelete, apiGet, apiUpdate, isApiError } from '../api/api';
 import {
   emptyForm,
   formatCell,
@@ -9,6 +10,7 @@ import {
   getSection,
   toPayload,
 } from '../admin/sections';
+import type { SectionForm, SectionRow } from '../admin/sections';
 import '../admin/admin.css';
 
 const SectionPage = () => {
@@ -16,19 +18,22 @@ const SectionPage = () => {
   const navigate = useNavigate();
   const section = useMemo(() => getSection(sectionKey), [sectionKey]);
 
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState<SectionRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [listError, setListError] = useState('');
-  const [form, setForm] = useState(() => (section ? emptyForm(section) : {}));
+  const [form, setForm] = useState<SectionForm>(() =>
+    section ? emptyForm(section) : {}
+  );
   const [formError, setFormError] = useState('');
   const [success, setSuccess] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [deletingId, setDeletingId] = useState(null);
-  const [editingId, setEditingId] = useState(null);
+  // Row identity: an id when the record has one, otherwise its list index.
+  const [deletingId, setDeletingId] = useState<string | number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const handle401 = useCallback(
-    (err) => {
-      if (err?.status === 401) {
+    (err: unknown) => {
+      if (isApiError(err) && err.status === 401) {
         navigate('/sign-me', { replace: true });
         return true;
       }
@@ -42,14 +47,14 @@ const SectionPage = () => {
     setLoading(true);
     setListError('');
     try {
-      const data = await apiGet(section.endpoint);
+      const data = await apiGet<SectionRow[] | SectionRow | null>(section.endpoint);
       const list = Array.isArray(data) ? data : data ? [data] : [];
       setRows(list);
     } catch (err) {
       if (handle401(err)) return;
       // A 404 simply means nothing has been created yet.
       setRows([]);
-      if (err?.status && err.status !== 404) {
+      if (isApiError(err) && err.status && err.status !== 404) {
         setListError(err.message || 'Failed to load records.');
       }
     } finally {
@@ -76,10 +81,10 @@ const SectionPage = () => {
     );
   }
 
-  const setField = (name, value) =>
+  const setField = (name: string, value: string | boolean) =>
     setForm((prev) => ({ ...prev, [name]: value }));
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSubmitting(true);
     setFormError('');
@@ -98,19 +103,18 @@ const SectionPage = () => {
       await loadRows();
     } catch (err) {
       if (handle401(err)) return;
-      const detail =
-        err?.data?.detail && typeof err.data.detail === 'string'
-          ? err.data.detail
-          : err?.message;
+      const detail = isApiError(err)
+        ? err.data?.detail || err.message
+        : undefined;
       setFormError(detail || 'Failed to save. Check the fields and try again.');
     } finally {
       setSubmitting(false);
     }
   };
 
-  const startEdit = (row) => {
+  const startEdit = (row: SectionRow) => {
     setForm(formFromRow(section, row));
-    setEditingId(row.id);
+    setEditingId(row.id ?? null);
     setFormError('');
     setSuccess('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -121,7 +125,7 @@ const SectionPage = () => {
     setEditingId(null);
   };
 
-  const handleDelete = async (row, rowKey) => {
+  const handleDelete = async (row: SectionRow, rowKey: string | number) => {
     if (!window.confirm(`Delete this ${section.label} record?`)) return;
 
     // Single-record sections (resume) delete without an id.
@@ -136,7 +140,9 @@ const SectionPage = () => {
       await loadRows();
     } catch (err) {
       if (handle401(err)) return;
-      setListError(err?.message || 'Failed to delete record.');
+      setListError(
+        (isApiError(err) && err.message) || 'Failed to delete record.'
+      );
     } finally {
       setDeletingId(null);
     }
@@ -190,7 +196,7 @@ const SectionPage = () => {
                     <textarea
                       id={field.name}
                       className="admin-textarea"
-                      value={form[field.name] ?? ''}
+                      value={String(form[field.name] ?? '')}
                       required={field.required}
                       placeholder={field.placeholder}
                       onChange={(e) => setField(field.name, e.target.value)}
@@ -200,7 +206,7 @@ const SectionPage = () => {
                       id={field.name}
                       className="admin-input"
                       type={field.type === 'date' ? 'date' : 'text'}
-                      value={form[field.name] ?? ''}
+                      value={String(form[field.name] ?? '')}
                       required={field.required}
                       placeholder={field.placeholder}
                       onChange={(e) => setField(field.name, e.target.value)}
