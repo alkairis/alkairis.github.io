@@ -113,9 +113,11 @@ function Field({ cols, rows, spacing, pointer, rotation }: FieldProps) {
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
   }, [count, base, blockW, halfZ]);
 
-  useFrame((_state, delta) => {
+  useFrame((_state, rawDelta) => {
     const mesh = meshRef.current;
     if (!mesh) return;
+
+    const delta = Math.min(rawDelta, 1 / 30);
     const t = (tRef.current += delta);
     const arr = mesh.instanceMatrix.array as Float32Array;
 
