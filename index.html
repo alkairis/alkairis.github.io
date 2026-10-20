@@ -49,7 +49,37 @@
       html.binary-pending body {
         background-color: #f0f6ff;
       }
+      html[data-theme="dark"].binary-pending,
+      html[data-theme="dark"].binary-pending body {
+        background-color: #262624;
+      }
     </style>
+    <!--
+      Apply the saved theme (or the OS preference on a first visit) before
+      anything paints. Keep the key in sync with src/stores/useThemeStore.ts.
+    -->
+    <script>
+      (function () {
+        var theme = null;
+        try {
+          theme = localStorage.getItem("alkairis-theme");
+        } catch (e) {
+          /* storage blocked — fall back to the OS preference */
+        }
+        if (theme !== "light" && theme !== "dark") {
+          theme =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+        }
+        document.documentElement.setAttribute("data-theme", theme);
+        if (theme === "dark") {
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute("content", "#262624");
+        }
+      })();
+    </script>
     <script>
       (function () {
         try {

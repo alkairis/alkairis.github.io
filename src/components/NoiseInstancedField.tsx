@@ -2,7 +2,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent, RefObject } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { useThemeStore, type Theme } from "../stores/useThemeStore";
 import "./noiseField.css";
+
+/** Scene colours per site theme: sky/indigo on light, Claude clay on dark. */
+const PALETTE: Record<Theme, { low: string; high: string; fog: string; light: string }> = {
+  light: { low: "#3b82f6", high: "#7dd3fc", fog: "#eef4ff", light: "#6366f1" },
+  dark: { low: "#9a4a30", high: "#e8a283", fog: "#262624", light: "#d97757" },
+};
 
 /** Normalised cursor position, -1..1 on both axes. */
 type Pointer = { x: number; y: number };
@@ -22,6 +29,7 @@ type FieldProps = {
   spacing: number;
   pointer: RefObject<Pointer>;
   rotation: RefObject<Rotation>;
+  theme: Theme;
 };
 
 /**
@@ -44,7 +52,7 @@ const FLOOR_Y = -2.2;
 const WAVE_AMP = 1.1;     // shallow waves (HEIGHT at minimum)
 const BLOCK_FILL = 0.55;  // block width as a fraction of the cell
 
-function Field({ cols, rows, spacing, pointer, rotation }: FieldProps) {
+function Field({ cols, rows, spacing, pointer, rotation, theme }: FieldProps) {
   const meshRef = useRef<THREE.InstancedMesh | null>(null);
   const groupRef = useRef<THREE.Group | null>(null);
   const tRef = useRef(0);
@@ -87,8 +95,8 @@ function Field({ cols, rows, spacing, pointer, rotation }: FieldProps) {
     if (!mesh) return;
     mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     const arr = mesh.instanceMatrix.array as Float32Array;
-    const cLow = new THREE.Color("#3b82f6");
-    const cHigh = new THREE.Color("#7dd3fc");
+    const cLow = new THREE.Color(PALETTE[theme].low);
+    const cHigh = new THREE.Color(PALETTE[theme].high);
     const tmp = new THREE.Color();
 
     // noUncheckedIndexedAccess types every typed-array read as number|undefined.
@@ -111,7 +119,7 @@ function Field({ cols, rows, spacing, pointer, rotation }: FieldProps) {
     }
     mesh.instanceMatrix.needsUpdate = true;
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-  }, [count, base, blockW, halfZ]);
+  }, [count, base, blockW, halfZ, theme]);
 
   useFrame((_state, rawDelta) => {
     const mesh = meshRef.current;
@@ -192,6 +200,8 @@ export default function NoiseInstancedField({
   const rotation = useRef<Rotation>({ x: 0, y: 0, dragging: false, lastX: 0, lastY: 0 });
   const [inView, setInView] = useState(true);
   const [dragging, setDragging] = useState(false);
+  const theme = useThemeStore((s) => s.theme);
+  const palette = PALETTE[theme];
 
   // Dense grid, but the cheap per-frame loop keeps it light.
   const cols = quality === "low" ? 72 : 116;
@@ -261,16 +271,19 @@ export default function NoiseInstancedField({
           onCreated={({ camera }) => camera.lookAt(0, -0.4, -6)}
           style={{ pointerEvents: "none" }}
         >
-          <fog attach="fog" args={["#eef4ff", 8, 26]} />
+          {/* Keyed on the colour: fog args are constructor arguments, so a new
+              colour needs a new Fog object rather than a prop update. */}
+          <fog key={palette.fog} attach="fog" args={[palette.fog, 8, 26]} />
           <ambientLight intensity={0.72} />
           <directionalLight position={[-7, 8, 4]} intensity={1.1} />
-          <pointLight position={[8, 3, -4]} intensity={0.5} color="#6366f1" />
+          <pointLight position={[8, 3, -4]} intensity={0.5} color={palette.light} />
           <Field
             cols={cols}
             rows={rows}
             spacing={spacing}
             pointer={pointer}
             rotation={rotation}
+            theme={theme}
           />
         </Canvas>
       </div>

@@ -41,7 +41,7 @@ const Blog = () => {
         />
 
         {loading && (
-          <p className="text-gray-600 text-center mt-16">Loading top posts...</p>
+          <p className="text-gray-600 dark:text-[var(--muted)] text-center mt-16">Loading top posts...</p>
         )}
 
         {!loading && error && (

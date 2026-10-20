@@ -130,12 +130,12 @@ const ChatBot = () => {
               <FontAwesomeIcon icon={faRobot} />
             </div>
             <div>
-              <p className="font-semibold text-sm text-[#0f172a] leading-tight">
+              <p className="font-semibold text-sm text-[rgb(var(--ink-rgb))] leading-tight">
                 Ask Alkairis
               </p>
               <p
                 className="text-[10px] uppercase tracking-widest"
-                style={{ color: "rgba(15,23,42,0.42)" }}
+                style={{ color: "rgb(var(--ink-rgb) / 0.42)" }}
               >
                 AI · Resume-powered
               </p>
