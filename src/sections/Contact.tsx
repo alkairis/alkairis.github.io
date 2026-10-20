@@ -83,7 +83,7 @@ const Contact = () => {
 
               {status === STATUS.SUCCESS && (
                 <div className="mb-6 px-4 py-3 rounded-lg text-sm flex items-center gap-2"
-                  style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.25)", color: "#15803d" }}>
+                  style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.25)", color: "var(--success)" }}>
                   <span>✅</span>
                   <span>Message sent! I'll get back to you soon.</span>
                 </div>
@@ -91,7 +91,7 @@ const Contact = () => {
 
               {status === STATUS.ERROR && (
                 <div className="mb-6 px-4 py-3 rounded-lg text-sm flex items-center gap-2"
-                  style={{ background: "rgba(239,68,68,0.07)", border: "1px solid rgba(239,68,68,0.22)", color: "#dc2626" }}>
+                  style={{ background: "rgba(239,68,68,0.07)", border: "1px solid rgba(239,68,68,0.22)", color: "var(--danger)" }}>
                   <span>❌</span>
                   <span>Something went wrong. Please try again or email me directly.</span>
                 </div>
@@ -148,12 +148,12 @@ const Contact = () => {
           <div className="xl:col-span-7 flex flex-col justify-center gap-8 contact-info-panel reveal-right">
 
             <div>
-              <h3 className="text-3xl md:text-4xl font-semibold text-[#0f172a] leading-tight">
+              <h3 className="text-3xl md:text-4xl font-semibold text-[rgb(var(--ink-rgb))] leading-tight">
                 Let's build something<br />
-                <span style={{ color: "#0ea5e9" }}>great together.</span>
+                <span style={{ color: "rgb(var(--accent-rgb))" }}>great together.</span>
               </h3>
               <p className="mt-4 text-base leading-relaxed max-w-md"
-                style={{ color: "rgba(15,23,42,0.55)" }}>
+                style={{ color: "rgb(var(--ink-rgb) / 0.55)" }}>
                 Whether you have a project in mind, a question about my work,
                 or just want to say hello — my inbox is always open.
               </p>
@@ -161,9 +161,9 @@ const Contact = () => {
 
             <div className="flex flex-wrap items-center gap-4">
               <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full w-fit"
-                style={{ background: "rgba(14,165,233,0.07)", border: "1px solid rgba(14,165,233,0.18)" }}>
+                style={{ background: "rgb(var(--accent-rgb) / 0.07)", border: "1px solid rgb(var(--accent-rgb) / 0.18)" }}>
                 <span className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse flex-shrink-0" />
-                <span className="text-sm font-medium" style={{ color: "rgba(15,23,42,0.65)" }}>
+                <span className="text-sm font-medium" style={{ color: "rgb(var(--ink-rgb) / 0.65)" }}>
                   Open to opportunities
                 </span>
               </div>
@@ -184,19 +184,19 @@ const Contact = () => {
                     transition-all duration-200 hover:-translate-y-0.5 no-underline"
                 >
                   <div className="flex items-center justify-center w-10 h-10 rounded-lg flex-shrink-0 transition-colors duration-200"
-                    style={{ background: "rgba(14,165,233,0.1)", border: "1px solid rgba(14,165,233,0.2)" }}>
-                    <FontAwesomeIcon icon={m.icon} className="w-4 h-4" style={{ color: "#0ea5e9" }} />
+                    style={{ background: "rgb(var(--accent-rgb) / 0.1)", border: "1px solid rgb(var(--accent-rgb) / 0.2)" }}>
+                    <FontAwesomeIcon icon={m.icon} className="w-4 h-4" style={{ color: "rgb(var(--accent-rgb))" }} />
                   </div>
 
                   <div className="min-w-0 flex-1">
                     <p className="text-[10px] font-semibold uppercase tracking-widest mb-0.5"
-                      style={{ color: "rgba(15,23,42,0.4)" }}>{m.label}</p>
-                    <p className="text-sm font-semibold text-[#0f172a] truncate">{m.value}</p>
+                      style={{ color: "rgb(var(--ink-rgb) / 0.4)" }}>{m.label}</p>
+                    <p className="text-sm font-semibold text-[rgb(var(--ink-rgb))] truncate">{m.value}</p>
                   </div>
 
                   <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                      <path d="M3 8h10M9 4l4 4-4 4" stroke="#0ea5e9" strokeWidth="1.5"
+                      <path d="M3 8h10M9 4l4 4-4 4" style={{ stroke: "rgb(var(--accent-rgb))" }} strokeWidth="1.5"
                         strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </div>
@@ -205,12 +205,12 @@ const Contact = () => {
             </div>
 
             <div className="flex flex-wrap gap-x-6 gap-y-2">
-              <div className="flex items-center gap-2 text-sm" style={{ color: "rgba(15,23,42,0.5)" }}>
-                <FontAwesomeIcon icon={faLocationDot} className="w-3.5 h-3.5" style={{ color: "#0ea5e9" }} />
+              <div className="flex items-center gap-2 text-sm" style={{ color: "rgb(var(--ink-rgb) / 0.5)" }}>
+                <FontAwesomeIcon icon={faLocationDot} className="w-3.5 h-3.5" style={{ color: "rgb(var(--accent-rgb))" }} />
                 <span>India (IST · UTC+5:30)</span>
               </div>
-              <div className="flex items-center gap-2 text-sm" style={{ color: "rgba(15,23,42,0.5)" }}>
-                <FontAwesomeIcon icon={faClock} className="w-3.5 h-3.5" style={{ color: "#0ea5e9" }} />
+              <div className="flex items-center gap-2 text-sm" style={{ color: "rgb(var(--ink-rgb) / 0.5)" }}>
+                <FontAwesomeIcon icon={faClock} className="w-3.5 h-3.5" style={{ color: "rgb(var(--accent-rgb))" }} />
                 <span>Usually replies within 24 hours</span>
               </div>
             </div>

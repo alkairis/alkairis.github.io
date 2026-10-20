@@ -30,7 +30,7 @@ const TitleHeader = ({ title, sub, subtitle }: TitleHeaderProps) => (
         </h2>
       )}
       {subtitle && (
-        <p className="text-sm text-center text-gray-500">{subtitle}</p>
+        <p className="text-sm text-center text-gray-500 dark:text-[var(--muted)]">{subtitle}</p>
       )}
     </div>
     <div className="th-line" aria-hidden="true" />

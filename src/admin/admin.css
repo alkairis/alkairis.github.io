@@ -11,6 +11,7 @@
     #f0f6ff;
   font-family: "Mona Sans", sans-serif;
   color: #0f172a;
+  color-scheme: light;
 }
 
 .admin-card {
@@ -159,6 +160,8 @@
   background: #f0f6ff;
   font-family: "Mona Sans", sans-serif;
   color: #0f172a;
+  /* The CMS has no dark theme; keep native controls light under data-theme="dark". */
+  color-scheme: light;
 }
 
 .admin-sidebar {

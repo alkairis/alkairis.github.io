@@ -9,10 +9,10 @@
 
   border-radius: 9999px;
 
-  background: #0f172a;
+  background: var(--btn-bg);
   color: white;
 
-  border: 1px solid rgba(15, 23, 42, 0.12);
+  border: 1px solid rgb(var(--ink-rgb) / 0.12);
 
   transition:
     transform 0.25s ease,
@@ -21,8 +21,8 @@
 }
 
 .download-btn:hover {
-  background: #1e293b;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.22);
+  background: var(--btn-bg-hover);
+  box-shadow: 0 8px 24px rgb(var(--ink-rgb) / 0.22);
 }
 
 .download-btn:active {

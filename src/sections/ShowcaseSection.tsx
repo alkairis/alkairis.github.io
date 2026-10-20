@@ -54,10 +54,10 @@ const AppShowcase = () => {
               defaultIndex={Math.min(2, projects.length - 1)}
               expandRatio={0.52}
               trigger="hover"
-              accentColor="#0ea5e9"
+              accentColor="rgb(var(--accent-rgb))"
               overlayColor="#0f172a"
               textColor="#ffffff"
-              tintColor="#0ea5e9"
+              tintColor="rgb(var(--accent-rgb))"
               tilt={0}
               gap={8}
               onItemClick={(_item, index, event) => {

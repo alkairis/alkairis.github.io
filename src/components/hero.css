@@ -44,13 +44,13 @@
     display: inline-flex;
     align-items: center;
     gap: 0.55rem;
-    background: rgba(15, 23, 42, 0.04);
-    border: 1px solid rgba(15, 23, 42, 0.12);
+    background: rgb(var(--ink-rgb) / 0.04);
+    border: 1px solid rgb(var(--ink-rgb) / 0.12);
     border-radius: 9999px;
     padding: 0.4rem 1.1rem;
     font-size: 0.78rem;
     letter-spacing: 0.04em;
-    color: rgba(15, 23, 42, 0.55);
+    color: rgb(var(--ink-rgb) / 0.55);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
 }
@@ -60,8 +60,8 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: #0ea5e9;
-    box-shadow: 0 0 8px rgba(14, 165, 233, 0.7);
+    background: rgb(var(--accent-rgb));
+    box-shadow: 0 0 8px rgb(var(--accent-rgb) / 0.7);
     animation: dotPulse 2.2s ease-in-out infinite;
     flex-shrink: 0;
 }
@@ -93,7 +93,7 @@
 .h-name {
     font-size: clamp(1.5rem, 4.5vw, 3.25rem);
     font-weight: 400;
-    color: #0f172a;
+    color: rgb(var(--ink-rgb));
     line-height: 1.05;
     letter-spacing: -0.015em;
     min-height: 1.1em;
@@ -101,19 +101,19 @@
 
 /* Override Typewriter cursor color */
 .h-name .Typewriter__cursor {
-    color: #0ea5e9;
+    color: rgb(var(--accent-rgb));
 }
 
 /* ── Tagline ──────────────────────────────────── */
 .h-tagline {
     font-size: clamp(1rem, 2.2vw, 1.25rem);
-    color: rgba(15, 23, 42, 0.55);
+    color: rgb(var(--ink-rgb) / 0.55);
     line-height: 1.7;
     max-width: 580px;
 }
 
 .h-accent {
-    color: rgba(15, 23, 42, 0.9);
+    color: rgb(var(--ink-rgb) / 0.9);
     font-weight: 500;
 }
 
@@ -121,7 +121,7 @@
 .h-quip {
     font-size: clamp(0.85rem, 1.6vw, 0.95rem);
     font-style: italic;
-    color: rgba(15, 23, 42, 0.45);
+    color: rgb(var(--ink-rgb) / 0.45);
     max-width: 560px;
 }
 
@@ -145,15 +145,15 @@
 /* Frosted backdrop so social icons stay legible over the WebGL field */
 .h-socials a,
 .h-socials button {
-    background: rgba(255, 255, 255, 0.7);
+    background: rgb(var(--paper-rgb) / 0.7);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
-    border-color: rgba(15, 23, 42, 0.35);
+    border-color: rgb(var(--ink-rgb) / 0.35);
 }
 
 .h-socials a svg,
 .h-socials button svg {
-    color: #0f172a;
+    color: rgb(var(--ink-rgb));
 }
 
 /* ── Scroll indicator ──────────────────────────── */
@@ -164,7 +164,7 @@
     transform: translateX(-50%);
     width: 22px;
     height: 38px;
-    border: 1px solid rgba(15, 23, 42, 0.18);
+    border: 1px solid rgb(var(--ink-rgb) / 0.18);
     border-radius: 11px;
     display: flex;
     align-items: flex-start;
@@ -176,7 +176,7 @@
     width: 3px;
     height: 8px;
     border-radius: 2px;
-    background: rgba(14, 165, 233, 0.75);
+    background: rgb(var(--accent-rgb) / 0.75);
     animation: scrollDot 1.9s ease-in-out infinite;
 }
 

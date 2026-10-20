@@ -1,14 +1,18 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDownload } from "@fortawesome/free-solid-svg-icons";
+import { faDownload, faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 import { navLinks } from "../constants/";
 import { useResumeUrl } from "../hooks/useResumeUrl";
 import { useScrollLock } from "../hooks/useScrollLock";
+import { useThemeStore } from "../stores/useThemeStore";
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const resumeUrl = useResumeUrl();
+  const theme = useThemeStore((s) => s.theme);
+  const toggleTheme = useThemeStore((s) => s.toggleTheme);
+  const isDark = theme === "dark";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,6 +51,16 @@ const NavBar = () => {
           </nav>
 
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              className="theme-toggle"
+              onClick={toggleTheme}
+              aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
+              title={isDark ? "Light theme" : "Dark theme"}
+            >
+              <FontAwesomeIcon icon={isDark ? faSun : faMoon} className="w-4 h-4" />
+            </button>
+
             {resumeUrl && (
               <a
                 href={resumeUrl}
@@ -89,17 +103,17 @@ const NavBar = () => {
               aria-expanded={menuOpen}
             >
               <span
-                className={`block w-6 h-0.5 bg-[#0f172a] transition-all duration-300 ${
+                className={`block w-6 h-0.5 bg-[rgb(var(--ink-rgb))] transition-all duration-300 ${
                   menuOpen ? "rotate-45 translate-y-[7px]" : ""
                 }`}
               />
               <span
-                className={`block w-6 h-0.5 bg-[#0f172a] transition-all duration-300 ${
+                className={`block w-6 h-0.5 bg-[rgb(var(--ink-rgb))] transition-all duration-300 ${
                   menuOpen ? "opacity-0 scale-x-0" : ""
                 }`}
               />
               <span
-                className={`block w-6 h-0.5 bg-[#0f172a] transition-all duration-300 ${
+                className={`block w-6 h-0.5 bg-[rgb(var(--ink-rgb))] transition-all duration-300 ${
                   menuOpen ? "-rotate-45 -translate-y-[7px]" : ""
                 }`}
               />
@@ -129,10 +143,10 @@ const NavBar = () => {
           flex flex-col pt-24 pb-10 px-8 gap-8 transition-transform duration-300 ease-in-out lg:hidden
           ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
         style={{
-          background: "rgba(240, 246, 255, 0.97)",
+          background: "rgb(var(--bg-rgb) / 0.97)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
-          borderColor: "rgba(14, 165, 233, 0.18)",
+          borderColor: "rgb(var(--accent-rgb) / 0.18)",
         }}
         aria-label="Mobile navigation"
       >
@@ -142,7 +156,7 @@ const NavBar = () => {
               <a
                 href={link}
                 onClick={closeMenu}
-                className="text-[#0f172a] text-xl font-semibold hover:text-[#0ea5e9] transition-colors duration-200 block"
+                className="text-[rgb(var(--ink-rgb))] text-xl font-semibold hover:text-[rgb(var(--accent-rgb))] transition-colors duration-200 block"
               >
                 {name}
               </a>
@@ -160,12 +174,12 @@ const NavBar = () => {
               onClick={closeMenu}
               className="flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-semibold text-center transition-all duration-200 hover:-translate-y-0.5"
               style={{
-                background: "#0f172a",
+                background: "var(--btn-bg)",
                 color: "#ffffff",
-                border: "1.5px solid #0f172a",
+                border: "1.5px solid var(--btn-bg)",
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "#1e293b"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "#0f172a"; }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "var(--btn-bg-hover)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "var(--btn-bg)"; }}
             >
               <FontAwesomeIcon icon={faDownload} className="w-3.5 h-3.5" />
               <span>Download CV</span>
@@ -177,12 +191,12 @@ const NavBar = () => {
             onClick={closeMenu}
             className="px-5 py-3 rounded-lg font-semibold text-center transition-all duration-200 hover:-translate-y-0.5"
             style={{
-              background: "#0f172a",
+              background: "var(--btn-bg)",
               color: "#ffffff",
-              border: "1.5px solid #0f172a",
+              border: "1.5px solid var(--btn-bg)",
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "#1e293b"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "#0f172a"; }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "var(--btn-bg-hover)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "var(--btn-bg)"; }}
           >
             Contact me
           </a>

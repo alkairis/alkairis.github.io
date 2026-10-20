@@ -36,7 +36,7 @@ const AppContent = () => {
         const x = posRef.current.x * 100;
         const y = posRef.current.y * 100;
         orbRef.current.style.background =
-          `radial-gradient(680px circle at ${x}% ${y}%, rgba(14, 165, 233, 0.18) 0%, rgba(99, 102, 241, 0.11) 42%, transparent 72%)`;
+          `radial-gradient(680px circle at ${x}% ${y}%, rgb(var(--accent-rgb) / 0.18) 0%, rgb(var(--accent-2-rgb) / 0.11) 42%, transparent 72%)`;
       }
 
       rafRef.current = requestAnimationFrame(tick);
