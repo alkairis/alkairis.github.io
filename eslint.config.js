@@ -14,8 +14,7 @@ export default [
     },
   },
   {
-    // Only src/components/splashCursor.js remains: vendored WebGL, kept as JS on
-    // purpose. Config files land here too.
+    // No JS remains under src/; this covers config files like eslint.config.js.
     files: ['**/*.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 2020,

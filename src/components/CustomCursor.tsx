@@ -6,10 +6,8 @@ import type { SplashCursorOptions } from "./splashCursor";
  * Fluid "splash cursor" trail.
  *
  * This component is only the React boundary: the simulation itself is ~1000
- * lines of vendored WebGL that lives in splashCursor.js and is started and torn
- * down through a single typed call. Splitting it that way keeps the app's typed
- * surface complete without annotating third-party shader code that has no
- * consumer-facing types to get wrong.
+ * lines of vendored WebGL that lives in splashCursor.ts and is started and torn
+ * down through a single typed call.
  *
  * Defaults are the tuned values this site ships with.
  */
