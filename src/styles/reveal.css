@@ -78,20 +78,6 @@
     /* Stagger variants for rows that read better sideways. */
     .reveal-stagger-left > *  { animation-name: reveal-left; }
     .reveal-stagger-pop > *   { animation-name: reveal-pop; }
-
-    /* The experience timeline's progress line: genuinely scroll-linked, so it
-     * scrubs across the whole time the card is on screen rather than snapping.
-     * This one was GSAP's only `scrub: true` and is the clearest win — a
-     * progress line IS a scroll-driven animation. */
-    .gradient-line {
-      transform: scaleY(0);
-      animation-name: line-grow;
-      animation-duration: auto;
-      animation-timing-function: linear;
-      animation-fill-mode: both;
-      animation-timeline: view();
-      animation-range: entry 20% cover 60%;
-    }
   }
 }
 
@@ -113,9 +99,4 @@
 @keyframes reveal-pop {
   from { opacity: 0; transform: scale(0.94); }
   to   { opacity: 1; transform: none; }
-}
-
-@keyframes line-grow {
-  from { transform: scaleY(0); }
-  to   { transform: scaleY(1); }
 }
