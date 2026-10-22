@@ -5,10 +5,10 @@ import * as THREE from "three";
 import { useThemeStore, type Theme } from "../stores/useThemeStore";
 import "./noiseField.css";
 
-/** Scene colours per site theme: sky/indigo on light, Claude clay on dark. */
+/** Scene colours per site theme: sky/indigo on light, teal on dark. */
 const PALETTE: Record<Theme, { low: string; high: string; fog: string; light: string }> = {
   light: { low: "#3b82f6", high: "#7dd3fc", fog: "#eef4ff", light: "#6366f1" },
-  dark: { low: "#9a4a30", high: "#e8a283", fog: "#262624", light: "#d97757" },
+  dark: { low: "#115e59", high: "#5eead4", fog: "#262624", light: "#2dd4bf" },
 };
 
 /** Normalised cursor position, -1..1 on both axes. */

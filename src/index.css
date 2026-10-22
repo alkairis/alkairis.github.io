@@ -8,7 +8,7 @@
 
 /* Theme tokens. Colours used with alpha are stored as bare RGB channels so a
    stylesheet can write `rgb(var(--ink-rgb) / 0.5)`. Light is the original
-   palette; dark is the warm charcoal + clay palette of Claude's own UI. */
+   palette; dark is a warm charcoal with a teal accent. */
 :root {
   color-scheme: light;
   --gradient: radial-gradient(circle, #e5e5e5 0%, #fff 100%);
@@ -63,19 +63,19 @@
   --ink-strong: #ffffff;
   --ink-body: #c2c0b6;
   --muted: #9c9a92;
-  --link: #e5916f;
+  --link: #5eead4;
   --success: #4ade80;
   --danger: #f87171;
 
-  --accent-rgb: 217 119 87;
-  --accent-2-rgb: 201 100 66;
-  --sky-200-rgb: 240 190 165;
-  --sky-300-rgb: 235 160 130;
-  --sky-400-rgb: 224 138 108;
-  --sky-600-rgb: 189 93 58;
+  --accent-rgb: 45 212 191;
+  --accent-2-rgb: 20 184 166;
+  --sky-200-rgb: 153 246 228;
+  --sky-300-rgb: 94 234 212;
+  --sky-400-rgb: 45 212 191;
+  --sky-600-rgb: 13 148 136;
 
-  --btn-bg: #d97757;
-  --btn-bg-hover: #c96442;
+  --btn-bg: #0d9488;
+  --btn-bg-hover: #0f766e;
 
   --mist-50: #30302e;
   --mist-100: #363532;
