@@ -422,34 +422,6 @@ section {
     @apply md:w-40 w-32;
   }
 
-  .timeline-wrapper {
-    @apply absolute top-0 xl:left-[35.5vw] md:left-10 left-5 h-full flex justify-center;
-  }
-
-  .timeline {
-    @apply absolute z-30 h-[110%] -top-10 w-14 md:w-28 bg-transparent pointer-events-none;
-  }
-
-  .timeline-logo {
-    @apply md:size-20 size-10 flex-none rounded-full flex justify-center items-center md:-translate-y-7 border border-mist-200 bg-mist-50;
-  }
-
-  .exp-card-wrapper {
-    @apply flex flex-col-reverse xl:flex-row xl:gap-20 gap-10 justify-between;
-  }
-
-  .exp-company-plate {
-    @apply flex flex-col items-center justify-center text-center gap-3 min-h-40 py-6;
-
-    .exp-company-name {
-      @apply text-2xl md:text-3xl font-bold text-white;
-    }
-
-    .exp-company-role {
-      @apply text-sm md:text-base text-ink-700;
-    }
-  }
-
   .gradient-edge {
     @apply w-36 h-full absolute bottom-0 z-20;
   }
@@ -570,24 +542,6 @@ section {
 }
 
 /* Hero Text slider ends */
-
-.gradient-line {
-  width: 2px;
-  /* No `transform: scaleY(0)` here on purpose. The collapsed start state lives
-     with the animation in styles/reveal.css, inside the support + motion
-     guards — pre-hiding it here left the line invisible for anyone the
-     animation never runs for. */
-  transform-origin: top;
-  will-change: transform;
-  background: linear-gradient(
-    0deg,
-    rgba(69, 222, 196, 0) 0%,
-    #62e0ff 25%,
-    #52aeff 37.51%,
-    #fd5c79 62.83%,
-    #cf3328 92.91%
-  );
-}
 
 .gradient-edge:nth-of-type(1) {
   left: 0;
