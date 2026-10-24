@@ -175,7 +175,7 @@ const NavBar = () => {
               className="flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-semibold text-center transition-all duration-200 hover:-translate-y-0.5"
               style={{
                 background: "var(--btn-bg)",
-                color: "#ffffff",
+                color: "var(--btn-ink)",
                 border: "1.5px solid var(--btn-bg)",
               }}
               onMouseEnter={(e) => { e.currentTarget.style.background = "var(--btn-bg-hover)"; }}

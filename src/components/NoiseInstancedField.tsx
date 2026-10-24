@@ -5,10 +5,29 @@ import * as THREE from "three";
 import { useThemeStore, type Theme } from "../stores/useThemeStore";
 import "./noiseField.css";
 
-/** Scene colours per site theme: sky/indigo on light, teal on dark. */
-const PALETTE: Record<Theme, { low: string; high: string; fog: string; light: string }> = {
+type ScenePalette = { low: string; high: string; fog: string; light: string };
+
+/** Fallback scene colours, used when the theme tokens below aren't defined. */
+const PALETTE: Record<Theme, ScenePalette> = {
   light: { low: "#3b82f6", high: "#7dd3fc", fog: "#eef4ff", light: "#6366f1" },
   dark: { low: "#115e59", high: "#5eead4", fog: "#262624", light: "#2dd4bf" },
+};
+
+/**
+ * Scene colours come from the `--wave-*` theme tokens in index.css, so the
+ * hero follows the site palette instead of keeping its own. Read on theme
+ * change; data-theme is already applied by then (see useThemeStore).
+ */
+const readPalette = (theme: Theme): ScenePalette => {
+  const styles = getComputedStyle(document.documentElement);
+  const token = (name: string) => styles.getPropertyValue(name).trim();
+  const fallback = PALETTE[theme];
+  return {
+    low: token("--wave-low") || fallback.low,
+    high: token("--wave-high") || fallback.high,
+    fog: token("--wave-fog") || fallback.fog,
+    light: token("--wave-light") || fallback.light,
+  };
 };
 
 /** Normalised cursor position, -1..1 on both axes. */
@@ -29,7 +48,7 @@ type FieldProps = {
   spacing: number;
   pointer: RefObject<Pointer>;
   rotation: RefObject<Rotation>;
-  theme: Theme;
+  palette: ScenePalette;
 };
 
 /**
@@ -52,7 +71,7 @@ const FLOOR_Y = -2.2;
 const WAVE_AMP = 1.1;     // shallow waves (HEIGHT at minimum)
 const BLOCK_FILL = 0.55;  // block width as a fraction of the cell
 
-function Field({ cols, rows, spacing, pointer, rotation, theme }: FieldProps) {
+function Field({ cols, rows, spacing, pointer, rotation, palette }: FieldProps) {
   const meshRef = useRef<THREE.InstancedMesh | null>(null);
   const groupRef = useRef<THREE.Group | null>(null);
   const tRef = useRef(0);
@@ -95,8 +114,8 @@ function Field({ cols, rows, spacing, pointer, rotation, theme }: FieldProps) {
     if (!mesh) return;
     mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     const arr = mesh.instanceMatrix.array as Float32Array;
-    const cLow = new THREE.Color(PALETTE[theme].low);
-    const cHigh = new THREE.Color(PALETTE[theme].high);
+    const cLow = new THREE.Color(palette.low);
+    const cHigh = new THREE.Color(palette.high);
     const tmp = new THREE.Color();
 
     // noUncheckedIndexedAccess types every typed-array read as number|undefined.
@@ -119,7 +138,7 @@ function Field({ cols, rows, spacing, pointer, rotation, theme }: FieldProps) {
     }
     mesh.instanceMatrix.needsUpdate = true;
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-  }, [count, base, blockW, halfZ, theme]);
+  }, [count, base, blockW, halfZ, palette]);
 
   useFrame((_state, rawDelta) => {
     const mesh = meshRef.current;
@@ -201,7 +220,7 @@ export default function NoiseInstancedField({
   const [inView, setInView] = useState(true);
   const [dragging, setDragging] = useState(false);
   const theme = useThemeStore((s) => s.theme);
-  const palette = PALETTE[theme];
+  const palette = useMemo(() => readPalette(theme), [theme]);
 
   // Dense grid, but the cheap per-frame loop keeps it light.
   const cols = quality === "low" ? 72 : 116;
@@ -283,7 +302,7 @@ export default function NoiseInstancedField({
             spacing={spacing}
             pointer={pointer}
             rotation={rotation}
-            theme={theme}
+            palette={palette}
           />
         </Canvas>
       </div>

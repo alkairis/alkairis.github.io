@@ -162,7 +162,7 @@ const Contact = () => {
             <div className="flex flex-wrap items-center gap-4">
               <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full w-fit"
                 style={{ background: "rgb(var(--accent-rgb) / 0.07)", border: "1px solid rgb(var(--accent-rgb) / 0.18)" }}>
-                <span className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse flex-shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-[rgb(var(--accent-3-rgb))] animate-pulse flex-shrink-0" />
                 <span className="text-sm font-medium" style={{ color: "rgb(var(--ink-rgb) / 0.65)" }}>
                   Open to opportunities
                 </span>

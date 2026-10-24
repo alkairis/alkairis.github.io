@@ -142,7 +142,7 @@
 }
 
 .pmodal-btn-primary {
-  color: #ffffff;
+  color: var(--btn-ink);
   background: var(--btn-bg);
   border: 1.5px solid var(--btn-bg);
   box-shadow: 0 4px 14px rgb(var(--ink-rgb) / 0.22);

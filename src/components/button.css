@@ -10,7 +10,7 @@
   border-radius: 9999px;
 
   background: var(--btn-bg);
-  color: white;
+  color: var(--btn-ink);
 
   border: 1px solid rgb(var(--ink-rgb) / 0.12);
 
@@ -55,7 +55,7 @@
   font-weight: 600;
   letter-spacing: 0.02em;
 
-  color: white;
+  color: var(--btn-ink);
 
   opacity: 1;
 
@@ -66,7 +66,7 @@
   width: 18px;
   height: 18px;
 
-  color: white;
+  color: var(--btn-ink);
 
   opacity: 0;
 

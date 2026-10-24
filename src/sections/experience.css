@@ -268,8 +268,10 @@
 }
 
 .exp-tag--edu {
-  color: rgb(var(--accent-2-rgb));
-  background: rgb(var(--accent-2-rgb) / 0.12);
+  /* Ink label on a secondary tint: the secondary colour can be too light
+     to carry small text on some palettes. */
+  color: rgb(var(--ink-rgb) / 0.8);
+  background: rgb(var(--accent-2-rgb) / 0.16);
 }
 
 .exp-meta {
@@ -309,17 +311,19 @@
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 600;
-  color: rgb(var(--accent-rgb));
-  background: rgb(var(--accent-rgb) / 0.1);
-  border: 1px solid rgb(var(--accent-rgb) / 0.25);
+  /* Highlight colour on the dot and tint only; the label stays ink so it
+     reads on any palette (a bright highlight can be too light for text). */
+  color: rgb(var(--ink-rgb) / 0.85);
+  background: rgb(var(--accent-3-rgb) / 0.1);
+  border: 1px solid rgb(var(--accent-3-rgb) / 0.35);
 
   &::before {
     content: "";
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: rgb(var(--accent-rgb));
-    box-shadow: 0 0 0 4px rgb(var(--accent-rgb) / 0.2);
+    background: rgb(var(--accent-3-rgb));
+    box-shadow: 0 0 0 4px rgb(var(--accent-3-rgb) / 0.2);
   }
 }
 

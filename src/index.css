@@ -8,7 +8,15 @@
 
 /* Theme tokens. Colours used with alpha are stored as bare RGB channels so a
    stylesheet can write `rgb(var(--ink-rgb) / 0.5)`. Light is the original
-   palette; dark is a warm charcoal with a teal accent. */
+   palette; dark is a warm charcoal with a teal accent.
+
+   Accent roles:
+     --accent-rgb    primary   — links, focus rings, active states, underlines
+     --accent-2-rgb  secondary — gradient partner, background glow, depth
+     --accent-3-rgb  highlight — used sparingly: live/status dots, "current"
+                                 badges, the typewriter cursor
+   --btn-ink is the text colour on --btn-bg, and --wave-* colour the hero's
+   3D field (read by NoiseInstancedField). */
 :root {
   color-scheme: light;
   --gradient: radial-gradient(circle, #e5e5e5 0%, #fff 100%);
@@ -31,6 +39,7 @@
 
   --accent-rgb: 14 165 233;
   --accent-2-rgb: 99 102 241;
+  --accent-3-rgb: 34 197 94;
   --sky-200-rgb: 186 230 253;
   --sky-300-rgb: 125 211 252;
   --sky-400-rgb: 56 189 248;
@@ -38,6 +47,12 @@
 
   --btn-bg: #0f172a;
   --btn-bg-hover: #1e293b;
+  --btn-ink: #ffffff;
+
+  --wave-low: #3b82f6;
+  --wave-high: #7dd3fc;
+  --wave-fog: #eef4ff;
+  --wave-light: #6366f1;
 
   --mist-50: #e8eef8;
   --mist-100: #e2eaf6;
@@ -69,6 +84,7 @@
 
   --accent-rgb: 45 212 191;
   --accent-2-rgb: 20 184 166;
+  --accent-3-rgb: 74 222 128;
   --sky-200-rgb: 153 246 228;
   --sky-300-rgb: 94 234 212;
   --sky-400-rgb: 45 212 191;
@@ -76,6 +92,12 @@
 
   --btn-bg: #0d9488;
   --btn-bg-hover: #0f766e;
+  --btn-ink: #ffffff;
+
+  --wave-low: #115e59;
+  --wave-high: #5eead4;
+  --wave-fog: #262624;
+  --wave-light: #2dd4bf;
 
   --mist-50: #30302e;
   --mist-100: #363532;
@@ -351,7 +373,7 @@ section {
       .inner {
         @apply px-5 py-2 rounded-lg transition-all duration-200;
         background: var(--btn-bg);
-        color: #ffffff;
+        color: var(--btn-ink);
         border: 1.5px solid var(--btn-bg);
 
         &:hover {
@@ -772,8 +794,8 @@ section {
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: #22c55e;
-  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18);
+  background: rgb(var(--accent-3-rgb));
+  box-shadow: 0 0 0 4px rgb(var(--accent-3-rgb) / 0.18);
   animation: about-pulse 1.8s ease-in-out infinite;
 }
 
@@ -1269,7 +1291,7 @@ section {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #f8fbff;
+  color: var(--btn-ink);
   padding: 0.32rem 0.7rem;
   border-radius: 999px;
   background: linear-gradient(135deg, var(--btn-bg) 0%, var(--btn-bg-hover) 100%);
@@ -1434,7 +1456,7 @@ section {
   padding: 0.9rem 1.6rem;
   border-radius: 0.5rem;
   background: var(--btn-bg);
-  color: #ffffff;
+  color: var(--btn-ink);
   border: 1.5px solid var(--btn-bg);
 }
 
@@ -1459,7 +1481,7 @@ section {
 .btn-outline:hover {
   background: var(--btn-bg);
   border-color: var(--btn-bg);
-  color: #ffffff;
+  color: var(--btn-ink);
   transform: translateY(-1px);
 }
 
@@ -1477,7 +1499,7 @@ section {
 .btn-icon:hover {
   background: var(--btn-bg);
   border-color: var(--btn-bg);
-  color: #ffffff;
+  color: var(--btn-ink);
   transform: translateY(-2px);
 }
 
@@ -1506,7 +1528,7 @@ section {
   border-radius: 50%;
   border: none;
   background: var(--btn-bg);
-  color: #ffffff;
+  color: var(--btn-ink);
   font-size: 1.2rem;
   cursor: pointer;
   display: flex;
@@ -1613,7 +1635,7 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--btn-ink);
   font-size: 0.8rem;
   flex-shrink: 0;
 }
@@ -1676,7 +1698,7 @@ section {
 .chatbot-msg-user {
   align-self: flex-end;
   background: var(--btn-bg);
-  color: #ffffff;
+  color: var(--btn-ink);
   border-bottom-right-radius: 0.25rem;
 }
 
@@ -1774,7 +1796,7 @@ section {
   border-radius: 0.55rem;
   border: none;
   background: var(--btn-bg);
-  color: #ffffff;
+  color: var(--btn-ink);
   cursor: pointer;
   display: flex;
   align-items: center;
