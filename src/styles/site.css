@@ -4,6 +4,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
+  color: rgb(var(--ink));
   border-bottom: 1px solid transparent;
   transition: background-color 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
 }
@@ -198,13 +199,17 @@
 
 .hero {
   position: relative;
-  padding: clamp(36px, 7vw, 84px) 0 0;
+  /* Slides up under the sticky nav so the dark band starts at the very top. */
+  margin-top: -68px;
+  padding: calc(68px + clamp(36px, 7vw, 84px)) 0 clamp(40px, 5vw, 64px);
+  background: rgb(var(--bg));
+  color: rgb(var(--ink));
   isolation: isolate;
 }
 
 .hero-bg {
   position: absolute;
-  inset: -68px 0 0;
+  inset: 0;
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
@@ -221,13 +226,15 @@
 
 .hero-glow {
   position: absolute;
-  width: 720px;
-  height: 720px;
-  right: -160px;
-  top: -200px;
+  width: 820px;
+  height: 820px;
+  right: -200px;
+  top: -260px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgb(var(--accent) / 0.16), transparent 62%);
-  filter: blur(10px);
+  background:
+    radial-gradient(circle at 60% 40%, rgb(var(--accent) / 0.18), transparent 50%),
+    radial-gradient(circle at 35% 65%, rgb(var(--accent-2) / 0.75), transparent 62%);
+  filter: blur(20px);
 }
 
 .hero-inner {
@@ -424,6 +431,7 @@
 
 .section-title .serif {
   font-size: 1.06em;
+  color: rgb(var(--accent));
 }
 
 .section-aside {
@@ -1050,8 +1058,9 @@
 .role-now {
   padding: 2px 8px;
   border-radius: 999px;
-  background: rgb(var(--ok) / 0.12);
-  color: rgb(var(--ok));
+  border: 1px solid rgb(var(--highlight) / 0.55);
+  background: rgb(var(--highlight) / 0.16);
+  color: rgb(var(--ink));
   font-size: 11px;
 }
 

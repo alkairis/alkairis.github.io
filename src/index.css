@@ -1,30 +1,48 @@
 /* ─────────────────────────────────────────────────────────────────────────────
    Design system.
 
-   Warm paper / deep ink, one teal signal colour, and three type voices:
-   Geist for reading, Instrument Serif italic for emphasis, Geist Mono for
-   anything that reads like data (dates, labels, scores, tags).
+   Palette: Jet Black #050505 · Royal Amethyst #3B0A6B · Electric Cyan #00E5FF.
+   Light mode leads with amethyst on a lavender-white page (cyan is too light
+   to carry text there, so it's kept for glow and status dots); dark mode
+   leads with cyan on jet black, with amethyst for buttons, glow and depth.
+   The hero band and the nav floating over it take the dark tones in light
+   mode too, so all three colours meet on the first screen.
+
+   Three type voices: Geist for reading, Instrument Serif italic for
+   emphasis, Geist Mono for anything that reads like data.
 
    Colours that need alpha are stored as bare RGB channels so a rule can write
    rgb(var(--ink) / 0.5). Theme follows data-theme on <html>, which the boot
    script in index.html sets before first paint.
+
+   Roles:
+     --accent     links, focus, active states, emphasis text
+     --accent-2   gradient partner and background glow
+     --highlight  used sparingly: live/status dots, "current" badges
+     --btn        primary button fill (--btn-hover, --btn-ink on top)
+     --teal/--indigo/--amber/--rose  per-case-study tones
    ───────────────────────────────────────────────────────────────────────────── */
 
 :root {
   color-scheme: light;
 
-  --bg: 244 242 236;
-  --surface: 250 249 246;
+  --bg: 246 243 250;
+  --surface: 239 236 244;
   --card: 255 255 255;
-  --ink: 20 21 17;
-  --ink-2: 66 67 61;
-  --ink-3: 118 118 109;
-  --line: 222 218 207;
+  --ink: 5 5 5;
+  --ink-2: 53 47 64;
+  --ink-3: 107 99 128;
+  --line: 223 216 233;
 
-  --accent: 15 118 110;
+  --accent: 59 10 107;
+  --accent-2: 0 229 255;
   --accent-ink: 255 255 255;
-  --teal: 15 118 110;
-  --indigo: 79 70 229;
+  --highlight: 0 229 255;
+  --btn: 59 10 107;
+  --btn-hover: 5 5 5;
+  --btn-ink: 255 255 255;
+  --teal: 0 128 148;
+  --indigo: 59 10 107;
   --amber: 180 83 9;
   --rose: 190 18 60;
   --ok: 21 128 61;
@@ -36,35 +54,45 @@
 
   --radius: 14px;
   --radius-lg: 22px;
-  --shadow: 0 1px 0 rgb(var(--ink) / 0.04), 0 8px 30px -12px rgb(var(--ink) / 0.12);
-  --shadow-lg: 0 1px 0 rgb(var(--ink) / 0.04), 0 30px 80px -24px rgb(var(--ink) / 0.28);
+  --shadow: 0 1px 0 rgb(var(--ink) / 0.04), 0 8px 30px -12px rgb(59 10 107 / 0.16);
+  --shadow-lg: 0 1px 0 rgb(var(--ink) / 0.04), 0 30px 80px -24px rgb(59 10 107 / 0.32);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --container: 1180px;
   --gutter: clamp(16px, 4vw, 40px);
 }
 
-[data-theme="dark"] {
+/* Dark tones: dark mode, plus the light-mode "stage" — the hero band and the
+   nav while it floats over it (SiteNav adds .on-hero at the top of home). */
+[data-theme="dark"],
+:root:not([data-theme="dark"]) .hero,
+:root:not([data-theme="dark"]) .nav.on-hero:not(.is-scrolled):not(.is-sheet) {
   color-scheme: dark;
 
-  --bg: 13 15 14;
-  --surface: 19 22 20;
-  --card: 24 27 25;
-  --ink: 238 237 230;
-  --ink-2: 184 183 174;
-  --ink-3: 134 134 126;
-  --line: 44 48 45;
+  --bg: 5 5 5;
+  --surface: 11 8 16;
+  --card: 15 10 23;
+  --ink: 244 241 250;
+  --ink-2: 201 194 214;
+  --ink-3: 143 135 161;
+  --line: 40 32 52;
 
-  --accent: 45 212 191;
-  --accent-ink: 6 30 27;
-  --teal: 45 212 191;
-  --indigo: 165 180 252;
+  --accent: 0 229 255;
+  --accent-2: 59 10 107;
+  --accent-ink: 5 5 5;
+  --highlight: 0 229 255;
+  --btn: 59 10 107;
+  --btn-hover: 78 21 144;
+  --btn-ink: 255 255 255;
+  --teal: 0 229 255;
+  --indigo: 183 148 246;
   --amber: 251 191 36;
   --rose: 253 164 175;
   --ok: 74 222 128;
   --danger: 248 113 113;
 
-  --shadow: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 10px 30px -12px rgb(0 0 0 / 0.6);
-  --shadow-lg: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 30px 80px -20px rgb(0 0 0 / 0.75);
+  --shadow: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 10px 30px -12px rgb(0 0 0 / 0.7);
+  --shadow-lg: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 30px 80px -20px rgb(0 0 0 / 0.8),
+    0 0 80px -30px rgb(59 10 107 / 0.6);
 }
 
 /* Cross-fade only while the theme is being switched (see useThemeStore). */
@@ -251,13 +279,14 @@ ol {
 }
 
 .btn-primary {
-  background: rgb(var(--ink));
-  color: rgb(var(--bg));
+  background: rgb(var(--btn));
+  color: rgb(var(--btn-ink));
 }
 
 .btn-primary:hover {
+  background: rgb(var(--btn-hover));
   transform: translateY(-1px);
-  box-shadow: 0 10px 24px -10px rgb(var(--ink) / 0.5);
+  box-shadow: 0 10px 24px -10px rgb(var(--btn) / 0.7);
 }
 
 .btn-ghost {
@@ -357,7 +386,8 @@ ol {
   height: 8px;
   flex: none;
   border-radius: 50%;
-  background: rgb(var(--ok));
+  background: rgb(var(--highlight));
+  box-shadow: 0 0 10px rgb(var(--highlight) / 0.7);
 }
 
 .live-dot::after {
@@ -365,7 +395,7 @@ ol {
   position: absolute;
   inset: -4px;
   border-radius: 50%;
-  border: 1.5px solid rgb(var(--ok) / 0.6);
+  border: 1.5px solid rgb(var(--highlight) / 0.6);
   animation: live-ping 2.2s var(--ease) infinite;
 }
 

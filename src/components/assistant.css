@@ -161,8 +161,8 @@
   height: 34px;
   border: 0;
   border-radius: 9px;
-  background: rgb(var(--ink));
-  color: rgb(var(--bg));
+  background: rgb(var(--btn));
+  color: rgb(var(--btn-ink));
   transition: opacity 0.2s ease, transform 0.2s var(--ease);
 }
 

@@ -81,7 +81,8 @@ const SiteNav = () => {
   const isMac = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform);
 
   return (
-    <header className={`nav${scrolled ? " is-scrolled" : ""}${sheet ? " is-sheet" : ""}`}>
+    // `on-hero` lets the nav take the hero's dark tones while it floats over it.
+    <header className={`nav${onHome ? " on-hero" : ""}${scrolled ? " is-scrolled" : ""}${sheet ? " is-sheet" : ""}`}>
       <div className="container nav-inner">
         <Link to="/" className="nav-brand" onClick={() => setSheet(false)} aria-label="Deepak Singh Rajput — home">
           <GhostMark className="nav-ghost" />
