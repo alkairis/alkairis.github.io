@@ -15,8 +15,12 @@
      --accent-2-rgb  secondary — gradient partner, background glow, depth
      --accent-3-rgb  highlight — used sparingly: live/status dots, "current"
                                  badges, the typewriter cursor
+   --duo-1 / --duo-2 are the two-tone emphasis pair (full colours, not
+   channels): the hero name gradient, the two tagline phrases, the last word
+   of section titles. Equal to ink by default, i.e. no two-tone.
    --btn-ink is the text colour on --btn-bg, and --wave-* colour the hero's
-   3D field (read by NoiseInstancedField). */
+   3D field (read by NoiseInstancedField from the hero, so a section can
+   restyle it by overriding the tokens locally). */
 :root {
   color-scheme: light;
   --gradient: radial-gradient(circle, #e5e5e5 0%, #fff 100%);
@@ -40,6 +44,8 @@
   --accent-rgb: 14 165 233;
   --accent-2-rgb: 99 102 241;
   --accent-3-rgb: 34 197 94;
+  --duo-1: rgb(var(--ink-rgb));
+  --duo-2: rgb(var(--ink-rgb));
   --sky-200-rgb: 186 230 253;
   --sky-300-rgb: 125 211 252;
   --sky-400-rgb: 56 189 248;
@@ -85,6 +91,8 @@
   --accent-rgb: 45 212 191;
   --accent-2-rgb: 20 184 166;
   --accent-3-rgb: 74 222 128;
+  --duo-1: rgb(var(--ink-rgb));
+  --duo-2: rgb(var(--ink-rgb));
   --sky-200-rgb: 153 246 228;
   --sky-300-rgb: 94 234 212;
   --sky-400-rgb: 45 212 191;
@@ -934,6 +942,10 @@ section {
 }
 
 /* ── TitleHeader decorative accent line ──────────────────────── */
+.th-hl {
+  color: var(--duo-2);
+}
+
 .th-line {
   width: 52px;
   height: 3px;

@@ -150,7 +150,7 @@ const Contact = () => {
             <div>
               <h3 className="text-3xl md:text-4xl font-semibold text-[rgb(var(--ink-rgb))] leading-tight">
                 Let's build something<br />
-                <span style={{ color: "rgb(var(--accent-rgb))" }}>great together.</span>
+                <span style={{ color: "var(--duo-2)" }}>great together.</span>
               </h3>
               <p className="mt-4 text-base leading-relaxed max-w-md"
                 style={{ color: "rgb(var(--ink-rgb) / 0.55)" }}>

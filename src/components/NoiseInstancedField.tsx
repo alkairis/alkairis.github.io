@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent, RefObject } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
@@ -15,11 +15,13 @@ const PALETTE: Record<Theme, ScenePalette> = {
 
 /**
  * Scene colours come from the `--wave-*` theme tokens in index.css, so the
- * hero follows the site palette instead of keeping its own. Read on theme
+ * hero follows the site palette instead of keeping its own. They are read
+ * from the field's own element, so a section that re-tones itself (e.g. a
+ * dark hero band in light mode) restyles the field too. Read on theme
  * change; data-theme is already applied by then (see useThemeStore).
  */
-const readPalette = (theme: Theme): ScenePalette => {
-  const styles = getComputedStyle(document.documentElement);
+const readPalette = (theme: Theme, host: Element | null): ScenePalette => {
+  const styles = getComputedStyle(host ?? document.documentElement);
   const token = (name: string) => styles.getPropertyValue(name).trim();
   const fallback = PALETTE[theme];
   return {
@@ -220,7 +222,14 @@ export default function NoiseInstancedField({
   const [inView, setInView] = useState(true);
   const [dragging, setDragging] = useState(false);
   const theme = useThemeStore((s) => s.theme);
-  const palette = useMemo(() => readPalette(theme), [theme]);
+  // The host element is kept in state (not just the ref) so the palette is
+  // re-read once it mounts and the local tokens can be resolved.
+  const [host, setHost] = useState<HTMLDivElement | null>(null);
+  const attachHost = useCallback((node: HTMLDivElement | null) => {
+    wrapRef.current = node;
+    setHost(node);
+  }, []);
+  const palette = useMemo(() => readPalette(theme, host), [theme, host]);
 
   // Dense grid, but the cheap per-frame loop keeps it light.
   const cols = quality === "low" ? 72 : 116;
@@ -272,7 +281,7 @@ export default function NoiseInstancedField({
 
   return (
     <div
-      ref={wrapRef}
+      ref={attachHost}
       className={className}
       style={{ position: "absolute", inset: 0, pointerEvents: "auto", cursor: dragging ? "grabbing" : "grab" }}
       onPointerDown={onPointerDown}
