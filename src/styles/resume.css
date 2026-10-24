@@ -1,0 +1,551 @@
+/* Resume page: an open, readable page on screen; a clean A4 document in print. */
+
+.rs {
+  max-width: calc(880px + var(--gutter) * 2);
+  padding-top: clamp(24px, 4vw, 48px);
+}
+
+.rs-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(var(--ink-2));
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease, gap 0.25s var(--ease);
+}
+
+.rs-back:hover {
+  color: rgb(var(--ink));
+  gap: 6px;
+}
+
+.rs-header {
+  margin-top: clamp(32px, 5vw, 56px);
+}
+
+.rs-name {
+  margin-top: 18px;
+  font-size: clamp(48px, 8vw, 88px);
+  font-weight: 620;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.rs-role {
+  max-width: 760px;
+  margin-top: 22px;
+  font-size: clamp(20px, 2.4vw, 27px);
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: rgb(var(--ink-3));
+}
+
+.rs-role strong {
+  font-weight: 620;
+  color: rgb(var(--ink));
+}
+
+.rs-summary {
+  display: grid;
+  gap: 14px;
+  max-width: 780px;
+  margin-top: 28px;
+  font-size: clamp(17px, 1.7vw, 19px);
+  line-height: 1.7;
+  color: rgb(var(--ink-2));
+}
+
+.rs-contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin-top: 28px;
+}
+
+.rs-contacts a,
+.rs-contacts span {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(var(--ink-2));
+  font-weight: 500;
+  font-size: 15px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.rs-contacts a:hover {
+  color: rgb(var(--accent));
+}
+
+.rs-contacts svg {
+  width: 18px;
+  height: 18px;
+  color: rgb(var(--ink-3));
+}
+
+.rs-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.rs-actions .btn-primary {
+  border-radius: 12px;
+  box-shadow: 0 12px 28px -14px rgb(var(--ink) / 0.6);
+}
+
+.rs-actions .btn-ghost {
+  border-radius: 12px;
+}
+
+/* ── Blocks ───────────────────────────────────────────────────────────── */
+
+.rs-block {
+  margin-top: clamp(56px, 8vw, 88px);
+}
+
+.rs-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: clamp(30px, 4vw, 42px);
+  font-weight: 560;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+}
+
+.rs-head-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border: 1px solid rgb(var(--line));
+  border-radius: 12px;
+  background: rgb(var(--card));
+  color: rgb(var(--accent));
+}
+
+.rs-head-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.rs-list {
+  margin-top: 8px;
+}
+
+.rs-item {
+  padding: 28px 0;
+  border-bottom: 1px solid rgb(var(--line));
+}
+
+.rs-item:last-child {
+  border-bottom: 0;
+}
+
+.rs-item h3 {
+  font-size: clamp(20px, 2.3vw, 25px);
+  font-weight: 620;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.rs-org {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin-top: 6px;
+  font-size: 17px;
+  color: rgb(var(--ink-3));
+}
+
+.rs-org strong {
+  font-weight: 560;
+  color: rgb(var(--ink-2));
+}
+
+.rs-date {
+  font-size: 13.5px;
+}
+
+.rs-meta {
+  margin-top: 10px;
+  font-size: 13px;
+  color: rgb(var(--ink-3));
+}
+
+.rs-meta strong {
+  font-weight: 600;
+  color: rgb(var(--ink-2));
+}
+
+.rs-bullets {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.rs-bullets li {
+  position: relative;
+  padding-left: 26px;
+  font-size: 17px;
+  line-height: 1.6;
+  color: rgb(var(--ink-2));
+}
+
+.rs-bullets li::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0.68em;
+  width: 7px;
+  height: 7px;
+  border-radius: 1.5px;
+  background: rgb(var(--ink-3));
+}
+
+.rs-text {
+  margin-top: 12px;
+  font-size: 17px;
+  line-height: 1.6;
+  color: rgb(var(--ink-2));
+}
+
+.rs-chips {
+  margin-top: 16px;
+}
+
+.rs-more {
+  display: inline-flex;
+  margin-top: 18px;
+  font-size: 15px;
+}
+
+.rs-item--row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 0;
+}
+
+.rs-item--row h3 {
+  font-size: 20px;
+}
+
+.rs-item--row .arrow-link {
+  flex: none;
+  font-size: 14.5px;
+}
+
+.rs-skills {
+  display: grid;
+  margin: 8px 0 0;
+}
+
+.rs-skills > div {
+  padding: 24px 0;
+  border-bottom: 1px solid rgb(var(--line));
+}
+
+.rs-skills > div:last-child {
+  border-bottom: 0;
+}
+
+.rs-skills dt {
+  margin-bottom: 14px;
+  font-weight: 620;
+  font-size: 16px;
+  color: rgb(var(--ink-2));
+}
+
+.rs-skills dd {
+  margin: 0;
+}
+
+.rs-skills dd.rs-text {
+  margin-top: 0;
+}
+
+.rs-skills .chip {
+  height: 38px;
+  padding: 0 16px 0 12px;
+  font-size: 15px;
+  color: rgb(var(--ink));
+  background: rgb(var(--card) / 0.6);
+}
+
+.rs-skills .chip img {
+  width: 18px;
+  height: 18px;
+}
+
+.rs-print-foot {
+  display: none;
+}
+
+/* ── Hiring card ──────────────────────────────────────────────────────── */
+
+.resume-hire {
+  margin-top: clamp(64px, 9vw, 104px);
+  padding-bottom: 32px;
+}
+
+.contact--card {
+  grid-template-columns: minmax(0, 1fr);
+  border-top: 5px solid rgb(var(--accent));
+}
+
+.contact--card .contact-title {
+  max-width: 760px;
+}
+
+@media (max-width: 640px) {
+  .rs-item--row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .rs-head-icon {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+/* ── Print ────────────────────────────────────────────────────────────── */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 14mm 16mm;
+  }
+
+  :root,
+  [data-theme="dark"] {
+    --bg: 255 255 255;
+    --card: 255 255 255;
+    --surface: 255 255 255;
+    --ink: 0 0 0;
+    --ink-2: 40 40 40;
+    --ink-3: 95 95 95;
+    --line: 215 215 215;
+    --accent: 15 118 110;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color-scheme: light;
+    font-size: 10pt;
+  }
+
+  .nav,
+  .ghost-dock,
+  .ai-layer,
+  .skip-link,
+  .rs-back,
+  .rs-actions,
+  .rs-more,
+  .resume-hire,
+  .footer {
+    display: none !important;
+  }
+
+  .js-reveal [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .rs {
+    max-width: none;
+    padding: 0;
+  }
+
+  .rs-header {
+    margin-top: 0;
+    padding-bottom: 10pt;
+    border-bottom: 1.5pt solid #000;
+  }
+
+  .rs-header .eyebrow {
+    display: none;
+  }
+
+  .rs-name {
+    margin-top: 0;
+    font-size: 26pt;
+  }
+
+  .rs-role {
+    margin-top: 4pt;
+    font-size: 12pt;
+  }
+
+  .rs-summary {
+    margin-top: 8pt;
+    gap: 4pt;
+    font-size: 10pt;
+    line-height: 1.5;
+  }
+
+  .rs-contacts {
+    gap: 2pt 14pt;
+    margin-top: 8pt;
+  }
+
+  .rs-contacts a,
+  .rs-contacts span {
+    font-size: 9pt;
+    gap: 4pt;
+  }
+
+  .rs-contacts svg {
+    width: 9pt;
+    height: 9pt;
+  }
+
+  .rs-block {
+    margin-top: 14pt;
+  }
+
+  .rs-head {
+    gap: 6pt;
+    padding-bottom: 4pt;
+    border-bottom: 0.75pt solid #ccc;
+    font-size: 11pt;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(var(--accent));
+    break-after: avoid;
+  }
+
+  .rs-head-icon {
+    width: auto;
+    height: auto;
+    border: 0;
+    background: none;
+  }
+
+  .rs-head-icon svg {
+    width: 11pt;
+    height: 11pt;
+  }
+
+  .rs-item {
+    padding: 6pt 0;
+    border: 0;
+    break-inside: avoid;
+  }
+
+  .rs-item h3,
+  .rs-item--row h3 {
+    font-size: 11pt;
+  }
+
+  .rs-org,
+  .rs-text,
+  .rs-bullets li {
+    font-size: 10pt;
+  }
+
+  .rs-org {
+    margin-top: 1pt;
+  }
+
+  .rs-meta {
+    margin-top: 2pt;
+    font-size: 8.5pt;
+  }
+
+  .rs-bullets {
+    gap: 2pt;
+    margin-top: 4pt;
+  }
+
+  .rs-bullets li {
+    padding-left: 12pt;
+    line-height: 1.45;
+  }
+
+  .rs-bullets li::before {
+    left: 2pt;
+    width: 4pt;
+    height: 4pt;
+  }
+
+  .rs-text {
+    margin-top: 3pt;
+    line-height: 1.45;
+  }
+
+  .rs-chips {
+    margin-top: 4pt;
+  }
+
+  .chip {
+    height: auto;
+    padding: 1pt 6pt;
+    font-size: 8.5pt;
+    border-color: #ccc;
+    background: none !important;
+  }
+
+  .chip img {
+    display: none;
+  }
+
+  .rs-skills > div {
+    display: grid;
+    grid-template-columns: 110pt 1fr;
+    gap: 8pt;
+    padding: 3pt 0;
+    border: 0;
+  }
+
+  .rs-skills dt {
+    margin: 0;
+    font-size: 10pt;
+  }
+
+  .rs-skills .chip {
+    height: auto;
+    padding: 0;
+    border: 0;
+    font-size: 10pt;
+  }
+
+  .rs-skills .chips {
+    gap: 0 8pt;
+  }
+
+  .rs-item--row {
+    padding: 3pt 0;
+  }
+
+  .rs-item--row .arrow-link {
+    display: none;
+  }
+
+  .rs-print-foot {
+    display: block;
+    margin-top: 16pt;
+    font-size: 8pt;
+    color: #666;
+    text-align: center;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
+
+.rs-hire-wrap {
+  max-width: calc(880px + var(--gutter) * 2);
+}

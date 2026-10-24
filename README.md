@@ -76,18 +76,17 @@ flowchart LR
 ![React](https://img.shields.io/badge/React_19-20232A?style=flat-square&logo=react&logoColor=61DAFB)
 ![Vite](https://img.shields.io/badge/Vite_6-646CFF?style=flat-square&logo=vite&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
-![Tailwind](https://img.shields.io/badge/Tailwind_v4-0F172A?style=flat-square&logo=tailwindcss&logoColor=38bdf8)
-![Three.js](https://img.shields.io/badge/Three.js_·_R3F-black?style=flat-square&logo=three.js&logoColor=white)
-![GSAP](https://img.shields.io/badge/GSAP_3-88CE02?style=flat-square&logo=greensock&logoColor=black)
 ![Zustand](https://img.shields.io/badge/Zustand-2D3748?style=flat-square&logo=react&logoColor=white)
 
 </div>
 
-- **Rendering** — React 19, Vite 6, client-side routing via React Router 7
-- **Styling** — Tailwind v4 (`@tailwindcss/vite`) + hand-authored CSS for the glass/glow surfaces
-- **State & data** — Zustand stores with in-flight request de-duplication, axios client with JWT interceptors
-- **Motion** — GSAP + ScrollTrigger for scroll reveals; `@react-three/fiber` for the hero field; a hand-ported WebGL fluid solver for the cursor
-- **CI/CD** — GitHub Actions → GitHub Pages, with `npm ci`, a `tsc --noEmit` gate, and a reproducible lockfile
+- **Rendering**: React 19, Vite 6, and client-side routing via React Router 7 (`/`, `/resume`, and the CMS routes).
+- **Styling**: hand-written CSS on a small token system: warm paper and deep-ink themes with one teal accent, Geist for text, Geist Mono for data and Instrument Serif for emphasis. Fonts are self-hosted through Fontsource, so the page makes no third-party font requests.
+- **The ghost**: a floating assistant whose eyes follow the cursor. Click it, or press `⌘K` / `Ctrl+K` / `/`, to open an AI menu that answers questions about the site with **Okapi BM25 over the site's own content**. It runs in the browser with no LLM call. The answers are extractive, cite their sources, and show the trace: expanded query terms, chunks matched, and time taken. The same menu works as a command palette for navigation and actions.
+- **Case studies**: each one comes with an SVG architecture diagram drawn from a small layout spec, with an animated data-flow direction. On narrow screens the diagram scrolls sideways instead of shrinking.
+- **State & data**: Zustand stores and module-cached resource hooks with in-flight request de-duplication. The axios client uses JWT interceptors. Every section has bundled fallback content for API cold starts.
+- **Resume**: `/resume` renders the same CMS data as a printable page. Its print stylesheet produces a clean A4 PDF.
+- **CI/CD**: GitHub Actions deploys to GitHub Pages, running `npm ci`, ESLint and a `tsc --noEmit` gate against a reproducible lockfile.
 
 ---
 
@@ -129,13 +128,16 @@ Without a backend running, every section falls back to its bundled content — s
 
 ```text
 src/
-├─ api/          typed axios client — DTOs, domain types, JWT interceptors
-├─ sections/     page sections (Hero, Projects, Experience, Skills, …)
-├─ components/   reusable UI — modals, buttons, WebGL field, cursor
-├─ stores/       Zustand stores with request de-duplication
-├─ constants/    nav config + static fallback content
-├─ pages/        JWT-gated admin CMS routes
-└─ hooks/        shared data hooks (module-cached)
+├─ api/          typed axios client: DTOs, domain types, JWT interceptors
+├─ content/      what the CMS doesn't model: headline profile facts, case studies
+├─ sections/     home-page sections (Hero, Work, Experience, Toolbox, …)
+├─ components/   nav, ghost + AI menu, ask console, diagrams, icons
+├─ lib/          BM25 retrieval engine and the site corpus builder
+├─ hooks/        shared data hooks (module-cached), search index, scroll reveal
+├─ stores/       Zustand stores: theme, blog, assistant
+├─ constants/    static fallback content and social-icon mapping
+├─ styles/       site and resume (screen + print) stylesheets
+└─ pages/        /resume, plus the JWT-gated admin CMS routes
 ```
 
 ---

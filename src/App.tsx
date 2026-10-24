@@ -1,93 +1,71 @@
-import { useEffect, useRef } from "react";
-import Footer from "./sections/Footer";
-import Contact from "./sections/Contact";
-import Experience from "./sections/Experience";
+import { Suspense, useEffect } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import SiteNav from "./components/SiteNav";
+import Ghost from "./components/Ghost";
+import AiMenu from "./components/AiMenu";
 import Hero from "./sections/Hero";
+import Work from "./sections/Work";
+import Projects from "./sections/Projects";
 import About from "./sections/About";
-import ShowcaseSection from "./sections/ShowcaseSection";
-import Navbar from "./components/NavBar";
-import Tech from "./sections/Tech";
-import Blog from "./sections/Blog";
-import CornerPreloader from "./components/CornerPreloader";
-import CustomCursor from "./components/CustomCursor";
-import { LoadingProvider } from "./context/LoadingProvider";
-import { useAppLoading } from "./context/loadingContext";
-import Certificates from "./sections/Certificates";
-import Achievements from "./sections/Achievements";
+import Journey from "./sections/Journey";
+import Toolbox from "./sections/Toolbox";
+import Credentials from "./sections/Credentials";
+import Writing from "./sections/Writing";
+import Contact from "./sections/Contact";
+import Footer from "./sections/Footer";
+import { useReveal } from "./hooks/useReveal";
+import "./components/assistant.css";
+import "./styles/site.css";
 
-const AppContent = () => {
-  const { isLoading } = useAppLoading();
-  const orbRef = useRef<HTMLDivElement | null>(null);
-  const mouseRef = useRef({ x: 0.5, y: 0.5 });
-  const posRef = useRef({ x: 0.5, y: 0.5 });
-  const rafRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      mouseRef.current.x = e.clientX / window.innerWidth;
-      mouseRef.current.y = e.clientY / window.innerHeight;
-    };
-
-    const tick = () => {
-      posRef.current.x += (mouseRef.current.x - posRef.current.x) * 0.05;
-      posRef.current.y += (mouseRef.current.y - posRef.current.y) * 0.05;
-
-      if (orbRef.current) {
-        const x = posRef.current.x * 100;
-        const y = posRef.current.y * 100;
-        orbRef.current.style.background =
-          `radial-gradient(680px circle at ${x}% ${y}%, rgb(var(--accent-rgb) / 0.18) 0%, rgb(var(--accent-2-rgb) / 0.11) 42%, transparent 72%)`;
-      }
-
-      rafRef.current = requestAnimationFrame(tick);
-    };
-
-    window.addEventListener("mousemove", onMove);
-    rafRef.current = requestAnimationFrame(tick);
-
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
-
+/** Chrome shared by every public page: nav, the ghost and its AI menu. */
+export const SiteShell = () => {
+  useReveal();
   return (
-    <div className="app-shell">
-      <CornerPreloader isLoading={isLoading} />
-      <CustomCursor />
-
-      <div className="app-bg" aria-hidden="true">
-        <div className="app-blob app-blob-purple" />
-        <div className="app-blob app-blob-cyan" />
-        <div ref={orbRef} className="app-orb" />
-        <div className="app-grid" />
-      </div>
-
-      <div className="app-content">
-        <Navbar />
-        <Hero />
-        <About />
-        <ShowcaseSection />
-        <Experience />
-        <Tech />
-        <Certificates />
-        <Achievements />
-        <Blog />
-        <Contact />
-        <Footer />
-      </div>
-
-      {/* ChatBot is built but not shipped: it needs VITE_CHATBOT_API_URL and a
-          backend to answer. Re-enable by importing ./components/ChatBot and
-          rendering it here. */}
-    </div>
+    <>
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
+      <SiteNav />
+      <main id="main">
+        {/* Local boundary so a lazy page swaps in under the nav, not over it. */}
+        <Suspense fallback={<div className="page-wait" />}>
+          <Outlet />
+        </Suspense>
+      </main>
+      <Ghost />
+      <AiMenu />
+    </>
   );
 };
 
-const App = () => (
-  <LoadingProvider>
-    <AppContent />
-  </LoadingProvider>
-);
+const Home = () => {
+  const { hash } = useLocation();
 
-export default App;
+  // Arriving from another route with a hash (/#work) — React Router doesn't
+  // scroll to anchors, so do it once the sections have rendered.
+  useEffect(() => {
+    if (!hash) {
+      window.scrollTo(0, 0);
+      return;
+    }
+    const t = setTimeout(() => document.getElementById(hash.slice(1))?.scrollIntoView(), 60);
+    return () => clearTimeout(t);
+  }, [hash]);
+
+  return (
+    <>
+      <Hero />
+      <Work />
+      <Projects />
+      <About />
+      <Journey />
+      <Toolbox />
+      <Credentials />
+      <Writing />
+      <Contact />
+      <Footer />
+    </>
+  );
+};
+
+export default Home;

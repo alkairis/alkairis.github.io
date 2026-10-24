@@ -15,6 +15,29 @@
     <meta name="theme-color" content="#f6f3fa" />
     <link rel="canonical" href="https://alkairis.github.io/" />
 
+
+    <!-- Structured data: lets search engines show this as a person profile. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Deepak Singh Rajput",
+        "alternateName": "alkairis",
+        "url": "https://alkairis.github.io/",
+        "image": "https://alkairis.github.io/og-dsr.png",
+        "jobTitle": "Senior Software Engineer, Generative AI",
+        "worksFor": { "@type": "Organization", "name": "Impetus Technologies" },
+        "address": { "@type": "PostalAddress", "addressLocality": "Bengaluru", "addressCountry": "IN" },
+        "knowsAbout": ["Generative AI", "Retrieval-Augmented Generation", "LangGraph", "LangChain", "Agentic AI", "Google Cloud", "AWS", "BigQuery", "FastAPI", "Python"],
+        "sameAs": [
+          "https://github.com/alkairis",
+          "https://www.linkedin.com/in/alkairis/",
+          "https://alkairis.medium.com",
+          "https://x.com/alkairis_"
+        ]
+      }
+    </script>
+
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Deepak Singh Rajput" />
@@ -38,22 +61,6 @@
     <meta name="twitter:description" content="Building production Generative AI — RAG pipelines, LangChain &amp; LangGraph agents, and large-scale BigQuery / Dataproc migrations on AWS and Google Cloud. GCP Generative AI Leader certified." />
     <meta name="twitter:image" content="https://alkairis.github.io/og-dsr.png" />
     <meta name="twitter:image:alt" content="Deepak Singh Rajput — Senior Software Engineer specializing in Generative AI, AWS and GCP" />
-
-    <!--
-      Paint the loader's background before any JS/CSS loads so the preloader
-      doesn't flash a bare screen first. Only applied when the loader will
-      actually show (first visit of the session, motion allowed).
-    -->
-    <style>
-      html.binary-pending,
-      html.binary-pending body {
-        background-color: #f6f3fa;
-      }
-      html[data-theme="dark"].binary-pending,
-      html[data-theme="dark"].binary-pending body {
-        background-color: #050505;
-      }
-    </style>
     <!--
       Apply the saved theme (or the OS preference on a first visit) before
       anything paints. Keep the key in sync with src/stores/useThemeStore.ts.
@@ -77,26 +84,6 @@
         if (theme === "dark") {
           var meta = document.querySelector('meta[name="theme-color"]');
           if (meta) meta.setAttribute("content", "#050505");
-        }
-      })();
-    </script>
-    <script>
-      (function () {
-        try {
-          var reduced =
-            window.matchMedia &&
-            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-          var seen = false;
-          try {
-            seen = sessionStorage.getItem("alkairis-preloader-seen") === "1";
-          } catch (e) {
-            /* sessionStorage unavailable (privacy mode) — treat as not seen */
-          }
-          if (!reduced && !seen) {
-            document.documentElement.classList.add("binary-pending");
-          }
-        } catch (e) {
-          /* ignore */
         }
       })();
     </script>
