@@ -1,16 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { useAssistantStore } from "../stores/useAssistantStore";
+import { useEyeTracking } from "../hooks/useEyeTracking";
 import { GHOST_BODY } from "./GhostMark";
 
-const MAX_EYE = 3.6; // px the pupils can travel inside the head
-const MAX_TILT = 9; // degrees the body leans toward the cursor
 const HINT_KEY = "alkairis-ghost-hint";
 
 /**
  * The floating assistant in the bottom corner. It bobs in place, leans toward
  * the pointer and follows it with its eyes; clicking it (or ⌘K / Ctrl+K)
- * opens the AI menu. Pointer tracking writes CSS variables from a single rAF
- * so it never re-renders React.
+ * opens the AI menu. Tracking writes CSS variables (see useEyeTracking), so
+ * it never re-renders React.
  */
 const Ghost = () => {
   const open = useAssistantStore((s) => s.open);
@@ -18,54 +17,8 @@ const Ghost = () => {
   const rootRef = useRef<HTMLButtonElement | null>(null);
   const [hint, setHint] = useState(false);
 
-  // Eyes + lean follow the pointer.
-  useEffect(() => {
-    const el = rootRef.current;
-    if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    let frame = 0;
-    let px = 0;
-    let py = 0;
-
-    const apply = () => {
-      frame = 0;
-      const rect = el.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height * 0.42;
-      const dx = px - cx;
-      const dy = py - cy;
-      const dist = Math.hypot(dx, dy) || 1;
-      const reach = Math.min(dist / 90, 1) * MAX_EYE;
-      el.style.setProperty("--ex", `${((dx / dist) * reach).toFixed(2)}px`);
-      el.style.setProperty("--ey", `${((dy / dist) * reach).toFixed(2)}px`);
-      const tilt = Math.max(-1, Math.min(1, dx / 600)) * MAX_TILT;
-      el.style.setProperty("--tilt", `${tilt.toFixed(2)}deg`);
-      el.classList.toggle("is-near", dist < 140);
-    };
-
-    const onMove = (e: PointerEvent) => {
-      if (e.pointerType === "touch") return;
-      px = e.clientX;
-      py = e.clientY;
-      if (!frame) frame = requestAnimationFrame(apply);
-    };
-
-    const onLeave = () => {
-      el.style.setProperty("--ex", "0px");
-      el.style.setProperty("--ey", "0px");
-      el.style.setProperty("--tilt", "0deg");
-      el.classList.remove("is-near");
-    };
-
-    window.addEventListener("pointermove", onMove, { passive: true });
-    document.documentElement.addEventListener("pointerleave", onLeave);
-    return () => {
-      window.removeEventListener("pointermove", onMove);
-      document.documentElement.removeEventListener("pointerleave", onLeave);
-      if (frame) cancelAnimationFrame(frame);
-    };
-  }, []);
+  // Eyes + lean follow the pointer (or finger, or scroll; wander when idle).
+  useEyeTracking(rootRef);
 
   // Introduce itself once per session, a few seconds after the page settles.
   useEffect(() => {

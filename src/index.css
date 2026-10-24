@@ -61,11 +61,13 @@
   --gutter: clamp(16px, 4vw, 40px);
 }
 
-/* Dark tones: dark mode, plus the light-mode "stage" — the hero band and the
-   nav while it floats over it (SiteNav adds .on-hero at the top of home). */
+/* Dark tones: dark mode, plus the light-mode "stage" — the hero band, the
+   nav while it floats over it (SiteNav adds .on-hero at the top of home) —
+   and the opening preloader. */
 [data-theme="dark"],
 :root:not([data-theme="dark"]) .hero,
-:root:not([data-theme="dark"]) .nav.on-hero:not(.is-scrolled):not(.is-sheet) {
+:root:not([data-theme="dark"]) .nav.on-hero:not(.is-scrolled):not(.is-sheet),
+.pl {
   color-scheme: dark;
 
   --bg: 5 5 5;
@@ -438,6 +440,13 @@ ol {
 .js-reveal [data-reveal][data-in] {
   opacity: 1;
   transform: none;
+}
+
+/* While the preloader is up, hold everything at its start state so the
+   page animates in as the preloader leaves rather than unseen beneath it. */
+.js-reveal.preloading [data-reveal][data-in] {
+  opacity: 0;
+  transform: translateY(18px);
 }
 
 @media (prefers-reduced-motion: reduce) {

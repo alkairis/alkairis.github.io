@@ -1,0 +1,179 @@
+/* Opening screen. Always on the dark tones (see the token selector in
+   index.css), whatever the visitor's theme. */
+
+.pl {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 60% 50% at 75% 50%, rgb(var(--accent-2) / 0.35), transparent 70%),
+    rgb(var(--bg));
+  color: rgb(var(--ink));
+  clip-path: circle(150% at 50% 50%);
+  transition: clip-path 0.85s cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+/* Exit: the whole screen collapses into the corner where the ghost lives. */
+.pl.is-leaving {
+  clip-path: circle(0px at calc(100% - 60px) calc(100% - 62px));
+  pointer-events: none;
+}
+
+.pl-inner {
+  position: relative;
+  width: min(1080px, calc(100% - var(--gutter) * 2));
+  transition: opacity 0.45s ease, transform 0.6s var(--ease);
+}
+
+.pl.is-leaving .pl-inner {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+/* ── Orb + ghost ──────────────────────────────────────────────────────── */
+
+.pl-orb {
+  --ex: 0;
+  --ey: 0;
+  --tilt: 0deg;
+  position: absolute;
+  right: 2%;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: clamp(230px, 34vw, 430px);
+  aspect-ratio: 1;
+  margin-top: calc(clamp(230px, 34vw, 430px) / -2 - 20px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%, #7a35c9 0%, #3b0a6b 46%, #1b0532 74%);
+  box-shadow:
+    0 0 140px -20px rgb(0 229 255 / 0.45),
+    inset 0 0 70px rgb(0 229 255 / 0.22);
+  animation: pl-orb-in 1s var(--ease) both;
+}
+
+.pl-ring {
+  position: absolute;
+  inset: -16px;
+  border: 1.5px dashed rgb(0 229 255 / 0.45);
+  border-radius: 50%;
+  animation: pl-spin 14s linear infinite;
+}
+
+/* Two classes: the shared .ghost-svg rule (assistant.css) sets width: 100%. */
+.pl-orb .pl-ghost {
+  width: 30%;
+  animation: ghost-bob 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 10px 18px rgb(0 0 0 / 0.45));
+}
+
+@keyframes pl-orb-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+@keyframes pl-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Type ─────────────────────────────────────────────────────────────── */
+
+.pl-name {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.24em;
+  max-width: 11ch;
+  font-size: clamp(48px, 9.5vw, 128px);
+  font-weight: 620;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+}
+
+.pl-name span {
+  display: inline-block;
+  animation: pl-rise 0.9s var(--ease) both;
+}
+
+.pl-role {
+  position: relative;
+  z-index: 1;
+  margin-top: 20px;
+  font-size: clamp(17px, 2vw, 23px);
+  color: rgb(var(--ink-2));
+  animation: pl-rise 0.9s var(--ease) 0.4s both;
+}
+
+.pl-role .serif {
+  font-size: 1.12em;
+  color: rgb(var(--accent));
+}
+
+@keyframes pl-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.45em);
+  }
+}
+
+/* ── Chunk meter ──────────────────────────────────────────────────────── */
+
+.pl-meter {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+  height: 34px;
+  margin-top: 48px;
+  animation: pl-rise 0.9s var(--ease) 0.55s both;
+}
+
+.pl-meter i {
+  width: 2px;
+  height: 12px;
+  border-radius: 1px;
+  background: rgb(var(--ink) / 0.3);
+  transition: height 0.3s var(--ease), background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pl-meter i.is-lit {
+  height: 30px;
+  background: rgb(var(--accent));
+  box-shadow: 0 0 10px rgb(var(--accent) / 0.8);
+}
+
+/* The newest lit chunk stands a little taller, like a cursor. */
+.pl-meter i.is-lit:not(:has(+ .is-lit)) {
+  height: 34px;
+}
+
+.pl-status {
+  position: relative;
+  z-index: 1;
+  margin-top: 14px;
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: rgb(var(--ink-3));
+  animation: pl-rise 0.9s var(--ease) 0.65s both;
+}
+
+@media (max-width: 640px) {
+  .pl-orb {
+    right: -12%;
+    width: 64vw;
+    margin-top: calc(-32vw - 190px);
+  }
+
+  .pl-meter {
+    gap: 5px;
+  }
+}
