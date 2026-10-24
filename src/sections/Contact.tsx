@@ -9,7 +9,13 @@ import { useSiteData } from "../hooks/useSiteData";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
-const Contact = () => {
+type ContactProps = {
+  /** "card" is the closing block on /resume: no form, no section number. */
+  variant?: "section" | "card";
+};
+
+const Contact = ({ variant = "section" }: ContactProps) => {
+  const isCard = variant === "card";
   const { email, links } = useSiteData();
   const [copied, setCopied] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -39,18 +45,26 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="section" aria-labelledby="contact-title">
-      <div className="container">
-        <div className="contact" data-reveal>
+    <section
+      id={isCard ? "hire" : "contact"}
+      className={isCard ? "resume-hire" : "section"}
+      aria-labelledby={isCard ? "hire-title" : "contact-title"}
+    >
+      <div className={isCard ? undefined : "container"}>
+        <div className={`contact${isCard ? " contact--card" : ""}`} data-reveal>
           <div className="contact-orb" aria-hidden="true" />
 
           <div className="contact-main">
             <p className="eyebrow">
-              <span className="section-index">07</span>
-              <span className="section-rule" aria-hidden="true" />
+              {!isCard && (
+                <>
+                  <span className="section-index">07</span>
+                  <span className="section-rule" aria-hidden="true" />
+                </>
+              )}
               Contact
             </p>
-            <h2 id="contact-title" className="contact-title">
+            <h2 id={isCard ? "hire-title" : "contact-title"} className="contact-title">
               Hiring for GenAI or <span className="serif accent-text">LLM platform</span> work?
             </h2>
 
@@ -64,6 +78,13 @@ const Contact = () => {
                   {copied ? "Copied" : "Copy email"}
                 </button>
               </div>
+            ) : isCard ? (
+              <p className="contact-fallback">
+                <Link to="/#contact" className="link-u">
+                  Leave a note
+                </Link>{" "}
+                — it lands straight in my inbox.
+              </p>
             ) : (
               <p className="contact-fallback">Leave a note below — it lands straight in my inbox.</p>
             )}
@@ -77,9 +98,15 @@ const Contact = () => {
                 </li>
               ))}
               <li>
-                <Link to="/resume" className="link-u">
-                  Resume
-                </Link>
+                {isCard ? (
+                  <Link to="/#work" className="link-u">
+                    Selected work
+                  </Link>
+                ) : (
+                  <Link to="/resume" className="link-u">
+                    Resume
+                  </Link>
+                )}
               </li>
             </ul>
 
@@ -91,48 +118,50 @@ const Contact = () => {
             </p>
           </div>
 
-          <form className="contact-form" onSubmit={submit}>
-            <p className="contact-form-title">Or leave a note</p>
-            <label>
-              <span>Name</span>
-              <input
-                required
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                autoComplete="name"
-                disabled={status === "sending"}
-              />
-            </label>
-            <label>
-              <span>Email</span>
-              <input
-                required
-                type="email"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                autoComplete="email"
-                disabled={status === "sending"}
-              />
-            </label>
-            <label>
-              <span>Message</span>
-              <textarea
-                required
-                rows={4}
-                value={form.message}
-                onChange={(e) => setForm({ ...form, message: e.target.value })}
-                placeholder="The role, the team, the problem…"
-                disabled={status === "sending"}
-              />
-            </label>
-            <button type="submit" className="btn btn-primary" disabled={status === "sending"}>
-              {status === "sending" ? "Sending…" : "Send"} <ArrowRight />
-            </button>
-            <p className={`contact-status is-${status}`} role="status">
-              {status === "sent" && "Thanks — I'll reply within a day."}
-              {status === "error" && "That didn't go through. Email or LinkedIn will reach me."}
-            </p>
-          </form>
+          {!isCard && (
+            <form className="contact-form" onSubmit={submit}>
+              <p className="contact-form-title">Or leave a note</p>
+              <label>
+                <span>Name</span>
+                <input
+                  required
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  autoComplete="name"
+                  disabled={status === "sending"}
+                />
+              </label>
+              <label>
+                <span>Email</span>
+                <input
+                  required
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  autoComplete="email"
+                  disabled={status === "sending"}
+                />
+              </label>
+              <label>
+                <span>Message</span>
+                <textarea
+                  required
+                  rows={4}
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
+                  placeholder="The role, the team, the problem…"
+                  disabled={status === "sending"}
+                />
+              </label>
+              <button type="submit" className="btn btn-primary" disabled={status === "sending"}>
+                {status === "sending" ? "Sending…" : "Send"} <ArrowRight />
+              </button>
+              <p className={`contact-status is-${status}`} role="status">
+                {status === "sent" && "Thanks — I'll reply within a day."}
+                {status === "error" && "That didn't go through. Email or LinkedIn will reach me."}
+              </p>
+            </form>
+          )}
         </div>
       </div>
     </section>

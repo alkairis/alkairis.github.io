@@ -116,3 +116,52 @@ export const Corner = (p: IconProps) => (
     <path d="M9 10 4 15l5 5M4 15h11a5 5 0 0 0 5-5V4" />
   </svg>
 );
+
+export const Briefcase = (p: IconProps) => (
+  <svg {...base(p)}>
+    <rect x="3" y="7" width="18" height="13" rx="2.5" />
+    <path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3 12.5h18M10.5 12.5v1.5h3v-1.5" />
+  </svg>
+);
+
+export const GradCap = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="m2.5 9.5 9.5-5 9.5 5-9.5 5-9.5-5Z" />
+    <path d="M6.5 11.6V16c1.5 1.6 3.4 2.5 5.5 2.5s4-.9 5.5-2.5v-4.4M21.5 9.5v5" />
+  </svg>
+);
+
+export const Award = (p: IconProps) => (
+  <svg {...base(p)}>
+    <circle cx="12" cy="9" r="5.5" />
+    <path d="m8.5 13.3-1.5 7.2 5-2.6 5 2.6-1.5-7.2" />
+  </svg>
+);
+
+export const Layers = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="m12 3.5 9 4.5-9 4.5L3 8l9-4.5Z" />
+    <path d="m3 12.5 9 4.5 9-4.5M3 16.5l9 4.5 9-4.5" />
+  </svg>
+);
+
+export const Badge = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M12 2.8 14.3 4.5l2.8-.2.9 2.7 2.4 1.5-.9 2.7.9 2.7-2.4 1.5-.9 2.7-2.8-.2L12 19.6l-2.3-1.7-2.8.2-.9-2.7-2.4-1.5.9-2.7-.9-2.7L6 7l.9-2.7 2.8.2L12 2.8Z" />
+    <path d="m9 11.3 2 2 4-4" />
+  </svg>
+);
+
+export const MapPin = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" />
+    <circle cx="12" cy="10" r="2.3" />
+  </svg>
+);
+
+export const User = (p: IconProps) => (
+  <svg {...base(p)}>
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4.5 20.5c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5" />
+  </svg>
+);

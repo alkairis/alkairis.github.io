@@ -19,7 +19,7 @@ const Footer = () => {
           <a href={profile.repoUrl} target="_blank" rel="noopener noreferrer" className="link-u">
             Source
           </a>
-          <a href="#top" className="link-u">
+          <a href="#main" className="link-u">
             Back to top ↑
           </a>
         </p>
