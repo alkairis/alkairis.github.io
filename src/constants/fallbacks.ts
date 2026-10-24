@@ -17,7 +17,6 @@ import type {
   Recognition,
   TechnicalSkill,
 } from '../api/api';
-import type { RecognitionStat } from '../stores/useRecognitionStore';
 
 // ─── About ──────────────────────────────────────────────────────────────────
 export const fallbackAbout: About = {
@@ -171,12 +170,6 @@ export const fallbackCertificates: Certificate[] = [
 ];
 
 // ─── Recognitions ──────────────────────────────────────────────────────────
-export const fallbackRecognitionStats: RecognitionStat[] = [
-  { label: 'Professional Certifications', value: '4+' },
-  { label: 'Years Experience', value: '4+' },
-  { label: 'Major Projects Completed', value: '3+' },
-];
-
 export const fallbackRecognitions: Recognition[] = [
   {
     id: 'fallback-recog-excellence',

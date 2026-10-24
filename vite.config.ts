@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -9,7 +8,7 @@ export default defineConfig({
   // a project page instead (https://<user>.github.io/<repo>/), set VITE_BASE to
   // "/<repo>/" at build time — nothing about the domain is hardcoded here.
   base: process.env.VITE_BASE ?? "/",
-  plugins: [react(), tailwindcss()],
+  plugins: [react()],
   // Proxy backend calls through the dev origin so the browser doesn't fire
   // cross-origin requests at localhost:8080 — that pattern trips Chrome's
   // "Local Network Access" permission prompt on startup.

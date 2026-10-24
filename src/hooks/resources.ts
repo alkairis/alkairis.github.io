@@ -1,17 +1,21 @@
 import { useEffect, useState } from "react";
 import {
   getAbout,
+  getAchievements,
   getCertificates,
   getProfessionalExperience,
   getProjects,
   getSocialMedia,
   getTechnicalSkills,
+  getYearsOfExperience,
+  PROFESSIONAL_EXPERIENCE_START,
 } from "../api/api";
 import type {
   About,
   Certificate,
   Experience,
   Project,
+  Recognition,
   SocialMedia,
   TechnicalSkill,
 } from "../api/api";
@@ -97,4 +101,19 @@ export const useSocialMedia = createResourceHook<SocialMedia[]>(getSocialMedia, 
 export const useTechnicalSkills = createResourceHook<TechnicalSkill[]>(
   getTechnicalSkills,
   []
+);
+export const useAchievements = createResourceHook<Recognition[]>(getAchievements, []);
+
+/** Whole years since the professional-experience anchor, for first paint. */
+const anchorYears = (): number => {
+  const from = new Date(PROFESSIONAL_EXPERIENCE_START);
+  const now = new Date();
+  let years = now.getFullYear() - from.getFullYear();
+  if (now < new Date(now.getFullYear(), from.getMonth(), from.getDate())) years -= 1;
+  return Math.max(years, 0);
+};
+
+export const useYearsOfExperience = createResourceHook<number>(
+  getYearsOfExperience,
+  anchorYears()
 );
