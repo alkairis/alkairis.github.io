@@ -150,7 +150,7 @@ const Contact = () => {
             <div>
               <h3 className="text-3xl md:text-4xl font-semibold text-[rgb(var(--ink-rgb))] leading-tight">
                 Let's build something<br />
-                <span style={{ color: "rgb(var(--accent-rgb))" }}>great together.</span>
+                <span style={{ color: "var(--duo-2)" }}>great together.</span>
               </h3>
               <p className="mt-4 text-base leading-relaxed max-w-md"
                 style={{ color: "rgb(var(--ink-rgb) / 0.55)" }}>
@@ -162,7 +162,7 @@ const Contact = () => {
             <div className="flex flex-wrap items-center gap-4">
               <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full w-fit"
                 style={{ background: "rgb(var(--accent-rgb) / 0.07)", border: "1px solid rgb(var(--accent-rgb) / 0.18)" }}>
-                <span className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse flex-shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-[rgb(var(--accent-3-rgb))] animate-pulse flex-shrink-0" />
                 <span className="text-sm font-medium" style={{ color: "rgb(var(--ink-rgb) / 0.65)" }}>
                   Open to opportunities
                 </span>

@@ -8,8 +8,8 @@ const STORAGE_KEY = 'alkairis-theme';
 
 // Browser-chrome colour on mobile; matches --bg-rgb for each theme.
 const THEME_COLOR: Record<Theme, string> = {
-  light: '#f0f6ff',
-  dark: '#262624',
+  light: '#f6f3fa',
+  dark: '#050505',
 };
 
 const systemTheme = (): Theme =>

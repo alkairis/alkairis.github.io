@@ -152,7 +152,7 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  color: #ffffff;
+  color: var(--btn-ink);
   background: var(--btn-bg);
   border: 1px solid rgb(var(--ink-rgb) / 0.12);
   box-shadow: 0 6px 18px rgba(4, 12, 24, 0.35);
@@ -163,7 +163,7 @@
 
 .cmodal-close:hover {
   transform: rotate(90deg) scale(1.08);
-  color: #ffffff;
+  color: var(--btn-ink);
   background: var(--btn-bg-hover);
   box-shadow: 0 8px 24px rgb(var(--ink-rgb) / 0.28);
 }

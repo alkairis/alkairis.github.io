@@ -7,7 +7,14 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background: transparent;
+    /* The hero is a "stage" surface: it always takes the dark tones (see the
+       token blocks in index.css), with an amethyst glow top-right and a cyan
+       one low-left behind the 3D field. */
+    color: rgb(var(--ink-rgb));
+    background:
+        radial-gradient(55% 45% at 82% 22%, rgb(var(--accent-2-rgb) / 0.32), transparent 70%),
+        radial-gradient(45% 40% at 12% 70%, rgb(var(--accent-rgb) / 0.22), transparent 70%),
+        rgb(var(--bg-rgb));
     /* Dragging the interactive background field would otherwise start a
        native text selection on the hero copy — suppress it. */
     -webkit-user-select: none;
@@ -60,8 +67,8 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: rgb(var(--accent-rgb));
-    box-shadow: 0 0 8px rgb(var(--accent-rgb) / 0.7);
+    background: rgb(var(--accent-3-rgb));
+    box-shadow: 0 0 8px rgb(var(--accent-3-rgb) / 0.7);
     animation: dotPulse 2.2s ease-in-out infinite;
     flex-shrink: 0;
 }
@@ -93,7 +100,13 @@
 .h-name {
     font-size: clamp(1.5rem, 4.5vw, 3.25rem);
     font-weight: 400;
-    color: rgb(var(--ink-rgb));
+    color: var(--duo-1);
+    /* Two-tone name: a duo-1 → duo-2 sweep clipped to the glyphs. With the
+       default (equal) tokens this renders as plain ink. */
+    background: linear-gradient(90deg, var(--duo-1) 15%, var(--duo-2) 85%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     line-height: 1.05;
     letter-spacing: -0.015em;
     min-height: 1.1em;
@@ -101,7 +114,8 @@
 
 /* Override Typewriter cursor color */
 .h-name .Typewriter__cursor {
-    color: rgb(var(--accent-rgb));
+    color: rgb(var(--accent-3-rgb));
+    -webkit-text-fill-color: rgb(var(--accent-3-rgb));
 }
 
 /* ── Tagline ──────────────────────────────────── */
@@ -113,8 +127,12 @@
 }
 
 .h-accent {
-    color: rgb(var(--ink-rgb) / 0.9);
+    color: var(--duo-1);
     font-weight: 500;
+}
+
+.h-accent--2 {
+    color: var(--duo-2);
 }
 
 /* ── Quip ─────────────────────────────────────── */

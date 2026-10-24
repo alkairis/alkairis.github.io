@@ -69,7 +69,7 @@
   place-items: center;
   border-radius: 6px;
   background: var(--btn-bg);
-  color: #fff;
+  color: var(--btn-ink);
 }
 
 .pre-icon {

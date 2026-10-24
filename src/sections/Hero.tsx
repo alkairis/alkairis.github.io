@@ -130,7 +130,7 @@ const Hero = () => {
           Building{" "}
           <span className="h-accent">AI-powered systems</span>
           {" "}and scalable{" "}
-          <span className="h-accent">cloud-native solutions</span>
+          <span className="h-accent h-accent--2">cloud-native solutions</span>
           {" "}that drive real-world impact.
         </p>
 
