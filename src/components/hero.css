@@ -7,7 +7,14 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background: transparent;
+    /* The hero is a "stage" surface: it always takes the dark tones (see the
+       token blocks in index.css), with an amethyst glow top-right and a cyan
+       one low-left behind the 3D field. */
+    color: rgb(var(--ink-rgb));
+    background:
+        radial-gradient(55% 45% at 82% 22%, rgb(var(--accent-2-rgb) / 0.32), transparent 70%),
+        radial-gradient(45% 40% at 12% 70%, rgb(var(--accent-rgb) / 0.22), transparent 70%),
+        rgb(var(--bg-rgb));
     /* Dragging the interactive background field would otherwise start a
        native text selection on the hero copy — suppress it. */
     -webkit-user-select: none;

@@ -9,8 +9,8 @@ type ScenePalette = { low: string; high: string; fog: string; light: string };
 
 /** Fallback scene colours, used when the theme tokens below aren't defined. */
 const PALETTE: Record<Theme, ScenePalette> = {
-  light: { low: "#3b82f6", high: "#7dd3fc", fog: "#eef4ff", light: "#6366f1" },
-  dark: { low: "#115e59", high: "#5eead4", fog: "#262624", light: "#2dd4bf" },
+  light: { low: "#3b0a6b", high: "#00e5ff", fog: "#050505", light: "#00e5ff" },
+  dark: { low: "#3b0a6b", high: "#00e5ff", fog: "#050505", light: "#00e5ff" },
 };
 
 /**

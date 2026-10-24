@@ -30,7 +30,7 @@ const NavBar = () => {
 
   return (
     <>
-      <header className={`navbar ${scrolled ? "scrolled" : "not-scrolled"}`}>
+      <header className={`navbar ${scrolled ? "scrolled" : "not-scrolled"}${menuOpen ? " menu-open" : ""}`}>
         <div className="inner">
           <a href="#hero" className="logo font-audiowide" onClick={closeMenu}>
             Alkairis
