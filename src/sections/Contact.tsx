@@ -51,7 +51,7 @@ const Contact = ({ variant = "section" }: ContactProps) => {
       aria-labelledby={isCard ? "hire-title" : "contact-title"}
     >
       <div className={isCard ? undefined : "container"}>
-        <div className={`contact${isCard ? " contact--card" : ""}`} data-reveal>
+        <div className={`contact${isCard ? " contact--card" : ""}`} data-fx="0.6">
           <div className="contact-orb" aria-hidden="true" />
 
           <div className="contact-main">

@@ -55,7 +55,7 @@ const ProjectCard = ({ project, n }: { project: Project; n: number }) => {
       id={`project-${project.id}`}
       className="case"
       style={tone(TONES[(n - 1) % TONES.length] ?? "teal")}
-      data-reveal
+      data-fx="0.6"
     >
       <div className="case-grid">
         <div className="case-copy">
@@ -150,12 +150,25 @@ const Work = () => {
           }
           aside={<p>The {FEATURED_COUNT} projects I'd most like to talk about, straight from my CMS.</p>}
         />
-        <div className="cases">
-          {projectsLoading && featured.length === 0
-            ? Array.from({ length: FEATURED_COUNT }, (_, i) => (
-                <div key={i} className="skeleton case-skeleton" />
-              ))
-            : featured.map((project, i) => <ProjectCard key={project.id} project={project} n={i + 1} />)}
+      </div>
+
+      {/* On wide screens this pins and the cards slide sideways as you scroll
+          (see useScrollFx); elsewhere it's a plain vertical stack. */}
+      <div className="hs" data-hscroll>
+        <div className="hs-stage">
+          <div className="hs-track">
+            {projectsLoading && featured.length === 0
+              ? Array.from({ length: FEATURED_COUNT }, (_, i) => (
+                  <div key={i} className="skeleton case-skeleton" />
+                ))
+              : featured.map((project, i) => <ProjectCard key={project.id} project={project} n={i + 1} />)}
+          </div>
+          <div className="hs-ui container" aria-hidden="true">
+            <span className="hs-bar">
+              <i />
+            </span>
+            <span className="hs-hint mono">Scroll to browse →</span>
+          </div>
         </div>
       </div>
     </section>

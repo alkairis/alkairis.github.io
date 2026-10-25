@@ -10,7 +10,7 @@ type SectionHeadProps = {
 
 /** Numbered mono label, a large title, and an optional note on the right. */
 const SectionHead = ({ index, label, title, aside, id }: SectionHeadProps) => (
-  <header className="section-head" data-reveal>
+  <header className="section-head" data-fx="0.5">
     <p className="eyebrow">
       <span className="section-index">{index}</span>
       <span className="section-rule" aria-hidden="true" />

@@ -55,7 +55,9 @@ export const buildCorpus = (data: SiteData): Doc[] => {
       id: `project-${p.id}`,
       title: p.name,
       source: "Featured project",
-      href: `#project-${p.id}`,
+      // The section, not the card: on wide screens cards sit in a sideways
+      // track that the page can't scroll an anchor into.
+      href: "#work",
       text: join(sentence(p.description), p.technologies.length ? `Built with ${p.technologies.join(", ")}.` : ""),
     });
   });

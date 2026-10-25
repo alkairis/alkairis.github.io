@@ -23,7 +23,7 @@ const Hero = () => {
   ];
 
   return (
-    <section id="top" className="hero">
+    <section id="top" className="hero" data-fx-out>
       <div className="hero-bg" aria-hidden="true">
         <div className="hero-grid" />
         <div className="hero-glow" />

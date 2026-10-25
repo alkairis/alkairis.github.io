@@ -1,0 +1,232 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Scroll-linked motion (see useScrollFx). Every rule is gated on .fx-on, which
+   the hook adds only when motion is allowed, and every variable falls back to
+   its finished value — so with no JS or reduced motion nothing moves and
+   nothing is hidden.
+
+     --p / --e   enter progress 0 → 1 (linear / eased)
+     --x         exit progress 0 → 1
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Section heads: spaced label tightens, title rises into place ────────── */
+
+.fx-on .section-head .eyebrow {
+  letter-spacing: calc(0.14em + (1 - var(--e, 1)) * 0.6em);
+  opacity: calc(0.25 + var(--e, 1) * 0.75);
+}
+
+.fx-on .section-head .section-title {
+  transform: translateY(calc((1 - var(--e, 1)) * 72px));
+  opacity: var(--e, 1);
+}
+
+.fx-on .section-head .section-aside {
+  transform: translateY(calc((1 - var(--e, 1)) * 40px));
+  opacity: var(--e, 1);
+}
+
+/* ── Hero: drifts up and fades as it scrolls away ─────────────────────── */
+
+.fx-on .hero .hero-copy {
+  transform: translateY(calc(var(--x, 0) * -90px));
+  opacity: calc(1 - var(--x, 0) * 1.3);
+}
+
+.fx-on .hero .console {
+  transform: translateY(calc(var(--x, 0) * -40px)) scale(calc(1 - var(--x, 0) * 0.06));
+  opacity: calc(1 - var(--x, 0) * 1.1);
+}
+
+.fx-on .hero .hero-grid {
+  transform: scale(calc(1 + var(--x, 0) * 0.35));
+}
+
+/* ── Selected work: a pinned horizontal track on wide screens ─────────── */
+
+.hs:not(.is-pinned) .hs-track {
+  display: grid;
+  gap: 28px;
+  width: 100%;
+  max-width: calc(var(--container) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.hs:not(.is-pinned) .hs-ui {
+  display: none;
+}
+
+.hs.is-pinned .hs-stage {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 28px;
+  height: 100vh;
+  height: 100svh;
+  padding-top: 68px;
+  overflow: hidden;
+}
+
+.hs.is-pinned .hs-track {
+  display: flex;
+  align-items: stretch;
+  gap: 28px;
+  width: max-content;
+  padding-inline: max(var(--gutter), calc((100vw - var(--container)) / 2));
+  will-change: transform;
+}
+
+.hs.is-pinned .hs-track > * {
+  flex: 0 0 min(1060px, 82vw);
+}
+
+.hs.is-pinned .case-cover {
+  min-height: 0;
+}
+
+.hs.is-pinned .case-figure {
+  max-height: calc(100vh - 220px);
+}
+
+.hs-ui {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.hs-bar {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  border-radius: 2px;
+  background: rgb(var(--line));
+  overflow: hidden;
+}
+
+.hs-bar i {
+  position: absolute;
+  inset: 0;
+  background: rgb(var(--accent));
+  transform: scaleX(var(--p, 0));
+  transform-origin: left;
+}
+
+.hs-hint {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: rgb(var(--ink-3));
+  opacity: calc(1 - var(--p, 0) * 3);
+}
+
+/* Pinned cards tilt very slightly as they come off the edge. */
+.fx-on .hs.is-pinned .case {
+  transition: none;
+}
+
+/* Narrow screens: cards swipe in from alternating sides as they enter. */
+.fx-on .hs:not(.is-pinned) .case {
+  transform: translateX(calc((1 - var(--e, 1)) * 34%)) rotate(calc((1 - var(--e, 1)) * 4deg));
+  opacity: calc(0.2 + var(--e, 1) * 0.8);
+}
+
+.fx-on .hs:not(.is-pinned) .case:nth-child(even) {
+  transform: translateX(calc((1 - var(--e, 1)) * -34%)) rotate(calc((1 - var(--e, 1)) * -4deg));
+}
+
+/* ── About: photo rises and settles, text follows ─────────────────────── */
+
+.fx-on .about .about-photo {
+  transform: translateY(calc((1 - var(--e, 1)) * 140px)) scale(calc(0.88 + var(--e, 1) * 0.12));
+  opacity: calc(0.15 + var(--e, 1) * 0.85);
+}
+
+.fx-on .about .about-body {
+  transform: translateY(calc((1 - var(--e, 1)) * 70px));
+}
+
+/* ── Toolbox: chips fly in from scattered positions and assemble ──────── */
+
+.fx-on .toolbox .chip {
+  transform: translate(calc(var(--sx, 0) * (1 - var(--e, 1))), calc(var(--sy, 0) * (1 - var(--e, 1))))
+    rotate(calc(var(--sr, 0deg) * (1 - var(--e, 1)))) scale(calc(0.55 + var(--e, 1) * 0.45));
+  opacity: calc(var(--e, 1) * 1.15 - 0.1);
+}
+
+.fx-on .toolbox .toolbox-row dt {
+  opacity: var(--e, 1);
+}
+
+/* Overflowing chips mid-flight shouldn't widen the page. */
+#toolbox {
+  overflow-x: clip;
+}
+
+/* Same for cards swiping in and the photo rising. clip (not hidden) keeps
+   the pinned track's position: sticky working. */
+#work,
+#about {
+  overflow-x: clip;
+}
+
+/* ── Credentials: the two columns slide in from opposite sides ────────── */
+
+.fx-on .creds .creds-col:first-child {
+  transform: translateX(calc((1 - var(--e, 1)) * -90px));
+  opacity: var(--e, 1);
+}
+
+.fx-on .creds .creds-col:last-child {
+  transform: translateX(calc((1 - var(--e, 1)) * 90px));
+  opacity: var(--e, 1);
+}
+
+#credentials {
+  overflow-x: clip;
+}
+
+/* ── Contact card: grows into place ───────────────────────────────────── */
+
+.fx-on .contact {
+  transform: translateY(calc((1 - var(--e, 1)) * 80px)) scale(calc(0.9 + var(--e, 1) * 0.1));
+  opacity: calc(0.3 + var(--e, 1) * 0.7);
+}
+
+/* ── Right-edge scroll rail ───────────────────────────────────────────── */
+
+.scroll-rail {
+  position: fixed;
+  top: 0;
+  right: 3px;
+  bottom: 0;
+  z-index: 90;
+  width: 2px;
+  pointer-events: none;
+}
+
+.scroll-rail i {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 14vh;
+  border-radius: 2px;
+  background: rgb(var(--accent));
+  box-shadow: 0 0 10px rgb(var(--accent) / 0.6);
+  transform: translateY(calc(var(--p, 0) * 86vh));
+}
+
+.scroll-rail {
+  display: none;
+}
+
+.fx-on .scroll-rail {
+  display: block;
+}
+
+@media print {
+  .scroll-rail {
+    display: none !important;
+  }
+}
