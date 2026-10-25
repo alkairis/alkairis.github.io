@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import ProjectGallery from "../components/ProjectGallery";
 import SectionHead from "../components/SectionHead";
 import { ArrowDown, ArrowUpRight } from "../components/Icons";
 import { FEATURED_COUNT, useSiteData } from "../hooks/useSiteData";
@@ -43,12 +44,6 @@ const ProjectCard = ({ project, n }: { project: Project; n: number }) => {
   const code = usable(project.github_url) ? project.github_url : null;
   const demo = usable(project.demo_url) ? project.demo_url : null;
   const coverLink = demo ?? code;
-
-  const cover = project.image_url ? (
-    <img src={project.image_url} alt={`${project.name} — preview`} loading="lazy" />
-  ) : (
-    <StackPlate project={project} />
-  );
 
   return (
     <article
@@ -114,19 +109,14 @@ const ProjectCard = ({ project, n }: { project: Project; n: number }) => {
         </div>
 
         <figure className="case-figure">
-          {coverLink ? (
-            <a
+          <div className="case-cover">
+            <ProjectGallery
+              images={project.image_url}
+              name={project.name}
               href={coverLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="case-cover"
-              aria-label={`Open ${project.name}`}
-            >
-              {cover}
-            </a>
-          ) : (
-            <div className="case-cover">{cover}</div>
-          )}
+              fallback={<StackPlate project={project} />}
+            />
+          </div>
         </figure>
       </div>
     </article>

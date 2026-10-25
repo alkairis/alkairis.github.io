@@ -23,10 +23,15 @@ const Projects = () => {
 
       <ul className="project-list">
         {projects.map((p) => (
-          <li key={p.id} className={`project${p.image_url ? "" : " project--plain"}`} data-reveal>
-            {p.image_url && (
+          <li key={p.id} className={`project${p.image_url.length ? "" : " project--plain"}`} data-reveal>
+            {p.image_url[0] && (
               <div className="project-thumb">
-                <img src={p.image_url} alt="" loading="lazy" />
+                <img src={p.image_url[0]} alt="" loading="lazy" />
+                {p.image_url.length > 1 && (
+                  <span className="project-thumb-more mono" aria-label={`${p.image_url.length} screenshots`}>
+                    +{p.image_url.length - 1}
+                  </span>
+                )}
               </div>
             )}
             <div className="project-body">
