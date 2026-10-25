@@ -1,3 +1,4 @@
+import BrandArt from "../components/BrandArt";
 import SectionHead from "../components/SectionHead";
 import { profile } from "../content/profile";
 import { useSiteData } from "../hooks/useSiteData";
@@ -26,7 +27,7 @@ const About = () => {
 
         <div className="about" data-fx="0.55">
           <figure className="about-photo">
-            {about.photo && <img src={about.photo} alt={`Portrait of ${profile.name}`} loading="lazy" />}
+            <BrandArt />
             <figcaption>
               <span className="live-dot" aria-hidden="true" />
               <span>

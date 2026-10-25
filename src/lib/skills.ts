@@ -9,3 +9,6 @@ export const groupSkills = (skills: TechnicalSkill[]): [string, TechnicalSkill[]
   });
   return [...groups.entries()];
 };
+
+/** Whether a skill has anything to show beyond its name (Toolbox opens a card for it). */
+export const hasDetails = (s: TechnicalSkill) => Boolean(s.description) || s.sub_tech.length > 0;

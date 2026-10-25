@@ -148,18 +148,36 @@ export const getBlogs = async (): Promise<BlogPost[]> => {
   return Array.isArray(data) ? data.map(normalizeBlog) : [];
 };
 
-export type TechnicalSkill = {
+export type TechnicalSkillDto = {
   id: string;
   name: string;
   image_url: string;
   description: string;
   skill_type: string;
   active: boolean;
+  /** Optional: the libraries / services within this skill, e.g. LangChain → ["LCEL", "LangServe"]. */
+  sub_tech?: unknown;
 };
 
+export type TechnicalSkill = Omit<TechnicalSkillDto, 'sub_tech'> & {
+  sub_tech: string[];
+};
+
+/** Trimmed, de-duplicated strings; anything else (null, a bare string, junk) becomes []. */
+const toStringList = (value: unknown): string[] =>
+  Array.isArray(value)
+    ? [...new Set(value.filter((v): v is string => typeof v === 'string').map((v) => v.trim()).filter(Boolean))]
+    : [];
+
+const normalizeSkill = (skill: TechnicalSkillDto): TechnicalSkill => ({
+  ...skill,
+  description: (skill.description ?? '').trim(),
+  sub_tech: toStringList(skill.sub_tech),
+});
+
 export const getTechnicalSkills = async (): Promise<TechnicalSkill[]> => {
-  const { data } = await apiClient.get<TechnicalSkill[]>('/api/technical-skills');
-  return Array.isArray(data) ? data : [];
+  const { data } = await apiClient.get<TechnicalSkillDto[]>('/api/technical-skills');
+  return Array.isArray(data) ? data.map(normalizeSkill) : [];
 };
 
 export type Project = {

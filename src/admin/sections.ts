@@ -89,6 +89,7 @@ export const SECTIONS: SectionConfig[] = [
       { name: 'image_url', label: 'Image URL', type: 'url', required: true },
       { name: 'description', label: 'Description', type: 'textarea', required: true },
       { name: 'skill_type', label: 'Skill Type', type: 'text', required: true },
+      { name: 'sub_tech', label: 'Sub-technologies (semicolon separated)', type: 'list' },
     ],
   },
   {

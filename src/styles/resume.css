@@ -285,6 +285,25 @@
   height: 18px;
 }
 
+/* All sub-technologies are listed here, so let the tail wrap. */
+.rs-skills .chip--sub {
+  flex-wrap: wrap;
+  row-gap: 6px;
+  height: auto;
+  min-height: 38px;
+  padding-block: 6px;
+  padding-right: 7px;
+  border-radius: 20px;
+  white-space: normal;
+}
+
+.rs-skills .chip-sub {
+  flex-wrap: wrap;
+  height: auto;
+  min-height: 24px;
+  row-gap: 2px;
+}
+
 .rs-print-foot {
   display: none;
 }
@@ -523,6 +542,37 @@
 
   .rs-skills .chips {
     gap: 0 8pt;
+  }
+
+  /* Print: "LangChain (LCEL, LangServe)" as plain text. */
+  .rs-skills .chip--sub {
+    display: inline;
+    min-height: 0;
+    padding: 0;
+  }
+
+  .rs-skills .chip-sub {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    background: none;
+    font-family: inherit;
+    font-size: 8.5pt;
+    color: #555;
+  }
+
+  .rs-skills .chip-sub::before {
+    content: " (";
+  }
+
+  .rs-skills .chip-sub::after {
+    content: ")";
+  }
+
+  .rs-skills .chip-sub > span:not(.chip-sub-more) + span:not(.chip-sub-more)::before {
+    content: ", ";
+    margin: 0;
+    color: inherit;
   }
 
   .rs-item--row {

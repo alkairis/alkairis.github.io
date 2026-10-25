@@ -90,7 +90,20 @@ export const buildCorpus = (data: SiteData): Doc[] => {
   const groups = new Map<string, string[]>();
   data.skills.forEach((s) => {
     const key = s.skill_type || "Other";
-    groups.set(key, [...(groups.get(key) ?? []), s.name]);
+    const name = s.sub_tech.length ? `${s.name} (${s.sub_tech.join(", ")})` : s.name;
+    groups.set(key, [...(groups.get(key) ?? []), name]);
+    if (s.description) {
+      docs.push({
+        id: `skill-${s.id}`,
+        title: s.name,
+        source: "Toolbox",
+        href: "#toolbox",
+        text: join(
+          sentence(s.description),
+          s.sub_tech.length ? `Includes ${s.sub_tech.join(", ")}.` : "",
+        ),
+      });
+    }
   });
   groups.forEach((names, group) => {
     docs.push({
