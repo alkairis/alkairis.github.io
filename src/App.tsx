@@ -4,6 +4,7 @@ import SiteNav from "./components/SiteNav";
 import Ghost from "./components/Ghost";
 import AiMenu from "./components/AiMenu";
 import Preloader from "./components/Preloader";
+import ScrollRail from "./components/ScrollRail";
 import Hero from "./sections/Hero";
 import Work from "./sections/Work";
 import Projects from "./sections/Projects";
@@ -36,9 +37,7 @@ export const SiteShell = () => {
           <Outlet />
         </Suspense>
       </main>
-      <div className="scroll-rail" data-fx-rail aria-hidden="true">
-        <i />
-      </div>
+      <ScrollRail />
       <Ghost />
       <AiMenu />
       <Preloader />

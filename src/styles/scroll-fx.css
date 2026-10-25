@@ -194,35 +194,83 @@
   opacity: calc(0.3 + var(--e, 1) * 0.7);
 }
 
-/* ── Right-edge scroll rail ───────────────────────────────────────────── */
+/* ── The page scrollbar ───────────────────────────────────────────────────
+   While scroll motion is on, the custom rail replaces the browser's own
+   scrollbar (one bar, not two). It's draggable and clickable (ScrollRail), and
+   wheel, touch and keyboard scrolling are unaffected. With reduced motion,
+   .fx-on is never set and the native scrollbar stays. */
+
+html.fx-on {
+  scrollbar-width: none;
+}
+
+html.fx-on::-webkit-scrollbar {
+  display: none;
+  width: 0;
+}
 
 .scroll-rail {
+  /* Wide, invisible hit area; the visible line is the thumb inside it. */
   position: fixed;
   top: 0;
-  right: 3px;
+  right: 0;
   bottom: 0;
-  z-index: 90;
-  width: 2px;
-  pointer-events: none;
-}
-
-.scroll-rail i {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 14vh;
-  border-radius: 2px;
-  background: rgb(var(--accent));
-  box-shadow: 0 0 10px rgb(var(--accent) / 0.6);
-  transform: translateY(calc(var(--p, 0) * 86vh));
-}
-
-.scroll-rail {
+  /* Above the sticky nav (100), below the AI menu (120) and the ghost (130). */
+  z-index: 110;
   display: none;
+  width: 14px;
+  cursor: pointer;
+  touch-action: none;
 }
 
 .fx-on .scroll-rail {
   display: block;
+}
+
+.scroll-rail::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 3px;
+  bottom: 0;
+  width: 2px;
+  background: rgb(var(--line) / 0.6);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.scroll-rail:hover::before,
+.scroll-rail.is-dragging::before {
+  opacity: 1;
+}
+
+.scroll-rail i {
+  --thumb: max(40px, calc(var(--t, 0.1) * 100vh));
+  position: absolute;
+  top: 0;
+  right: 3px;
+  width: 2px;
+  height: var(--thumb);
+  border-radius: 3px;
+  background: rgb(var(--accent));
+  box-shadow: 0 0 10px rgb(var(--accent) / 0.6);
+  transform: translateY(calc(var(--p, 0) * (100vh - var(--thumb))));
+  transition: width 0.18s ease, right 0.18s ease;
+}
+
+.scroll-rail:hover i,
+.scroll-rail.is-dragging i {
+  right: 2px;
+  width: 5px;
+}
+
+/* Phones scroll by touch and have no persistent scrollbar to replace;
+   keep the indicator but let touches pass through to the page. */
+@media (hover: none) {
+  .scroll-rail {
+    width: 4px;
+    pointer-events: none;
+  }
 }
 
 @media print {

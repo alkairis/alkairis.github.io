@@ -16,7 +16,8 @@ import { useEffect } from "react";
  *                     tall-enough screens the section is made as tall as its
  *                     overflow, its stage sticks, and vertical scroll slides
  *                     the track sideways; --p drives the progress bar.
- *   data-fx-rail      Page scroll progress as --p (the right-edge rail).
+ *   data-fx-rail      Page scroll progress as --p, and the visible share of
+ *                     the page as --t (the rail's thumb size).
  *
  * All variables have final-state fallbacks in CSS, so without JS — or with
  * reduced motion, where this does nothing — everything simply sits in place.
@@ -104,7 +105,11 @@ export const useScrollFx = () => {
       if (rails.length) {
         const max = root.scrollHeight - vh;
         const p = max > 0 ? clamp(window.scrollY / max) : 0;
-        for (const rail of rails) rail.style.setProperty("--p", p.toFixed(4));
+        const t = clamp(vh / Math.max(root.scrollHeight, 1));
+        for (const rail of rails) {
+          rail.style.setProperty("--p", p.toFixed(4));
+          rail.style.setProperty("--t", t.toFixed(4));
+        }
       }
     };
 
