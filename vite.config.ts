@@ -9,6 +9,20 @@ export default defineConfig({
   // "/<repo>/" at build time — nothing about the domain is hardcoded here.
   base: process.env.VITE_BASE ?? "/",
   plugins: [react()],
+  // Third-party code changes far less often than the site, so it ships in its
+  // own long-cached chunks (and keeps the app chunk under the 500 kB warning).
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            { name: "react", test: /node_modules[\\/](react|react-dom|scheduler|react-router|react-router-dom)[\\/]/, priority: 2 },
+            { name: "vendor", test: /node_modules[\\/]/, priority: 1 },
+          ],
+        },
+      },
+    },
+  },
   // Proxy backend calls through the dev origin so the browser doesn't fire
   // cross-origin requests at localhost:8080 — that pattern trips Chrome's
   // "Local Network Access" permission prompt on startup.

@@ -4,10 +4,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAssistantStore } from "../stores/useAssistantStore";
 import { useThemeStore } from "../stores/useThemeStore";
-import { useAsk } from "../hooks/useAsk";
+import { useChat } from "../hooks/useChat";
 import { useSiteData } from "../hooks/useSiteData";
 import { useScrollLock } from "../hooks/useScrollLock";
-import Answer from "./Answer";
+import ChatThread from "./ChatThread";
 import GhostMark from "./GhostMark";
 import { SUGGESTIONS } from "../content/profile";
 import { ArrowUpRight, Close, Copy, Corner, Download, Hash, Moon, Search, Sparkle, Sun } from "./Icons";
@@ -49,21 +49,7 @@ const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), [tabi
  * is "Ask the ghost".
  */
 const AiMenu = () => {
-  const { open, seed, openMenu, closeMenu, toggleMenu } = useAssistantStore();
-  const toggleTheme = useThemeStore((s) => s.toggleTheme);
-  const theme = useThemeStore((s) => s.theme);
-  const reply = useAsk();
-  const { ask, reset } = reply;
-  const { email, resumeUrl, links } = useSiteData();
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const [query, setQuery] = useState("");
-  const [active, setActive] = useState(0);
-  const [copied, setCopied] = useState(false);
-  const panelRef = useRef<HTMLDivElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const restoreRef = useRef<HTMLElement | null>(null);
+  const { open, seed, openMenu, toggleMenu } = useAssistantStore();
 
   useScrollLock(open);
 
@@ -86,30 +72,51 @@ const AiMenu = () => {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, openMenu, toggleMenu]);
 
-  // Open: seed the query, remember focus, focus the input. Close: restore it.
-  useEffect(() => {
-    if (open) {
-      const activeEl = document.activeElement;
-      restoreRef.current = activeEl instanceof HTMLElement ? activeEl : null;
-      setQuery(seed);
-      setActive(0);
-      setCopied(false);
-      requestAnimationFrame(() => inputRef.current?.focus());
-    } else {
-      reset();
-      restoreRef.current?.focus?.();
-    }
-  }, [open, seed, reset]);
+  // Mounted only while open, so every open starts fresh (query, selection,
+  // answer) and closing cancels any question in flight.
+  return open ? <AiPanel seed={seed} /> : null;
+};
 
+const AiPanel = ({ seed }: { seed: string }) => {
+  const closeMenu = useAssistantStore((s) => s.closeMenu);
+  const toggleTheme = useThemeStore((s) => s.toggleTheme);
+  const theme = useThemeStore((s) => s.theme);
+  const { turns, busy, ask, retry, clear } = useChat();
+  const { email, resumeUrl, links } = useSiteData();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [query, setQuery] = useState(seed);
+  const [active, setActive] = useState(0);
+  const [copied, setCopied] = useState(false);
+  const panelRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  // Focus the input on open; hand focus back to where it was on close.
+  useEffect(() => {
+    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const frame = requestAnimationFrame(() => inputRef.current?.focus());
+    return () => {
+      cancelAnimationFrame(frame);
+      previous?.focus?.();
+    };
+  }, []);
+
+  const changeQuery = (value: string) => {
+    setQuery(value);
+    setActive(0);
+  };
+
+  // While an answer is loading, new questions wait: the text stays typed.
   const submit = useCallback(
     (question: string) => {
-      if (!question.trim()) return;
-      void ask(question);
+      if (!question.trim() || busy) return;
+      ask(question);
       setQuery("");
-      inputRef.current?.focus();
-      panelRef.current?.querySelector(".ai-scroll")?.scrollTo({ top: 0 });
+      setActive(0);
     },
-    [ask]
+    [ask, busy]
   );
 
   const goTo = useCallback(
@@ -232,20 +239,16 @@ const AiMenu = () => {
     const question: Item = {
       id: "ask-query",
       group: "Question",
-      label: `Ask “${query.trim()}”`,
+      label: busy ? `Ask “${query.trim()}” after this answer` : `Ask “${query.trim()}”`,
       keywords: query,
       icon: <Sparkle />,
       run: () => submit(query),
     };
     const words = q.split(/\s+/);
     return [question, ...items.filter((item) => words.every((w) => `${item.label} ${item.keywords}`.toLowerCase().includes(w)))];
-  }, [q, query, items, submit]);
+  }, [q, query, items, submit, busy]);
 
   const activeIndex = Math.min(active, Math.max(visible.length - 1, 0));
-
-  useEffect(() => {
-    setActive(0);
-  }, [q]);
 
   useEffect(() => {
     panelRef.current
@@ -289,8 +292,6 @@ const AiMenu = () => {
     }
   };
 
-  if (!open) return null;
-
   let lastGroup = "";
 
   return (
@@ -320,7 +321,7 @@ const AiMenu = () => {
           <input
             ref={inputRef}
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => changeQuery(e.target.value)}
             placeholder="Ask anything, or jump somewhere…"
             aria-label="Ask a question or search actions"
             aria-controls="ai-list"
@@ -335,11 +336,16 @@ const AiMenu = () => {
           <kbd className="mono">esc</kbd>
         </div>
 
-        <div className="ai-scroll">
-          {reply.status !== "idle" && (
-            <section className="ai-answer" aria-live="polite" aria-label="Answer">
-              <p className="ai-question">{reply.question}</p>
-              <Answer state={reply} onRetry={() => void ask(reply.question)} onNavigate={closeMenu} />
+        <div ref={scrollRef} className="ai-scroll">
+          {turns.length > 0 && (
+            <section className="ai-chat" aria-label="Conversation with the ghost">
+              <div className="chat-head">
+                <span className="eyebrow">Conversation · {turns.length}</span>
+                <button type="button" className="chat-clear mono" onClick={clear}>
+                  Clear
+                </button>
+              </div>
+              <ChatThread turns={turns} scrollRef={scrollRef} onRetry={retry} onNavigate={closeMenu} />
             </section>
           )}
 

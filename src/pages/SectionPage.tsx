@@ -13,8 +13,14 @@ import {
 import type { SectionForm, SectionRow } from '../admin/sections';
 import '../admin/admin.css';
 
+// Keyed by section, so switching sections starts the editor fresh (empty
+// form, no edit in progress, no messages) instead of resetting it in an effect.
 const SectionPage = () => {
   const { sectionKey } = useParams();
+  return <SectionEditor key={sectionKey} sectionKey={sectionKey} />;
+};
+
+const SectionEditor = ({ sectionKey }: { sectionKey: string | undefined }) => {
   const navigate = useNavigate();
   const section = useMemo(() => getSection(sectionKey), [sectionKey]);
 
@@ -42,33 +48,51 @@ const SectionPage = () => {
     [navigate]
   );
 
-  const loadRows = useCallback(async () => {
-    if (!section) return;
-    setLoading(true);
-    setListError('');
-    try {
-      const data = await apiGet<SectionRow[] | SectionRow | null>(section.endpoint);
-      const list = Array.isArray(data) ? data : data ? [data] : [];
-      setRows(list);
-    } catch (err) {
+  const requestRows = useCallback(async (): Promise<SectionRow[]> => {
+    if (!section) return [];
+    const data = await apiGet<SectionRow[] | SectionRow | null>(section.endpoint);
+    return Array.isArray(data) ? data : data ? [data] : [];
+  }, [section]);
+
+  const showRowsError = useCallback(
+    (err: unknown) => {
       if (handle401(err)) return;
       // A 404 simply means nothing has been created yet.
       setRows([]);
       if (isApiError(err) && err.status && err.status !== 404) {
         setListError(err.message || 'Failed to load records.');
       }
+    },
+    [handle401]
+  );
+
+  // First load. `loading` starts true, so state only changes once the request
+  // settles; a late response after leaving the page is ignored.
+  useEffect(() => {
+    let cancelled = false;
+    requestRows()
+      .then(
+        (list) => !cancelled && setRows(list),
+        (err: unknown) => !cancelled && showRowsError(err)
+      )
+      .finally(() => !cancelled && setLoading(false));
+    return () => {
+      cancelled = true;
+    };
+  }, [requestRows, showRowsError]);
+
+  // Reload after a save or delete.
+  const loadRows = async () => {
+    setLoading(true);
+    setListError('');
+    try {
+      setRows(await requestRows());
+    } catch (err) {
+      showRowsError(err);
     } finally {
       setLoading(false);
     }
-  }, [section, handle401]);
-
-  useEffect(() => {
-    setForm(section ? emptyForm(section) : {});
-    setEditingId(null);
-    setSuccess('');
-    setFormError('');
-    loadRows();
-  }, [section, loadRows]);
+  };
 
   if (!section) {
     return (

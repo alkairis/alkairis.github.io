@@ -46,7 +46,7 @@ Most portfolios are a static page with the content hardcoded in JSX. This one is
 
 ```mermaid
 flowchart LR
-    subgraph browser["🖥️ Browser — React 19 · Vite 6"]
+    subgraph browser["🖥️ Browser — React 19 · Vite 8"]
         UI["Public portfolio<br/>Hero · Projects · Experience · Skills"]
         CMS["/admin-me<br/>JWT-gated CMS"]
         FALLBACK[("Bundled static<br/>fallback content")]
@@ -76,18 +76,19 @@ flowchart LR
 <div align="center">
 
 ![React](https://img.shields.io/badge/React_19-20232A?style=flat-square&logo=react&logoColor=61DAFB)
-![Vite](https://img.shields.io/badge/Vite_6-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite_8-646CFF?style=flat-square&logo=vite&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![Zustand](https://img.shields.io/badge/Zustand-2D3748?style=flat-square&logo=react&logoColor=white)
 
 </div>
 
-- **Rendering**: React 19, Vite 6, and client-side routing via React Router 7 (`/`, `/resume`, and the CMS routes).
+- **Rendering**: React 19, Vite 8 (Rolldown), TypeScript 6, and client-side routing via React Router 7 (`/`, `/resume`, and the CMS routes).
 - **Styling**: hand-written CSS on a small token system. Jet black and lavender-white themes, Royal Amethyst and Electric Cyan accents, Geist for text, Geist Mono for data and Instrument Serif for emphasis. Fonts are self-hosted through Fontsource, so the page makes no third-party font requests.
 - **The ghost**: a floating assistant whose eyes follow the cursor (or your finger, on phones). Click it, or press `⌘K` / `Ctrl+K` / `/`, to open the AI menu:
-  - **Ask**: a question goes to the LLM chat endpoint (see [Ghost chat API](#-ghost-chat-api)). While it answers, the ghost plays a "BOO!" animation. Answers render basic markdown (paragraphs, lists, bold, code, links).
+  - **Ask**: the four suggested questions are answered directly from the site's own data (projects, experience, skills, certifications, availability), with no API call. Anything else goes to the LLM chat endpoint (see [Ghost chat API](#-ghost-chat-api)). While it answers, the ghost plays a "BOO!" animation. Answers render basic markdown (paragraphs, lists, bold, code, links).
+  - **Memory**: one conversation, shown as a scrolling chat thread and shared by the menu and the hero console. It's kept in `sessionStorage`, so it survives closing the menu and reloading the page, and its recent turns go to the LLM as context. **Clear** starts over.
   - **Command palette**: the same list offers "Try asking" questions plus Go to, Actions and Elsewhere shortcuts, filtered as you type. Arrow keys move and Enter runs.
-  - **Hero console**: the hero's console sends questions to the same endpoint.
+  - **Hero console**: the same conversation, in the hero.
 - **Opening**: a once-per-session preloader. The ghost sits in an amethyst orb over a 24-chunk meter, then the screen collapses into the corner where the ghost lives.
 - **Scroll motion**: scroll-linked animation driven by `data-fx*` attributes (`useScrollFx`). Projects ride a pinned horizontal track on wide screens. A custom scroll rail replaces the browser scrollbar. With reduced motion everything stays still.
 - **Selected work**: "Systems I've shipped" shows the first four active projects from `/api/projects`, in the API's order. Each card uses the project's name, description, technologies, image, and GitHub and demo links. Projects without an image get a monogram cover. Any remaining projects are listed under "More projects".
@@ -96,19 +97,25 @@ flowchart LR
 - **Brand & meta**: the ghost logo in `public/` (SVG favicon, PNG and Apple touch icons, maskable PWA icons, web manifest), a 1200×630 Open Graph card, and JSON-LD `Person` data.
 - **State & data**: Zustand stores and module-cached resource hooks with in-flight request de-duplication. The axios client uses JWT interceptors. Every section has bundled fallback content for API cold starts.
 - **Resume**: `/resume` renders the same CMS data as a printable page. Its print stylesheet produces a clean A4 PDF.
-- **CI/CD**: on every push to `main`, GitHub Actions runs `npm ci`, ESLint, `tsc --noEmit` and the build, then deploys to GitHub Pages.
+- **CI/CD**: on every push to `main`, GitHub Actions (Node 24) runs `npm ci`, ESLint 10 (with the React Compiler lint rules), `tsc --noEmit` and the build, then deploys to GitHub Pages. Requires Node 20.19+, 22.13+ or 24+ locally.
 
 ---
 
 ## 👻 Ghost chat API
 
-The ghost doesn't hold any model or context in the browser. It posts each question to the URL in `VITE_CHATBOT_API_URL`, and the backend does the retrieval and the LLM call.
+The ghost doesn't hold any model in the browser. It posts each question, plus the last six answered turns, to the URL in `VITE_CHATBOT_API_URL`, and the backend does the retrieval and the LLM call. Only the four suggested questions skip the API; the site's data answers those.
 
 ```http
 POST $VITE_CHATBOT_API_URL
 Content-Type: application/json
 
-{ "message": "Is he open to new roles?" }
+{
+  "message": "And is he open to relocating?",
+  "history": [
+    { "role": "user", "content": "Is he open to new roles?" },
+    { "role": "assistant", "content": "Yes. Open to senior data & AI engineering roles. …" }
+  ]
+}
 ```
 
 The reply can be JSON with the answer under any of `reply`, `answer`, `message`, `response`, `output` or `text`, or a plain-text body:
@@ -118,7 +125,7 @@ The reply can be JSON with the answer under any of `reply`, `answer`, `message`,
 ```
 
 - **Timeout**: requests time out after 45 s.
-- **Cancellation**: asking again cancels the request in flight.
+- **One at a time**: while an answer loads, new questions wait. Closing the menu doesn't cancel it, and **Clear** does.
 - **Errors**: a failed request, a non-2xx status or an empty reply shows a friendly error with **Try again** and a link to Contact.
 - **Not configured**: if the variable isn't set, the ghost says its answering service isn't connected yet.
 - **CORS**: the endpoint must allow requests from the site's origin.
@@ -168,9 +175,9 @@ src/
 ├─ content/      what the CMS doesn't model: headline profile facts
 ├─ sections/     home-page sections (Hero, Work, Experience, Toolbox, …)
 ├─ components/   nav, ghost + AI menu, ask console, Boo loader, preloader, skill cards, icons
-├─ lib/          LLM ask client, skill grouping, style helpers
-├─ hooks/        shared data hooks (module-cached), ask state, eye tracking, scroll motion
-├─ stores/       Zustand stores: theme, blog, assistant
+├─ lib/          LLM ask client, site answers for suggested questions, skill grouping, style helpers
+├─ hooks/        shared data hooks (module-cached), chat, eye tracking, scroll motion
+├─ stores/       Zustand stores: theme, blog, assistant, chat (persisted per tab)
 ├─ constants/    static fallback content and social-icon mapping
 ├─ styles/       site and resume (screen + print) stylesheets
 └─ pages/        /resume, plus the JWT-gated admin CMS routes

@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { useAsk } from "../hooks/useAsk";
+import { useChat } from "../hooks/useChat";
 import { useAssistantStore } from "../stores/useAssistantStore";
-import Answer from "./Answer";
+import ChatThread from "./ChatThread";
 import GhostMark from "./GhostMark";
 import { SUGGESTIONS } from "../content/profile";
 import { ArrowRight } from "./Icons";
@@ -18,16 +18,16 @@ const prefersReducedMotion = () =>
 
 /**
  * The hero's live console. Until the visitor asks something, it types example
- * questions as a prompt (nothing is sent). A question — typed, picked from
- * the chips, or "Ask this" on the example — goes to the LLM endpoint, with the
- * ghost's "Boo!" playing while the answer loads. The demo pauses off-screen
- * and in background tabs.
+ * questions as a prompt (nothing is sent). After that it shows the ghost's
+ * conversation, the same one the AI menu shows, scrolling to each new turn.
+ * Suggested questions are answered from the site's data and anything else by
+ * the LLM, with the "Boo!" while it loads. The demo pauses off-screen and in
+ * background tabs.
  */
 const AskConsole = () => {
-  const reply = useAsk();
-  const { ask } = reply;
+  const { turns, busy, ask, retry, clear } = useChat();
   const openMenu = useAssistantStore((s) => s.openMenu);
-  const reduced = useMemo(prefersReducedMotion, []);
+  const [reduced] = useState(prefersReducedMotion);
 
   const [demoIndex, setDemoIndex] = useState(0);
   const [example, setExample] = useState(reduced ? (SUGGESTIONS[0] ?? "") : "");
@@ -35,8 +35,9 @@ const AskConsole = () => {
   const [draft, setDraft] = useState("");
   const [visible, setVisible] = useState(true);
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const bodyRef = useRef<HTMLDivElement | null>(null);
 
-  const asked = reply.status !== "idle";
+  const asked = turns.length > 0;
 
   // Pause the demo off-screen or in a background tab.
   useEffect(() => {
@@ -80,9 +81,9 @@ const AskConsole = () => {
   }, [asked, reduced, visible, phase, example, demoIndex]);
 
   const send = (q: string) => {
-    if (!q.trim() || reply.status === "loading") return;
+    if (!q.trim() || busy) return;
     setDraft("");
-    void ask(q);
+    ask(q);
   };
 
   const onSubmit = (e: FormEvent) => {
@@ -95,34 +96,38 @@ const AskConsole = () => {
       <div className="console-bar">
         <GhostMark className="console-ghost" />
         <span className="mono console-name">ask.alkairis</span>
+        {asked && (
+          <button type="button" className="chat-clear mono" onClick={clear}>
+            Clear
+          </button>
+        )}
         <span className="console-pill mono">AI · live</span>
       </div>
 
-      <div className="console-body">
-        <p className="console-q mono">
-          <span className="console-prompt" aria-hidden="true">
-            ›
-          </span>
-          <span>{asked ? reply.question : example}</span>
-          {!asked && phase !== "holding" && <span className="caret" aria-hidden="true" />}
-        </p>
-
+      <div ref={bodyRef} className="console-body">
         {asked ? (
-          <div className="console-result" aria-live="polite">
-            <Answer state={reply} onRetry={() => void ask(reply.question)} />
-          </div>
+          <ChatThread turns={turns} scrollRef={bodyRef} onRetry={retry} />
         ) : (
-          <div className="console-idle">
-            <p>Ask anything about Deepak's work, stack or availability, and the ghost will answer.</p>
-            <button
-              type="button"
-              className="console-try mono"
-              onClick={() => send(example || SUGGESTIONS[0] || "")}
-              disabled={phase !== "holding"}
-            >
-              Ask this <ArrowRight />
-            </button>
-          </div>
+          <>
+            <p className="console-q mono">
+              <span className="console-prompt" aria-hidden="true">
+                ›
+              </span>
+              <span>{example}</span>
+              {phase !== "holding" && <span className="caret" aria-hidden="true" />}
+            </p>
+            <div className="console-idle">
+              <p>Ask anything about Deepak's work, stack or availability, and the ghost will answer.</p>
+              <button
+                type="button"
+                className="console-try mono"
+                onClick={() => send(example || SUGGESTIONS[0] || "")}
+                disabled={phase !== "holding"}
+              >
+                Ask this <ArrowRight />
+              </button>
+            </div>
+          </>
         )}
       </div>
 
@@ -142,7 +147,7 @@ const AskConsole = () => {
           type="submit"
           className="console-send"
           aria-label="Ask"
-          disabled={!draft.trim() || reply.status === "loading"}
+          disabled={!draft.trim() || busy}
         >
           <ArrowRight />
         </button>
