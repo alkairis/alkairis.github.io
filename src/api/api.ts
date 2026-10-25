@@ -187,13 +187,34 @@ export type Project = {
   github_url: string;
   demo_url: string;
   technologies: string[];
-  image_url: string;
+  /** Screenshot URLs, first one is the cover. Empty when there are none. */
+  image_url: string[];
   active: boolean;
 };
 
+/**
+ * `image_url` is a list. A single string (the old shape) and the alternative
+ * names `image_urls` / `images` are accepted too, so older records still show.
+ */
+export type ProjectDto = Omit<Project, 'image_url'> & {
+  image_url?: unknown;
+  image_urls?: unknown;
+  images?: unknown;
+};
+
+const asList = (value: unknown): unknown[] => (Array.isArray(value) ? value : value == null ? [] : [value]);
+
+const normalizeProject = (dto: ProjectDto): Project => {
+  const { image_urls, images, ...rest } = dto;
+  return {
+    ...rest,
+    image_url: toStringList([...asList(dto.image_url), ...asList(image_urls), ...asList(images)]),
+  };
+};
+
 export const getProjects = async (): Promise<Project[]> => {
-  const { data } = await apiClient.get<Project[]>('/api/projects');
-  return Array.isArray(data) ? data : [];
+  const { data } = await apiClient.get<ProjectDto[]>('/api/projects');
+  return Array.isArray(data) ? data.map(normalizeProject) : [];
 };
 
 // ─── Certificates ─────────────────────────────────────────────────────────────

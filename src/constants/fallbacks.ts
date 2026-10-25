@@ -209,7 +209,7 @@ export const fallbackProjects: Project[] = [
     github_url: '',
     demo_url: '',
     technologies: ['Python', 'LangChain', 'FAISS', 'Chroma', 'Pinecone', 'FastAPI', 'Pydantic'],
-    image_url: '',
+    image_url: [],
     active: true,
   },
   {
@@ -220,7 +220,7 @@ export const fallbackProjects: Project[] = [
     github_url: '',
     demo_url: '',
     technologies: ['Python', 'LangGraph', 'LangChain', 'LangSmith', 'MCP', 'Pydantic'],
-    image_url: '',
+    image_url: [],
     active: true,
   },
   {
@@ -231,7 +231,7 @@ export const fallbackProjects: Project[] = [
     github_url: '',
     demo_url: '',
     technologies: ['Python', 'SQL', 'BigQuery', 'Dataproc', 'Cloud Composer', 'Terraform'],
-    image_url: '',
+    image_url: [],
     active: true,
   },
   {
@@ -242,7 +242,7 @@ export const fallbackProjects: Project[] = [
     github_url: 'https://github.com/alkairis/alkairis.github.io',
     demo_url: '',
     technologies: ['TypeScript', 'React', 'Vite', 'FastAPI', 'JWT'],
-    image_url: '',
+    image_url: [],
     active: true,
   },
 ];

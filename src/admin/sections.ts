@@ -77,7 +77,7 @@ export const SECTIONS: SectionConfig[] = [
       { name: 'github_url', label: 'GitHub URL', type: 'url', required: true },
       { name: 'demo_url', label: 'Demo URL', type: 'url', required: true },
       { name: 'technologies', label: 'Technologies (semicolon separated)', type: 'list', required: true },
-      { name: 'image_url', label: 'Image URL', type: 'url', required: true },
+      { name: 'image_url', label: 'Image URLs (semicolon separated, first is the cover)', type: 'list' },
     ],
   },
   {
@@ -189,8 +189,10 @@ export const formFromRow = (section: SectionConfig, row: SectionRow): SectionFor
     section.fields.map((field) => {
       const raw = row[field.name];
       if (field.type === 'bool') return [field.name, Boolean(raw)];
+      // A list field may still hold a single string from before it became a
+      // list (e.g. a project's image_url); keep it rather than blank it.
       if (field.type === 'list')
-        return [field.name, Array.isArray(raw) ? raw.join('; ') : ''];
+        return [field.name, Array.isArray(raw) ? raw.join('; ') : typeof raw === 'string' ? raw : ''];
       return [field.name, raw == null ? '' : String(raw)];
     })
   );
