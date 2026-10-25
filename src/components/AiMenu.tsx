@@ -49,21 +49,7 @@ const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), [tabi
  * is "Ask the ghost".
  */
 const AiMenu = () => {
-  const { open, seed, openMenu, closeMenu, toggleMenu } = useAssistantStore();
-  const toggleTheme = useThemeStore((s) => s.toggleTheme);
-  const theme = useThemeStore((s) => s.theme);
-  const reply = useAsk();
-  const { ask, reset } = reply;
-  const { email, resumeUrl, links } = useSiteData();
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const [query, setQuery] = useState("");
-  const [active, setActive] = useState(0);
-  const [copied, setCopied] = useState(false);
-  const panelRef = useRef<HTMLDivElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const restoreRef = useRef<HTMLElement | null>(null);
+  const { open, seed, openMenu, toggleMenu } = useAssistantStore();
 
   useScrollLock(open);
 
@@ -86,28 +72,54 @@ const AiMenu = () => {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, openMenu, toggleMenu]);
 
-  // Open: seed the query, remember focus, focus the input. Close: restore it.
+  // Mounted only while open, so every open starts fresh (query, selection,
+  // answer) and closing cancels any question in flight.
+  return open ? <AiPanel seed={seed} /> : null;
+};
+
+const AiPanel = ({ seed }: { seed: string }) => {
+  const closeMenu = useAssistantStore((s) => s.closeMenu);
+  const toggleTheme = useThemeStore((s) => s.toggleTheme);
+  const theme = useThemeStore((s) => s.theme);
+  const reply = useAsk();
+  const { ask } = reply;
+  const { email, resumeUrl, links } = useSiteData();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [query, setQuery] = useState(seed);
+  const [active, setActive] = useState(0);
+  const [copied, setCopied] = useState(false);
+  const panelRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  // Focus the input on open; hand focus back to where it was on close.
   useEffect(() => {
-    if (open) {
-      const activeEl = document.activeElement;
-      restoreRef.current = activeEl instanceof HTMLElement ? activeEl : null;
-      setQuery(seed);
-      setActive(0);
-      setCopied(false);
-      requestAnimationFrame(() => inputRef.current?.focus());
-    } else {
-      reset();
-      restoreRef.current?.focus?.();
-    }
-  }, [open, seed, reset]);
+    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const frame = requestAnimationFrame(() => inputRef.current?.focus());
+    return () => {
+      cancelAnimationFrame(frame);
+      previous?.focus?.();
+    };
+  }, []);
+
+  // A new question starts at the top of the list, where its answer appears.
+  useEffect(() => {
+    if (reply.question) scrollRef.current?.scrollTo({ top: 0 });
+  }, [reply.question]);
+
+  const changeQuery = (value: string) => {
+    setQuery(value);
+    setActive(0);
+  };
 
   const submit = useCallback(
     (question: string) => {
       if (!question.trim()) return;
       void ask(question);
       setQuery("");
-      inputRef.current?.focus();
-      panelRef.current?.querySelector(".ai-scroll")?.scrollTo({ top: 0 });
+      setActive(0);
     },
     [ask]
   );
@@ -244,10 +256,6 @@ const AiMenu = () => {
   const activeIndex = Math.min(active, Math.max(visible.length - 1, 0));
 
   useEffect(() => {
-    setActive(0);
-  }, [q]);
-
-  useEffect(() => {
     panelRef.current
       ?.querySelector(`[data-index="${activeIndex}"]`)
       ?.scrollIntoView({ block: "nearest" });
@@ -289,8 +297,6 @@ const AiMenu = () => {
     }
   };
 
-  if (!open) return null;
-
   let lastGroup = "";
 
   return (
@@ -320,7 +326,7 @@ const AiMenu = () => {
           <input
             ref={inputRef}
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => changeQuery(e.target.value)}
             placeholder="Ask anything, or jump somewhere…"
             aria-label="Ask a question or search actions"
             aria-controls="ai-list"
@@ -335,7 +341,7 @@ const AiMenu = () => {
           <kbd className="mono">esc</kbd>
         </div>
 
-        <div className="ai-scroll">
+        <div ref={scrollRef} className="ai-scroll">
           {reply.status !== "idle" && (
             <section className="ai-answer" aria-live="polite" aria-label="Answer">
               <p className="ai-question">{reply.question}</p>

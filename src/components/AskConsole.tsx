@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { useAsk } from "../hooks/useAsk";
 import { useAssistantStore } from "../stores/useAssistantStore";
@@ -27,7 +27,7 @@ const AskConsole = () => {
   const reply = useAsk();
   const { ask } = reply;
   const openMenu = useAssistantStore((s) => s.openMenu);
-  const reduced = useMemo(prefersReducedMotion, []);
+  const [reduced] = useState(prefersReducedMotion);
 
   const [demoIndex, setDemoIndex] = useState(0);
   const [example, setExample] = useState(reduced ? (SUGGESTIONS[0] ?? "") : "");

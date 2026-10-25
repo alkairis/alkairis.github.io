@@ -77,4 +77,12 @@ export default [
       ],
     },
   },
+  {
+    // The entry module is never hot-swapped, so Fast Refresh rules don't apply
+    // to the lazy() route components it declares.
+    files: ['src/main.tsx'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
 ]

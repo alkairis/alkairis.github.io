@@ -29,7 +29,13 @@ const Ghost = () => {
       /* storage blocked — show the hint, it's harmless */
     }
     if (seen) return;
-    const show = setTimeout(() => setHint(true), 3500);
+    // Opening the menu (by any route) dismisses the hint for good.
+    const unsubscribe = useAssistantStore.subscribe((state) => {
+      if (state.open) setHint(false);
+    });
+    const show = setTimeout(() => {
+      if (!useAssistantStore.getState().open) setHint(true);
+    }, 3500);
     const hide = setTimeout(() => {
       setHint(false);
       try {
@@ -39,14 +45,11 @@ const Ghost = () => {
       }
     }, 9000);
     return () => {
+      unsubscribe();
       clearTimeout(show);
       clearTimeout(hide);
     };
   }, []);
-
-  useEffect(() => {
-    if (open) setHint(false);
-  }, [open]);
 
   const isMac = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform);
 
