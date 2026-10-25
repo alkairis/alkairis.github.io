@@ -120,6 +120,7 @@ export const fallbackSkills: TechnicalSkill[] = fallbackSkillSeed.map((skill, in
   description: '',
   skill_type: skill.skill_type,
   active: true,
+  sub_tech: [],
 }));
 
 // ─── Certificates ──────────────────────────────────────────────────────────

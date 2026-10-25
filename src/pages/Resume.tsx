@@ -20,6 +20,7 @@ import Footer from "../sections/Footer";
 import { profile } from "../content/profile";
 import { useSiteData } from "../hooks/useSiteData";
 import { groupSkills } from "../lib/skills";
+import { SubTech } from "../components/SkillCard";
 import { delay } from "../lib/style";
 import "../styles/resume.css";
 
@@ -216,9 +217,10 @@ const Resume = () => {
                 <dt>{group}</dt>
                 <dd className="chips">
                   {items.map((s) => (
-                    <span key={s.id} className="chip">
+                    <span key={s.id} className={`chip${s.sub_tech.length ? " chip--sub" : ""}`} title={s.description || undefined}>
                       {s.image_url && <img src={s.image_url} alt="" loading="lazy" />}
                       {s.name}
+                      <SubTech items={s.sub_tech} limit={s.sub_tech.length} />
                     </span>
                   ))}
                 </dd>

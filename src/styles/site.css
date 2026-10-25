@@ -1069,9 +1069,269 @@ a.case-cover:focus-visible {
   height: 20px;
 }
 
+/* Chips with a description or sub-technologies open a card (SkillCard). */
+.toolbox .chip--details {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: default;
+}
+
+.toolbox .chip--details:focus-visible {
+  outline: 2px solid rgb(var(--accent));
+  outline-offset: 2px;
+}
+
+.toolbox .chip.is-active {
+  border-color: rgb(var(--accent) / 0.6);
+  box-shadow: 0 0 0 4px rgb(var(--accent) / 0.1);
+}
+
+.toolbox .chip--sub {
+  padding-right: 6px;
+}
+
+/* "LangChain │ LCEL · LangServe · Retrievers +2" */
+.chip-sub {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  margin-left: 2px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgb(var(--accent) / 0.07);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 450;
+  letter-spacing: 0.01em;
+  color: rgb(var(--ink-2));
+}
+
+.chip-sub > span:not(.chip-sub-more) + span:not(.chip-sub-more)::before {
+  content: "·";
+  margin-right: 6px;
+  color: rgb(var(--accent) / 0.7);
+}
+
+.chip-sub-more {
+  margin-right: -4px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgb(var(--accent) / 0.14);
+  color: rgb(var(--accent));
+  font-weight: 600;
+}
+
+.toolbox .chip--sub:hover .chip-sub,
+.toolbox .chip--sub.is-active .chip-sub {
+  background: rgb(var(--accent) / 0.12);
+}
+
 @media (max-width: 760px) {
   .toolbox-row {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Narrow screens: a long sub-tech tail wraps under the name instead of
+   pushing the chip off the edge. */
+@media (max-width: 560px) {
+  .toolbox .chip--sub {
+    flex-wrap: wrap;
+    row-gap: 6px;
+    height: auto;
+    min-height: 36px;
+    padding-block: 5px;
+    border-radius: 18px;
+    white-space: normal;
+  }
+
+  .chip-sub {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 24px;
+    margin-left: 0;
+    row-gap: 2px;
+    white-space: nowrap;
+  }
+}
+
+/* ── Skill card (hover / focus / tap on a toolbox chip) ─────────────────── */
+
+.skill-card {
+  --arrow: 50%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* Above the sticky nav (100), below the scroll rail (110) and AI menu. */
+  z-index: 105;
+  width: min(340px, calc(100vw - 24px));
+  padding: 16px 16px 15px;
+  border: 1px solid rgb(var(--accent) / 0.28);
+  border-radius: 16px;
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgb(var(--accent) / 0.1), transparent 60%),
+    rgb(var(--card));
+  box-shadow: var(--shadow-lg), 0 18px 50px -22px rgb(var(--accent) / 0.5);
+  color: rgb(var(--ink));
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.skill-card.is-open {
+  visibility: visible;
+  opacity: 1;
+  animation: skill-card-in 0.22s var(--ease) both;
+}
+
+.skill-card[data-side="top"] {
+  --from: 8px;
+  transform-origin: var(--arrow) 100%;
+}
+
+.skill-card[data-side="bottom"] {
+  --from: -8px;
+  transform-origin: var(--arrow) 0%;
+}
+
+@keyframes skill-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--from, 8px)) scale(0.96);
+  }
+}
+
+/* Hairline glow along the top edge. */
+.skill-card::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 18px;
+  right: 18px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(var(--accent) / 0.9), transparent);
+}
+
+/* Arrow pointing at the chip. */
+.skill-card::after {
+  content: "";
+  position: absolute;
+  left: calc(var(--arrow) - 6px);
+  width: 12px;
+  height: 12px;
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--accent) / 0.28);
+  transform: rotate(45deg);
+}
+
+.skill-card[data-side="top"]::after {
+  bottom: -7px;
+  border-top: 0;
+  border-left: 0;
+}
+
+.skill-card[data-side="bottom"]::after {
+  top: -7px;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.skill-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.skill-card-logo {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgb(var(--line));
+  border-radius: 11px;
+  background: rgb(var(--bg));
+}
+
+.skill-card-logo img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.skill-card-title {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.skill-card-title strong {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.skill-card-title .mono,
+.skill-card-sub > .mono {
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(var(--ink-3));
+}
+
+.skill-card p {
+  display: -webkit-box;
+  margin: 12px 0 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 7;
+  line-clamp: 7;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: rgb(var(--ink-2));
+}
+
+.skill-card-sub {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed rgb(var(--line));
+}
+
+.skill-card-sub ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.skill-card-sub li {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 9px;
+  border: 1px solid rgb(var(--accent) / 0.3);
+  border-radius: 999px;
+  background: rgb(var(--accent) / 0.08);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: rgb(var(--ink));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skill-card.is-open {
+    animation: none;
+  }
+}
+
+@media print {
+  .skill-card {
+    display: none !important;
   }
 }
 
