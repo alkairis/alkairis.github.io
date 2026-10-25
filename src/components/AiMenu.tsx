@@ -4,10 +4,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAssistantStore } from "../stores/useAssistantStore";
 import { useThemeStore } from "../stores/useThemeStore";
-import { useAsk } from "../hooks/useAsk";
+import { useChat } from "../hooks/useChat";
 import { useSiteData } from "../hooks/useSiteData";
 import { useScrollLock } from "../hooks/useScrollLock";
-import Answer from "./Answer";
+import ChatThread from "./ChatThread";
 import GhostMark from "./GhostMark";
 import { SUGGESTIONS } from "../content/profile";
 import { ArrowUpRight, Close, Copy, Corner, Download, Hash, Moon, Search, Sparkle, Sun } from "./Icons";
@@ -81,8 +81,7 @@ const AiPanel = ({ seed }: { seed: string }) => {
   const closeMenu = useAssistantStore((s) => s.closeMenu);
   const toggleTheme = useThemeStore((s) => s.toggleTheme);
   const theme = useThemeStore((s) => s.theme);
-  const reply = useAsk();
-  const { ask } = reply;
+  const { turns, busy, ask, retry, clear } = useChat();
   const { email, resumeUrl, links } = useSiteData();
   const navigate = useNavigate();
   const location = useLocation();
@@ -104,24 +103,20 @@ const AiPanel = ({ seed }: { seed: string }) => {
     };
   }, []);
 
-  // A new question starts at the top of the list, where its answer appears.
-  useEffect(() => {
-    if (reply.question) scrollRef.current?.scrollTo({ top: 0 });
-  }, [reply.question]);
-
   const changeQuery = (value: string) => {
     setQuery(value);
     setActive(0);
   };
 
+  // While an answer is loading, new questions wait: the text stays typed.
   const submit = useCallback(
     (question: string) => {
-      if (!question.trim()) return;
-      void ask(question);
+      if (!question.trim() || busy) return;
+      ask(question);
       setQuery("");
       setActive(0);
     },
-    [ask]
+    [ask, busy]
   );
 
   const goTo = useCallback(
@@ -244,14 +239,14 @@ const AiPanel = ({ seed }: { seed: string }) => {
     const question: Item = {
       id: "ask-query",
       group: "Question",
-      label: `Ask “${query.trim()}”`,
+      label: busy ? `Ask “${query.trim()}” after this answer` : `Ask “${query.trim()}”`,
       keywords: query,
       icon: <Sparkle />,
       run: () => submit(query),
     };
     const words = q.split(/\s+/);
     return [question, ...items.filter((item) => words.every((w) => `${item.label} ${item.keywords}`.toLowerCase().includes(w)))];
-  }, [q, query, items, submit]);
+  }, [q, query, items, submit, busy]);
 
   const activeIndex = Math.min(active, Math.max(visible.length - 1, 0));
 
@@ -342,10 +337,15 @@ const AiPanel = ({ seed }: { seed: string }) => {
         </div>
 
         <div ref={scrollRef} className="ai-scroll">
-          {reply.status !== "idle" && (
-            <section className="ai-answer" aria-live="polite" aria-label="Answer">
-              <p className="ai-question">{reply.question}</p>
-              <Answer state={reply} onRetry={() => void ask(reply.question)} onNavigate={closeMenu} />
+          {turns.length > 0 && (
+            <section className="ai-chat" aria-label="Conversation with the ghost">
+              <div className="chat-head">
+                <span className="eyebrow">Conversation · {turns.length}</span>
+                <button type="button" className="chat-clear mono" onClick={clear}>
+                  Clear
+                </button>
+              </div>
+              <ChatThread turns={turns} scrollRef={scrollRef} onRetry={retry} onNavigate={closeMenu} />
             </section>
           )}
 

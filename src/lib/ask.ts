@@ -1,7 +1,9 @@
 /**
  * Client for the ghost's LLM endpoint.
  *
- * POST VITE_CHATBOT_API_URL  { "message": "<question>" }
+ * POST VITE_CHATBOT_API_URL
+ *   { "message": "<question>",
+ *     "history": [{ "role": "user" | "assistant", "content": "…" }, …] }   ← earlier turns, oldest first
  *   → JSON { "reply" | "answer" | "message" | "response" | "output" | "text": "<answer>" }
  *     or a plain-text body.
  *
@@ -11,6 +13,8 @@
 
 const TIMEOUT_MS = 45_000;
 const REPLY_KEYS = ["reply", "answer", "message", "response", "output", "text"] as const;
+
+export type ChatMessage = { role: "user" | "assistant"; content: string };
 
 export type AskErrorKind = "unconfigured" | "timeout" | "network" | "http" | "empty";
 
@@ -35,8 +39,11 @@ const pickReply = (data: unknown): string => {
   return "";
 };
 
-/** Ask the LLM one question. Rejects with AskError, or AbortError if `signal` aborts. */
-export const askGhost = async (question: string, signal?: AbortSignal): Promise<string> => {
+/**
+ * Ask the LLM one question, with the conversation so far for context.
+ * Rejects with AskError, or AbortError if `signal` aborts.
+ */
+export const askGhost = async (question: string, history: ChatMessage[], signal?: AbortSignal): Promise<string> => {
   const url = import.meta.env.VITE_CHATBOT_API_URL;
   if (!url) throw new AskError("unconfigured");
 
@@ -54,7 +61,7 @@ export const askGhost = async (question: string, signal?: AbortSignal): Promise<
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json, text/plain" },
-      body: JSON.stringify({ message: question }),
+      body: JSON.stringify({ message: question, history }),
       signal: ctrl.signal,
     });
     if (!res.ok) throw new AskError("http", res.status);

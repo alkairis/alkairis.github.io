@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
-import type { AskState } from "../hooks/useAsk";
+import type { Turn } from "../stores/useChatStore";
 import BooLoader from "./BooLoader";
 
 type AnswerProps = {
-  state: AskState;
+  turn: Turn;
   onRetry: () => void;
   /** Called after an in-page link is followed (e.g. to close a menu). */
   onNavigate?: (() => void) | undefined;
@@ -105,13 +105,12 @@ const ERROR_COPY: Record<string, string> = {
  * The ghost's reply: the "Boo!" preloader while the LLM works, then the answer,
  * or a friendly error with a retry and a way to reach Deepak directly.
  */
-const Answer = ({ state, onRetry, onNavigate }: AnswerProps) => {
-  if (state.status === "idle") return null;
-  if (state.status === "loading") return <BooLoader />;
+const Answer = ({ turn, onRetry, onNavigate }: AnswerProps) => {
+  if (turn.status === "loading") return <BooLoader />;
 
-  if (state.status === "error") {
-    const unconfigured = state.error?.kind === "unconfigured";
-    const lead = ERROR_COPY[state.error?.kind ?? ""] ?? "The ghost couldn't reach its brain just now.";
+  if (turn.status === "error") {
+    const unconfigured = turn.errorKind === "unconfigured";
+    const lead = ERROR_COPY[turn.errorKind ?? ""] ?? "The ghost couldn't reach its brain just now.";
     return (
       <div className="answer answer--error">
         <div className="answer-text">
@@ -133,8 +132,8 @@ const Answer = ({ state, onRetry, onNavigate }: AnswerProps) => {
   }
 
   return (
-    <div className="answer" key={state.question}>
-      <RichText text={state.answer} onNavigate={onNavigate} />
+    <div className="answer">
+      <RichText text={turn.answer} onNavigate={onNavigate} />
     </div>
   );
 };
