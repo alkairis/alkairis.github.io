@@ -608,7 +608,7 @@
   font-weight: 600;
 }
 
-.ghost-dock.show-hint .ghost-hint,
+.ghost-dock.show-hint:not(.is-open) .ghost-hint,
 .ghost-dock:not(.is-open):has(.ghost:hover) .ghost-hint,
 .ghost-dock:not(.is-open):has(.ghost:focus-visible) .ghost-hint {
   opacity: 1;
@@ -662,7 +662,9 @@ kbd {
   display: flex;
   flex-direction: column;
   width: min(460px, calc(100vw - 48px));
-  max-height: min(640px, calc(100vh - 150px));
+  /* A fixed height (not max-height) so the panel doesn't resize as typing
+     filters the list or an answer appears; .ai-scroll takes up the rest. */
+  height: min(640px, calc(100vh - 150px));
   border: 1px solid rgb(var(--line));
   border-radius: var(--radius-lg);
   background: rgb(var(--card));
@@ -889,7 +891,9 @@ kbd {
     right: 0;
     bottom: 0;
     width: 100%;
-    max-height: 86vh;
+    height: 86vh;
+    /* Small-viewport units don't change as the mobile toolbar shows or hides. */
+    height: 86svh;
     border-radius: 22px 22px 0 0;
     border-bottom: 0;
     padding-bottom: env(safe-area-inset-bottom);
