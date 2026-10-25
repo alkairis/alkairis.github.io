@@ -19,8 +19,8 @@ const Credentials = () => {
           }
         />
 
-        <div className="creds">
-          <div data-reveal>
+        <div className="creds" data-fx="0.55">
+          <div className="creds-col">
             <p className="eyebrow creds-label">Certifications · {certificates.length}</p>
             <ul className="cred-list">
               {certificates.map((c) => {
@@ -52,7 +52,7 @@ const Credentials = () => {
             </ul>
           </div>
 
-          <div data-reveal>
+          <div className="creds-col">
             <p className="eyebrow creds-label">Awards · {achievements.length}</p>
             <ul className="award-list">
               {achievements.map((a) => (

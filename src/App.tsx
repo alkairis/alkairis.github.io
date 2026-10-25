@@ -15,12 +15,15 @@ import Writing from "./sections/Writing";
 import Contact from "./sections/Contact";
 import Footer from "./sections/Footer";
 import { useReveal } from "./hooks/useReveal";
+import { useScrollFx } from "./hooks/useScrollFx";
 import "./components/assistant.css";
 import "./styles/site.css";
+import "./styles/scroll-fx.css";
 
 /** Chrome shared by every public page: nav, the ghost and its AI menu. */
 export const SiteShell = () => {
   useReveal();
+  useScrollFx();
   return (
     <>
       <a href="#main" className="skip-link">
@@ -33,6 +36,9 @@ export const SiteShell = () => {
           <Outlet />
         </Suspense>
       </main>
+      <div className="scroll-rail" data-fx-rail aria-hidden="true">
+        <i />
+      </div>
       <Ghost />
       <AiMenu />
       <Preloader />

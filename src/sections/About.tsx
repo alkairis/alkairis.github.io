@@ -24,8 +24,8 @@ const About = () => {
           }
         />
 
-        <div className="about">
-          <figure className="about-photo" data-reveal>
+        <div className="about" data-fx="0.55">
+          <figure className="about-photo">
             {about.photo && <img src={about.photo} alt={`Portrait of ${profile.name}`} loading="lazy" />}
             <figcaption>
               <span className="live-dot" aria-hidden="true" />

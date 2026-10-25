@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import SectionHead from "../components/SectionHead";
 import { useSiteData } from "../hooks/useSiteData";
 import { groupSkills } from "../lib/skills";
-import { delay } from "../lib/style";
+import { scatter } from "../lib/style";
 
 const Toolbox = () => {
   const { skills } = useSiteData();
@@ -22,13 +22,15 @@ const Toolbox = () => {
           }
           aside={<p>No proficiency bars. Ask me about any of these and I'll tell you where I used it.</p>}
         />
-        <dl className="toolbox">
-          {groups.map(([group, items], i) => (
-            <div key={group} className="toolbox-row" data-reveal style={delay(i)}>
+        {/* Chips start scattered and assemble as the section scrolls in
+            (--sx/--sy/--sr per chip; see .toolbox in site.css). */}
+        <dl className="toolbox" data-fx="0.8">
+          {groups.map(([group, items], g) => (
+            <div key={group} className="toolbox-row">
               <dt className="mono">{group}</dt>
               <dd className="chips">
-                {items.map((s) => (
-                  <span key={s.id} className="chip" title={s.description || undefined}>
+                {items.map((s, i) => (
+                  <span key={s.id} className="chip" title={s.description || undefined} style={scatter(g * 13 + i)}>
                     {s.image_url && <img src={s.image_url} alt="" loading="lazy" />}
                     {s.name}
                   </span>
