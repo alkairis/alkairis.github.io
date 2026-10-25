@@ -83,7 +83,7 @@ flowchart LR
 - **Rendering**: React 19, Vite 6, and client-side routing via React Router 7 (`/`, `/resume`, and the CMS routes).
 - **Styling**: hand-written CSS on a small token system: warm paper and deep-ink themes with one teal accent, Geist for text, Geist Mono for data and Instrument Serif for emphasis. Fonts are self-hosted through Fontsource, so the page makes no third-party font requests.
 - **The ghost**: a floating assistant whose eyes follow the cursor. Click it, or press `⌘K` / `Ctrl+K` / `/`, to open an AI menu that answers questions about the site with **Okapi BM25 over the site's own content**. It runs in the browser with no LLM call. The answers are extractive, cite their sources, and show the trace: expanded query terms, chunks matched, and time taken. The same menu works as a command palette for navigation and actions.
-- **Case studies**: each one comes with an SVG architecture diagram drawn from a small layout spec, with an animated data-flow direction. On narrow screens the diagram scrolls sideways instead of shrinking.
+- **Selected work**: "Systems I've shipped" shows the first four active projects from `/api/projects`, in the API's order. Each card uses the project's name, description, technologies, image, and GitHub and demo links. Projects without an image get a monogram cover. Any remaining projects are listed under "More projects".
 - **State & data**: Zustand stores and module-cached resource hooks with in-flight request de-duplication. The axios client uses JWT interceptors. Every section has bundled fallback content for API cold starts.
 - **Resume**: `/resume` renders the same CMS data as a printable page. Its print stylesheet produces a clean A4 PDF.
 - **CI/CD**: GitHub Actions deploys to GitHub Pages, running `npm ci`, ESLint and a `tsc --noEmit` gate against a reproducible lockfile.
@@ -129,7 +129,7 @@ Without a backend running, every section falls back to its bundled content — s
 ```text
 src/
 ├─ api/          typed axios client: DTOs, domain types, JWT interceptors
-├─ content/      what the CMS doesn't model: headline profile facts, case studies
+├─ content/      what the CMS doesn't model: headline profile facts
 ├─ sections/     home-page sections (Hero, Work, Experience, Toolbox, …)
 ├─ components/   nav, ghost + AI menu, ask console, diagrams, icons
 ├─ lib/          BM25 retrieval engine and the site corpus builder
