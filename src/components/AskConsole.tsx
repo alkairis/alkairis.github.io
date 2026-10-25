@@ -1,40 +1,42 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { useSearchIndex } from "../hooks/useSearchIndex";
+import { useAsk } from "../hooks/useAsk";
 import { useAssistantStore } from "../stores/useAssistantStore";
 import Answer from "./Answer";
 import GhostMark from "./GhostMark";
 import { SUGGESTIONS } from "../content/profile";
 import { ArrowRight } from "./Icons";
 
+type Phase = "typing" | "holding" | "erasing";
 
-type Phase = "typing" | "searching" | "done";
-
-const TYPE_MS = 34;
-const SEARCH_MS = 520;
-const HOLD_MS = 7000;
+const TYPE_MS = 38;
+const ERASE_MS = 16;
+const HOLD_MS = 2600;
 
 const prefersReducedMotion = () =>
   typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /**
- * The hero's live demo. It types a recruiter-style question, runs it through
- * the same BM25 index the ghost uses, and shows the trace and cited answer.
- * It cycles through a few questions until the visitor asks their own, and
- * pauses whenever it's scrolled out of view or the tab is hidden.
+ * The hero's live console. Until the visitor asks something, it types example
+ * questions as a prompt (nothing is sent). A question — typed, picked from
+ * the chips, or "Ask this" on the example — goes to the LLM endpoint, with the
+ * ghost's "Boo!" playing while the answer loads. The demo pauses off-screen
+ * and in background tabs.
  */
 const AskConsole = () => {
-  const index = useSearchIndex();
+  const reply = useAsk();
+  const { ask } = reply;
   const openMenu = useAssistantStore((s) => s.openMenu);
   const reduced = useMemo(prefersReducedMotion, []);
 
   const [demoIndex, setDemoIndex] = useState(0);
-  const [query, setQuery] = useState(reduced ? (SUGGESTIONS[0] ?? "") : "");
-  const [phase, setPhase] = useState<Phase>(reduced ? "done" : "typing");
-  const [interactive, setInteractive] = useState(reduced);
+  const [example, setExample] = useState(reduced ? (SUGGESTIONS[0] ?? "") : "");
+  const [phase, setPhase] = useState<Phase>(reduced ? "holding" : "typing");
   const [draft, setDraft] = useState("");
   const [visible, setVisible] = useState(true);
   const rootRef = useRef<HTMLDivElement | null>(null);
+
+  const asked = reply.status !== "idle";
 
   // Pause the demo off-screen or in a background tab.
   useEffect(() => {
@@ -52,51 +54,40 @@ const AskConsole = () => {
     };
   }, []);
 
-  // Demo driver: type → search → hold → next question.
+  // Demo driver: type → hold → erase → next example. Stops once they ask.
   useEffect(() => {
-    if (interactive || !visible) return;
+    if (asked || reduced || !visible) return;
     const target = SUGGESTIONS[demoIndex % SUGGESTIONS.length] ?? "";
     let timer: ReturnType<typeof setTimeout>;
 
     if (phase === "typing") {
-      if (query.length < target.length) {
-        timer = setTimeout(() => setQuery(target.slice(0, query.length + 1)), TYPE_MS + Math.random() * 30);
-      } else {
-        timer = setTimeout(() => setPhase("searching"), 260);
-      }
-    } else if (phase === "searching") {
-      timer = setTimeout(() => setPhase("done"), SEARCH_MS);
+      timer =
+        example.length < target.length
+          ? setTimeout(() => setExample(target.slice(0, example.length + 1)), TYPE_MS + Math.random() * 30)
+          : setTimeout(() => setPhase("holding"), 120);
+    } else if (phase === "holding") {
+      timer = setTimeout(() => setPhase("erasing"), HOLD_MS);
     } else {
-      timer = setTimeout(() => {
-        setDemoIndex((i) => i + 1);
-        setQuery("");
-        setPhase("typing");
-      }, HOLD_MS);
+      timer =
+        example.length > 0
+          ? setTimeout(() => setExample(example.slice(0, -1)), ERASE_MS)
+          : setTimeout(() => {
+              setDemoIndex((i) => i + 1);
+              setPhase("typing");
+            }, 200);
     }
     return () => clearTimeout(timer);
-  }, [interactive, visible, phase, query, demoIndex]);
+  }, [asked, reduced, visible, phase, example, demoIndex]);
 
-  const result = useMemo(() => (phase === "done" && query ? index.search(query, 3) : null), [phase, query, index]);
-
-  const ask = (q: string) => {
-    const text = q.trim();
-    if (!text) return;
-    setInteractive(true);
-    setQuery(text);
+  const send = (q: string) => {
+    if (!q.trim() || reply.status === "loading") return;
     setDraft("");
-    setPhase(reduced ? "done" : "searching");
+    void ask(q);
   };
-
-  // Searching is near-instant; the short beat just makes the step legible.
-  useEffect(() => {
-    if (!interactive || phase !== "searching") return;
-    const t = setTimeout(() => setPhase("done"), 280);
-    return () => clearTimeout(t);
-  }, [interactive, phase]);
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    ask(draft);
+    send(draft);
   };
 
   return (
@@ -104,34 +95,33 @@ const AskConsole = () => {
       <div className="console-bar">
         <GhostMark className="console-ghost" />
         <span className="mono console-name">ask.alkairis</span>
-        <span className="console-pill mono" title="Okapi BM25 over this site's content, computed in your browser">
-          BM25 · runs locally
-        </span>
+        <span className="console-pill mono">AI · live</span>
       </div>
 
-      <div className="console-body" aria-live="polite">
+      <div className="console-body">
         <p className="console-q mono">
           <span className="console-prompt" aria-hidden="true">
             ›
           </span>
-          <span>{query}</span>
-          {phase === "typing" && <span className="caret" aria-hidden="true" />}
+          <span>{asked ? reply.question : example}</span>
+          {!asked && phase !== "holding" && <span className="caret" aria-hidden="true" />}
         </p>
 
-        {phase === "searching" && (
-          <p className="console-wait mono">
-            <span className="dots" aria-hidden="true">
-              <i />
-              <i />
-              <i />
-            </span>
-            retrieving from {index.size} chunks
-          </p>
-        )}
-
-        {result && (
-          <div className="console-result" key={result.query}>
-            <Answer result={result} />
+        {asked ? (
+          <div className="console-result" aria-live="polite">
+            <Answer state={reply} onRetry={() => void ask(reply.question)} />
+          </div>
+        ) : (
+          <div className="console-idle">
+            <p>Ask anything about Deepak's work, stack or availability, and the ghost will answer.</p>
+            <button
+              type="button"
+              className="console-try mono"
+              onClick={() => send(example || SUGGESTIONS[0] || "")}
+              disabled={phase !== "holding"}
+            >
+              Ask this <ArrowRight />
+            </button>
           </div>
         )}
       </div>
@@ -144,23 +134,27 @@ const AskConsole = () => {
           id="console-ask"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          onFocus={() => setInteractive(true)}
           placeholder="Ask your own question…"
           autoComplete="off"
-          enterKeyHint="search"
+          enterKeyHint="send"
         />
-        <button type="submit" className="console-send" aria-label="Ask" disabled={!draft.trim()}>
+        <button
+          type="submit"
+          className="console-send"
+          aria-label="Ask"
+          disabled={!draft.trim() || reply.status === "loading"}
+        >
           <ArrowRight />
         </button>
       </form>
 
       <div className="console-suggest">
         {SUGGESTIONS.map((s) => (
-          <button key={s} type="button" className="chip" onClick={() => ask(s)}>
+          <button key={s} type="button" className="chip" onClick={() => send(s)}>
             {s}
           </button>
         ))}
-        <button type="button" className="chip chip-accent" onClick={() => openMenu(query)}>
+        <button type="button" className="chip chip-accent" onClick={() => openMenu()}>
           Open the ghost menu
         </button>
       </div>
