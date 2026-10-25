@@ -108,7 +108,7 @@ const Preloader = () => {
           ))}
         </p>
         <p className="pl-role">
-          {profile.role} · <span className="serif">Generative AI</span>
+          Data Engineer + <span className="serif">AI Engineer</span>
         </p>
 
         <div className="pl-meter" aria-hidden="true">
