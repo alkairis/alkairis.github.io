@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAssistantStore } from "../stores/useAssistantStore";
 import { useThemeStore } from "../stores/useThemeStore";
-import { useSearchIndex } from "../hooks/useSearchIndex";
+import { useAsk } from "../hooks/useAsk";
 import { useSiteData } from "../hooks/useSiteData";
 import { useScrollLock } from "../hooks/useScrollLock";
 import Answer from "./Answer";
@@ -14,7 +14,7 @@ import { ArrowUpRight, Close, Copy, Corner, Download, Hash, Moon, Search, Sparkl
 
 type Item = {
   id: string;
-  group: "Ask" | "Go to" | "Actions" | "Elsewhere";
+  group: "Question" | "Ask" | "Go to" | "Actions" | "Elsewhere";
   label: string;
   keywords: string;
   icon: ReactNode;
@@ -31,24 +31,34 @@ const SECTIONS = [
   { hash: "contact", label: "Contact", keywords: "email hire reach" },
 ];
 
+const GROUP_LABEL: Record<Item["group"], string> = {
+  Question: "Ask the ghost",
+  Ask: "Try asking",
+  "Go to": "Go to",
+  Actions: "Actions",
+  Elsewhere: "Elsewhere",
+};
+
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 /**
- * The ghost's AI menu (also ⌘K / Ctrl+K, or "/"). Typing asks the site's BM25
- * index and shows a cited answer; the same list also filters navigation and
- * actions, so it doubles as a command palette. Arrow keys move, Enter runs.
+ * The ghost's AI menu (also ⌘K / Ctrl+K, or "/"). Submitting a question sends
+ * it to the LLM endpoint and shows the answer (with a "Boo!" while it loads);
+ * typing also filters navigation and actions, so it doubles as a command
+ * palette. Arrow keys move, Enter runs — and with text typed, the first row
+ * is "Ask the ghost".
  */
 const AiMenu = () => {
   const { open, seed, openMenu, closeMenu, toggleMenu } = useAssistantStore();
   const toggleTheme = useThemeStore((s) => s.toggleTheme);
   const theme = useThemeStore((s) => s.theme);
-  const index = useSearchIndex();
+  const reply = useAsk();
+  const { ask, reset } = reply;
   const { email, resumeUrl, links } = useSiteData();
   const navigate = useNavigate();
   const location = useLocation();
 
   const [query, setQuery] = useState("");
-  const [debounced, setDebounced] = useState("");
   const [active, setActive] = useState(0);
   const [copied, setCopied] = useState(false);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -82,19 +92,25 @@ const AiMenu = () => {
       const activeEl = document.activeElement;
       restoreRef.current = activeEl instanceof HTMLElement ? activeEl : null;
       setQuery(seed);
-      setDebounced(seed);
       setActive(0);
       setCopied(false);
       requestAnimationFrame(() => inputRef.current?.focus());
     } else {
+      reset();
       restoreRef.current?.focus?.();
     }
-  }, [open, seed]);
+  }, [open, seed, reset]);
 
-  useEffect(() => {
-    const t = setTimeout(() => setDebounced(query), 110);
-    return () => clearTimeout(t);
-  }, [query]);
+  const submit = useCallback(
+    (question: string) => {
+      if (!question.trim()) return;
+      void ask(question);
+      setQuery("");
+      inputRef.current?.focus();
+      panelRef.current?.querySelector(".ai-scroll")?.scrollTo({ top: 0 });
+    },
+    [ask]
+  );
 
   const goTo = useCallback(
     (hash: string) => {
@@ -200,7 +216,6 @@ const AiMenu = () => {
   }, [goTo, closeMenu, navigate, resumeUrl, email, copied, copyEmail, theme, toggleTheme, links]);
 
   const q = query.trim().toLowerCase();
-  const result = useMemo(() => (debounced.trim() ? index.search(debounced, 3) : null), [debounced, index]);
 
   const visible: Item[] = useMemo(() => {
     if (!q) {
@@ -210,13 +225,21 @@ const AiMenu = () => {
         label: s,
         keywords: s,
         icon: <Sparkle />,
-        run: () => setQuery(s),
+        run: () => submit(s),
       }));
       return [...asks, ...items];
     }
+    const question: Item = {
+      id: "ask-query",
+      group: "Question",
+      label: `Ask “${query.trim()}”`,
+      keywords: query,
+      icon: <Sparkle />,
+      run: () => submit(query),
+    };
     const words = q.split(/\s+/);
-    return items.filter((item) => words.every((w) => `${item.label} ${item.keywords}`.toLowerCase().includes(w)));
-  }, [q, items]);
+    return [question, ...items.filter((item) => words.every((w) => `${item.label} ${item.keywords}`.toLowerCase().includes(w)))];
+  }, [q, query, items, submit]);
 
   const activeIndex = Math.min(active, Math.max(visible.length - 1, 0));
 
@@ -285,7 +308,7 @@ const AiMenu = () => {
           <GhostMark className="ai-ghost" />
           <div>
             <p className="ai-title">Ask about Deepak</p>
-            <p className="ai-sub mono">BM25 over this site · runs in your browser</p>
+            <p className="ai-sub mono">AI answers about his work and experience</p>
           </div>
           <button type="button" className="icon-btn" onClick={closeMenu} aria-label="Close">
             <Close />
@@ -298,7 +321,7 @@ const AiMenu = () => {
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Ask a question or jump somewhere…"
+            placeholder="Ask anything, or jump somewhere…"
             aria-label="Ask a question or search actions"
             aria-controls="ai-list"
             aria-activedescendant={visible[activeIndex] ? `ai-item-${visible[activeIndex].id}` : undefined}
@@ -313,9 +336,10 @@ const AiMenu = () => {
         </div>
 
         <div className="ai-scroll">
-          {result && (
+          {reply.status !== "idle" && (
             <section className="ai-answer" aria-live="polite" aria-label="Answer">
-              <Answer result={result} onNavigate={closeMenu} />
+              <p className="ai-question">{reply.question}</p>
+              <Answer state={reply} onRetry={() => void ask(reply.question)} onNavigate={closeMenu} />
             </section>
           )}
 
@@ -327,7 +351,7 @@ const AiMenu = () => {
                 <li key={item.id} role="presentation">
                   {header && (
                     <p className="ai-group eyebrow" role="presentation">
-                      {header === "Ask" ? "Try asking" : header}
+                      {GROUP_LABEL[header]}
                     </p>
                   )}
                   <div
@@ -352,9 +376,7 @@ const AiMenu = () => {
                 </li>
               );
             })}
-            {!visible.length && !result?.hits.length && (
-              <li className="ai-empty">Nothing matches — try “RAG”, “LangGraph” or “contact”.</li>
-            )}
+            {!visible.length && <li className="ai-empty">Nothing matches — try “RAG”, “LangGraph” or “contact”.</li>}
           </ul>
         </div>
 

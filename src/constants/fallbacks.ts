@@ -238,7 +238,7 @@ export const fallbackProjects: Project[] = [
     id: 'fallback-project-portfolio',
     name: 'This portfolio',
     description:
-      'A React front end over a FastAPI CMS with JWT auth, bundled fallbacks for API cold starts, and a ghost that answers questions about my work with BM25 retrieval running in your browser.',
+      'A React front end over a FastAPI CMS with JWT auth, bundled fallbacks for API cold starts, and a ghost that answers questions about my work through an LLM.',
     github_url: 'https://github.com/alkairis/alkairis.github.io',
     demo_url: '',
     technologies: ['TypeScript', 'React', 'Vite', 'FastAPI', 'JWT'],
