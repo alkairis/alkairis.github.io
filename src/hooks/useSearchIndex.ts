@@ -10,13 +10,13 @@ import { useSiteData } from "./useSiteData";
  */
 export const useSearchIndex = (): SearchIndex => {
   const data = useSiteData();
-  const { about, roles, education, projects, skills, certificates, achievements, posts, years, email, resumeUrl } =
+  const { about, roles, education, featured, moreProjects, skills, certificates, achievements, posts, years, email, resumeUrl } =
     data;
 
   return useMemo(
     () => new SearchIndex(buildCorpus(data)),
     // `data` is a fresh object each render; its parts are the real inputs.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [about, roles, education, projects, skills, certificates, achievements, posts, years, email, resumeUrl]
+    [about, roles, education, featured, moreProjects, skills, certificates, achievements, posts, years, email, resumeUrl]
   );
 };

@@ -17,7 +17,6 @@ import {
 } from "../components/Icons";
 import Contact from "../sections/Contact";
 import Footer from "../sections/Footer";
-import { caseStudies } from "../content/caseStudies";
 import { profile } from "../content/profile";
 import { useSiteData } from "../hooks/useSiteData";
 import { groupSkills } from "../lib/skills";
@@ -42,7 +41,7 @@ const Block = ({ id, icon, title, children }: { id: string; icon: ReactNode; tit
  * sections. The print stylesheet turns the same markup into an A4 document.
  */
 const Resume = () => {
-  const { about, roles, education, skills, certificates, achievements, links, email, resumeUrl, years } =
+  const { about, roles, education, featured, skills, certificates, achievements, links, email, resumeUrl, years } =
     useSiteData();
   const groups = useMemo(() => groupSkills(skills), [skills]);
   const summary = about.bio
@@ -166,22 +165,21 @@ const Resume = () => {
 
         <Block id="work" icon={<Layers />} title="Selected work">
           <ol className="rs-list">
-            {caseStudies.map((cs) => (
-              <li key={cs.slug} className="rs-item" data-reveal>
-                <h3>{cs.title}</h3>
-                <p className="rs-org">
-                  {cs.client} · <strong>{cs.role}</strong>
-                </p>
-                <p className="rs-text">{cs.summary}</p>
-                <div className="chips rs-chips">
-                  {cs.stack.map((s) => (
-                    <span key={s} className="chip">
-                      {s}
-                    </span>
-                  ))}
-                </div>
-                <Link to={`/#case-${cs.slug}`} className="link-u arrow-link rs-more">
-                  Case study &amp; architecture <ArrowUpRight />
+            {featured.map((p) => (
+              <li key={p.id} className="rs-item" data-reveal>
+                <h3>{p.name}</h3>
+                {p.description && <p className="rs-text">{p.description}</p>}
+                {p.technologies.length > 0 && (
+                  <div className="chips rs-chips">
+                    {p.technologies.map((t) => (
+                      <span key={t} className="chip">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <Link to={`/#project-${p.id}`} className="link-u arrow-link rs-more">
+                  View on the portfolio <ArrowUpRight />
                 </Link>
               </li>
             ))}

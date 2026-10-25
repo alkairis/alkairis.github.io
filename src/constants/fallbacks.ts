@@ -14,6 +14,7 @@ import type {
   About,
   Certificate,
   Experience,
+  Project,
   Recognition,
   TechnicalSkill,
 } from '../api/api';
@@ -192,5 +193,55 @@ export const fallbackRecognitions: Recognition[] = [
     image: asset('images/impetus-sq.webp'),
     tags: ['Impetus', 'Recognition'],
     link: '',
+  },
+];
+
+// ─── Projects ──────────────────────────────────────────────────────────────
+// Only shown while the projects API is unreachable or empty; the Work section
+// otherwise renders the API's own top four.
+export const fallbackProjects: Project[] = [
+  {
+    id: 'fallback-project-rag',
+    name: 'Grounded RAG pipelines',
+    description:
+      "Production RAG where the hard part isn't the prompt — it's making retrieval return the right passage from messy, real-world documents. End-to-end pipelines with LangChain (ingestion, chunking, embeddings, vector search, grounded generation), shipped as FastAPI services with typed Pydantic contracts.",
+    github_url: '',
+    demo_url: '',
+    technologies: ['Python', 'LangChain', 'FAISS', 'Chroma', 'Pinecone', 'FastAPI', 'Pydantic'],
+    image_url: '',
+    active: true,
+  },
+  {
+    id: 'fallback-project-agents',
+    name: 'Agentic LangGraph workflows',
+    description:
+      'Multi-step LLM agents built as explicit LangGraph state machines with typed tool contracts and bounded retries, traced end to end in LangSmith so a bad step can be found and replayed rather than guessed at.',
+    github_url: '',
+    demo_url: '',
+    technologies: ['Python', 'LangGraph', 'LangChain', 'LangSmith', 'MCP', 'Pydantic'],
+    image_url: '',
+    active: true,
+  },
+  {
+    id: 'fallback-project-gcp',
+    name: 'On-prem to Google Cloud data migration',
+    description:
+      'The data platform underneath the AI work: migrating large-scale on-prem workloads to BigQuery and Dataproc, orchestrated with Cloud Composer and defined in Terraform.',
+    github_url: '',
+    demo_url: '',
+    technologies: ['Python', 'SQL', 'BigQuery', 'Dataproc', 'Cloud Composer', 'Terraform'],
+    image_url: '',
+    active: true,
+  },
+  {
+    id: 'fallback-project-portfolio',
+    name: 'This portfolio',
+    description:
+      'A React front end over a FastAPI CMS with JWT auth, bundled fallbacks for API cold starts, and a ghost that answers questions about my work with BM25 retrieval running in your browser.',
+    github_url: 'https://github.com/alkairis/alkairis.github.io',
+    demo_url: '',
+    technologies: ['TypeScript', 'React', 'Vite', 'FastAPI', 'JWT'],
+    image_url: '',
+    active: true,
   },
 ];

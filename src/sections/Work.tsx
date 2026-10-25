@@ -1,134 +1,165 @@
 import { useState } from "react";
-import Diagram from "../components/Diagram";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import SectionHead from "../components/SectionHead";
 import { ArrowDown, ArrowUpRight } from "../components/Icons";
-import { caseStudies } from "../content/caseStudies";
-import type { CaseStudy } from "../content/caseStudies";
+import { FEATURED_COUNT, useSiteData } from "../hooks/useSiteData";
+import type { Project } from "../api/api";
 import { tone } from "../lib/style";
 
-const CaseStudyCard = ({ cs, n }: { cs: CaseStudy; n: number }) => {
+// Each card takes the next tone, so the four read as a set.
+const TONES = ["teal", "indigo", "amber", "rose"] as const;
+
+// Long descriptions collapse behind "Read more" past this many characters.
+const CLAMP_AT = 340;
+
+const usable = (url: string | null | undefined): url is string => /^https?:\/\//.test(url ?? "");
+
+const initials = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter((w) => /^[A-Za-z0-9]/.test(w))
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase())
+    .join("");
+
+/** Cover for a project without an image: monogram over its stack. */
+const StackPlate = ({ project }: { project: Project }) => (
+  <div className="plate" aria-hidden="true">
+    <span className="plate-mark">{initials(project.name)}</span>
+    <ul className="plate-stack mono">
+      {project.technologies.slice(0, 6).map((t) => (
+        <li key={t}>{t}</li>
+      ))}
+    </ul>
+  </div>
+);
+
+const ProjectCard = ({ project, n }: { project: Project; n: number }) => {
   const [open, setOpen] = useState(false);
-  const moreId = `case-${cs.slug}-more`;
+  const description = project.description?.trim() ?? "";
+  const long = description.length > CLAMP_AT;
+  const paragraphs = description.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
+  const code = usable(project.github_url) ? project.github_url : null;
+  const demo = usable(project.demo_url) ? project.demo_url : null;
+  const coverLink = demo ?? code;
+
+  const cover = project.image_url ? (
+    <img src={project.image_url} alt={`${project.name} — preview`} loading="lazy" />
+  ) : (
+    <StackPlate project={project} />
+  );
 
   return (
-    <article id={`case-${cs.slug}`} className={`case${open ? " is-open" : ""}`} style={tone(cs.accent)} data-reveal>
+    <article
+      id={`project-${project.id}`}
+      className="case"
+      style={tone(TONES[(n - 1) % TONES.length] ?? "teal")}
+      data-reveal
+    >
       <div className="case-grid">
         <div className="case-copy">
           <p className="case-meta mono">
             <span className="case-n">{String(n).padStart(2, "0")}</span>
-            <span>{cs.client}</span>
-            <span className="case-dot" aria-hidden="true" />
-            <span>{cs.period}</span>
+            <span>Featured project</span>
+            {project.technologies[0] && (
+              <>
+                <span className="case-dot" aria-hidden="true" />
+                <span>{project.technologies.slice(0, 2).join(" · ")}</span>
+              </>
+            )}
           </p>
-          <h3 className="case-title">{cs.title}</h3>
-          <p className="case-role">{cs.role}</p>
-          <p className="case-summary">{cs.summary}</p>
+          <h3 className="case-title">{project.name}</h3>
 
-          <ul className="case-bullets">
-            {cs.bullets.map((b) => (
-              <li key={b}>{b}</li>
-            ))}
-          </ul>
-
-          <div className="chips">
-            {cs.chips.map((c) => (
-              <span key={c} className="chip chip-accent">
-                {c}
-              </span>
+          <div id={`project-${project.id}-desc`} className={`case-desc${long && !open ? " is-clamped" : ""}`}>
+            {paragraphs.map((p, i) => (
+              <p key={i}>{p}</p>
             ))}
           </div>
 
-          {cs.metrics.length > 0 && (
-            <dl className="case-metrics">
-              {cs.metrics.map((m) => (
-                <div key={m.label}>
-                  <dt>{m.value}</dt>
-                  <dd>{m.label}</dd>
-                </div>
+          {project.technologies.length > 0 && (
+            <div className="chips case-chips">
+              {project.technologies.map((t) => (
+                <span key={t} className="chip chip-accent">
+                  {t}
+                </span>
               ))}
-            </dl>
+            </div>
           )}
 
           <div className="case-actions">
-            <button
-              type="button"
-              className="link-u case-toggle"
-              aria-expanded={open}
-              aria-controls={moreId}
-              onClick={() => setOpen((o) => !o)}
-            >
-              {open ? "Hide the approach" : "How I approach it"}
-              <ArrowDown className="case-toggle-icon" />
-            </button>
-            {cs.links.map((l) => (
-              <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer" className="link-u arrow-link">
-                {l.label}
-                <ArrowUpRight />
+            {long && (
+              <button
+                type="button"
+                className="link-u case-toggle"
+                aria-expanded={open}
+                aria-controls={`project-${project.id}-desc`}
+                onClick={() => setOpen((o) => !o)}
+              >
+                {open ? "Show less" : "Read more"}
+                <ArrowDown className="case-toggle-icon" />
+              </button>
+            )}
+            {code && (
+              <a href={code} target="_blank" rel="noopener noreferrer" className="link-u arrow-link">
+                <FontAwesomeIcon icon={faGithub} /> View code
               </a>
-            ))}
+            )}
+            {demo && (
+              <a href={demo} target="_blank" rel="noopener noreferrer" className="link-u arrow-link">
+                Live demo <ArrowUpRight />
+              </a>
+            )}
           </div>
         </div>
 
         <figure className="case-figure">
-          <div className="diagram-scroll" tabIndex={0} aria-label={`Architecture diagram: ${cs.diagramCaption}`}>
-            <Diagram kind={cs.diagram} title={cs.diagramCaption} />
-          </div>
-          <figcaption className="mono">
-            {cs.diagramCaption}
-            <span className="swipe-hint" aria-hidden="true">
-              {" "}
-              · swipe to see all →
-            </span>
-          </figcaption>
+          {coverLink ? (
+            <a
+              href={coverLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="case-cover"
+              aria-label={`Open ${project.name}`}
+            >
+              {cover}
+            </a>
+          ) : (
+            <div className="case-cover">{cover}</div>
+          )}
         </figure>
-      </div>
-
-      <div id={moreId} className="case-more" hidden={!open}>
-        <ol className="decisions">
-          {cs.decisions.map((d, i) => (
-            <li key={d.title}>
-              <span className="decision-n mono">{String(i + 1).padStart(2, "0")}</span>
-              <h4>{d.title}</h4>
-              <p>{d.body}</p>
-            </li>
-          ))}
-        </ol>
-        <div className="case-stack">
-          <p className="eyebrow">Stack</p>
-          <div className="chips">
-            {cs.stack.map((s) => (
-              <span key={s} className="chip">
-                {s}
-              </span>
-            ))}
-          </div>
-        </div>
       </div>
     </article>
   );
 };
 
-const Work = () => (
-  <section id="work" className="section" aria-labelledby="work-title">
-    <div className="container">
-      <SectionHead
-        index="01"
-        label="Selected work"
-        id="work-title"
-        title={
-          <>
-            Systems I've <span className="serif">shipped</span>
-          </>
-        }
-        aside={<p>Architecture first. For backend and AI work, the diagram is the screenshot.</p>}
-      />
-      <div className="cases">
-        {caseStudies.map((cs, i) => (
-          <CaseStudyCard key={cs.slug} cs={cs} n={i + 1} />
-        ))}
+const Work = () => {
+  const { featured, projectsLoading } = useSiteData();
+
+  return (
+    <section id="work" className="section" aria-labelledby="work-title">
+      <div className="container">
+        <SectionHead
+          index="01"
+          label="Selected work"
+          id="work-title"
+          title={
+            <>
+              Systems I've <span className="serif">shipped</span>
+            </>
+          }
+          aside={<p>The {FEATURED_COUNT} projects I'd most like to talk about, straight from my CMS.</p>}
+        />
+        <div className="cases">
+          {projectsLoading && featured.length === 0
+            ? Array.from({ length: FEATURED_COUNT }, (_, i) => (
+                <div key={i} className="skeleton case-skeleton" />
+              ))
+            : featured.map((project, i) => <ProjectCard key={project.id} project={project} n={i + 1} />)}
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default Work;

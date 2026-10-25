@@ -1,4 +1,3 @@
-import { caseStudies } from "../content/caseStudies";
 import { profile } from "../content/profile";
 import type { SiteData } from "../hooks/useSiteData";
 import type { Doc } from "./retrieval";
@@ -51,19 +50,13 @@ export const buildCorpus = (data: SiteData): Doc[] => {
       docs.push({ id: `about-${i}`, title: "About", source: "About", href: "#about", text: para });
     });
 
-  caseStudies.forEach((cs) => {
+  data.featured.forEach((p) => {
     docs.push({
-      id: `case-${cs.slug}`,
-      title: cs.title,
-      source: "Case study",
-      href: `#case-${cs.slug}`,
-      text: join(
-        sentence(cs.summary),
-        ...cs.bullets.map(sentence),
-        ...cs.decisions.map((d) => `${sentence(d.title)} ${sentence(d.body)}`),
-        `Stack: ${cs.stack.join(", ")}.`,
-        ...cs.metrics.map((m) => `${m.value} ${m.label}.`)
-      ),
+      id: `project-${p.id}`,
+      title: p.name,
+      source: "Featured project",
+      href: `#project-${p.id}`,
+      text: join(sentence(p.description), p.technologies.length ? `Built with ${p.technologies.join(", ")}.` : ""),
     });
   });
 
@@ -127,13 +120,13 @@ export const buildCorpus = (data: SiteData): Doc[] => {
     });
   });
 
-  data.projects.forEach((p) => {
+  data.moreProjects.forEach((p) => {
     docs.push({
       id: `project-${p.id}`,
       title: p.name,
       source: "Project",
       href: "#projects",
-      text: join(sentence(p.description), `Built with ${p.technologies.join(", ")}.`),
+      text: join(sentence(p.description), p.technologies.length ? `Built with ${p.technologies.join(", ")}.` : ""),
     });
   });
 

@@ -16,12 +16,15 @@ import {
   fallbackAbout,
   fallbackCertificates,
   fallbackExperiences,
+  fallbackProjects,
   fallbackRecognitions,
   fallbackSkills,
 } from "../constants/fallbacks";
 import { fallbackLinks } from "../content/profile";
 import { resolveSocialIcon, socialDisplayValue, socialHref } from "../constants/socialIcons";
 import type { Experience } from "../api/api";
+
+export const FEATURED_COUNT = 4;
 
 export type SiteLink = {
   id: string;
@@ -115,13 +118,22 @@ export const useSiteData = () => {
     };
   }, [experience.data]);
 
+  // The Work section shows the API's first FEATURED_COUNT active projects, in
+  // the API's order; the rest are listed under "More projects".
+  const { featured, moreProjects } = useMemo(() => {
+    const live = projects.data.filter((p) => p.active !== false);
+    const list = live.length || projects.loading ? live : fallbackProjects;
+    return { featured: list.slice(0, FEATURED_COUNT), moreProjects: list.slice(FEATURED_COUNT) };
+  }, [projects.data, projects.loading]);
+
   return {
     about: about.data ?? fallbackAbout,
     aboutLoading: about.loading,
     roles,
     education,
     experienceLoading: experience.loading,
-    projects: projects.data,
+    featured,
+    moreProjects,
     projectsLoading: projects.loading,
     skills: skills.data.length ? skills.data : fallbackSkills,
     certificates: certificates.data.length ? certificates.data : fallbackCertificates,
