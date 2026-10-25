@@ -345,8 +345,8 @@
 }
 
 .ghost {
-  --ex: 0px;
-  --ey: 0px;
+  --ex: 0;
+  --ey: 0;
   --tilt: 0deg;
   position: relative;
   display: grid;
@@ -396,8 +396,18 @@
 
 .ghost-eyes {
   fill: rgb(20 21 17);
-  transform: translate(var(--ex), var(--ey));
-  transition: transform 0.15s linear;
+  /* --ex / --ey are viewBox units from useEyeTracking. */
+  transform: translate(calc(var(--ex) * 1px), calc(var(--ey) * 1px));
+  transition: transform 0.18s ease-out;
+}
+
+/* Wandering glances glide instead of snapping. */
+.is-wandering .ghost-eyes {
+  transition-duration: 0.6s;
+}
+
+.is-wandering .ghost-svg {
+  transition-duration: 1.2s;
 }
 
 .ghost-eyes ellipse {

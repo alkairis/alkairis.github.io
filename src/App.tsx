@@ -3,6 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import SiteNav from "./components/SiteNav";
 import Ghost from "./components/Ghost";
 import AiMenu from "./components/AiMenu";
+import Preloader from "./components/Preloader";
 import Hero from "./sections/Hero";
 import Work from "./sections/Work";
 import Projects from "./sections/Projects";
@@ -34,6 +35,7 @@ export const SiteShell = () => {
       </main>
       <Ghost />
       <AiMenu />
+      <Preloader />
     </>
   );
 };

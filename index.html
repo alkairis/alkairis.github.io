@@ -87,6 +87,35 @@
         }
       })();
     </script>
+    <!--
+      First visit of the session (and motion allowed): paint the preloader's
+      jet black before any JS runs, so the page never flashes light first.
+      Keep the key in sync with src/components/Preloader.tsx, which removes
+      the class as it leaves.
+    -->
+    <style>
+      html.preloading,
+      html.preloading body {
+        background-color: #050505;
+      }
+    </style>
+    <script>
+      (function () {
+        try {
+          var reduced =
+            window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          var seen = false;
+          try {
+            seen = sessionStorage.getItem("alkairis-preloader-seen") === "1";
+          } catch (e) {
+            /* storage blocked: treat as a first visit */
+          }
+          if (!reduced && !seen) document.documentElement.classList.add("preloading");
+        } catch (e) {
+          /* ignore */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
