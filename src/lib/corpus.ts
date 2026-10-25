@@ -22,7 +22,7 @@ export const buildCorpus = (data: SiteData): Doc[] => {
     href: "#top",
     text: join(
       `${profile.name} is a ${profile.role} at ${profile.company}, based in ${profile.location}.`,
-      `He has ${data.years}+ years of professional experience building production Generative AI and cloud systems.`,
+      `He works as both a data engineer and an AI engineer, with ${data.years}+ years of professional experience building cloud data platforms and production Generative AI systems.`,
       `Focus: ${profile.focus}.`,
       `${profile.credential}.`
     ),
@@ -36,7 +36,7 @@ export const buildCorpus = (data: SiteData): Doc[] => {
     text: join(
       `${profile.availability}.`,
       `${profile.availabilityDetail}.`,
-      `Works in ${profile.timezone}, based in ${profile.location}, open to remote.`,
+      `Based in ${profile.location}, working a ${profile.workModel.toLowerCase()} model, in ${profile.timezone}.`,
       data.email ? `The fastest way to reach him is email: ${data.email.display}.` : "Reach out through the contact form or LinkedIn.",
       data.resumeUrl ? "A PDF resume is available to download." : "A printable resume is on the resume page."
     ),

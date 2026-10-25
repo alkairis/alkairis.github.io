@@ -30,7 +30,7 @@ const About = () => {
             <figcaption>
               <span className="live-dot" aria-hidden="true" />
               <span>
-                {about.location || profile.location}
+                {profile.location} · {profile.workModel}
                 <span className="mono"> · {profile.timezone}</span>
               </span>
             </figcaption>

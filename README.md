@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/banner.png" alt="Deepak Singh Rajput — Senior Software Engineer · Generative AI & Cloud" width="100%" />
+<img src="assets/banner.png" alt="Deepak Singh Rajput — Data Engineer + AI Engineer" width="100%" />
 
 <br/>
 
@@ -19,7 +19,7 @@
 
 ## 🧠 whoami
 
-**Deepak Singh Rajput** — Senior Software Engineer, India · IST (UTC+5:30).
+**Deepak Singh Rajput** — Data Engineer + AI Engineer, India (hybrid) · IST (UTC+5:30).
 
 Four-plus years at [Impetus Technologies](https://www.impetus.com/) building **production** Generative AI — retrieval pipelines that stay accurate on real corpora, agentic LLM workflows that don't fall over on the third tool call, and the data platform migrations underneath them. **GCP Generative AI Leader certified.**
 

@@ -65,7 +65,7 @@ const Contact = ({ variant = "section" }: ContactProps) => {
               Contact
             </p>
             <h2 id={isCard ? "hire-title" : "contact-title"} className="contact-title">
-              Hiring for GenAI or <span className="serif accent-text">LLM platform</span> work?
+              Hiring a <span className="serif accent-text">data or AI</span> engineer?
             </h2>
 
             {email ? (

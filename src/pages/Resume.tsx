@@ -73,12 +73,12 @@ const Resume = () => {
             {profile.name}
           </h1>
           <p className="rs-role" data-reveal style={delay(2)}>
-            <strong>{profile.role} · Generative AI</strong>
+            <strong>{profile.role}</strong>
             <span className="rs-role-sep" aria-hidden="true">
               {" "}
               ·{" "}
             </span>
-            <span>RAG pipelines, agentic systems, and the cloud data platforms underneath them.</span>
+            <span>Cloud data platforms, and the RAG pipelines and agentic systems built on them.</span>
           </p>
 
           <div className="rs-summary" data-reveal style={delay(3)}>
@@ -107,7 +107,7 @@ const Resume = () => {
             ))}
             <li>
               <span>
-                <MapPin /> {profile.location} · Remote
+                <MapPin /> {profile.location} · {profile.workModel}
               </span>
             </li>
           </ul>
