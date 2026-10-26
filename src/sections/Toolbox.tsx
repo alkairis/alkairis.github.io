@@ -9,11 +9,23 @@ import { scatter } from "../lib/style";
 
 const CARD_ID = "skill-card";
 
+// A–Z, ignoring case and accents, with numbers in natural order ("S3" before "S10").
+const byName = new Intl.Collator("en", { sensitivity: "base", numeric: true }).compare;
+
+/** This section lists skills, and each skill's sub-technologies, alphabetically. */
+const sortGroups = (groups: [string, TechnicalSkill[]][]): [string, TechnicalSkill[]][] =>
+  groups.map(([group, items]) => [
+    group,
+    items
+      .map((s) => ({ ...s, sub_tech: [...s.sub_tech].sort(byName) }))
+      .sort((a, b) => byName(a.name, b.name)),
+  ]);
+
 type Active = { skill: TechnicalSkill; anchor: HTMLElement };
 
 const Toolbox = () => {
   const { skills } = useSiteData();
-  const groups = useMemo(() => groupSkills(skills), [skills]);
+  const groups = useMemo(() => sortGroups(groupSkills(skills)), [skills]);
   const [active, setActive] = useState<Active | null>(null);
   // Set by a touch/pen press so the focus and click that follow it act as a tap.
   const touched = useRef(false);
