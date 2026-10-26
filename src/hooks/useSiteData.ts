@@ -22,9 +22,26 @@ import {
 } from "../constants/fallbacks";
 import { fallbackLinks } from "../content/profile";
 import { resolveSocialIcon, socialDisplayValue, socialHref } from "../constants/socialIcons";
-import type { Experience } from "../api/api";
+import type { Experience, Project } from "../api/api";
 
 export const FEATURED_COUNT = 4;
+
+// Image values the CMS uses for "no image".
+const NO_IMAGE = /^(n\/?a|none|null|undefined|nil|-+|#)$/i;
+const isImage = (url: string) => url.trim() !== "" && !NO_IMAGE.test(url.trim());
+const projectKey = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+/**
+ * A project's images without "NA"-style placeholders. If none are left, the
+ * images of the default project with the same name; if that has none either,
+ * an empty list, and the card shows its default cover.
+ */
+const withProjectImages = (project: Project): Project => {
+  const images = project.image_url.filter(isImage);
+  if (images.length) return images.length === project.image_url.length ? project : { ...project, image_url: images };
+  const match = fallbackProjects.find((f) => projectKey(f.name) === projectKey(project.name));
+  return { ...project, image_url: match?.image_url.filter(isImage) ?? [] };
+};
 
 export type SiteLink = {
   id: string;
@@ -121,7 +138,7 @@ export const useSiteData = () => {
   // The Work section shows the API's first FEATURED_COUNT active projects, in
   // the API's order; the rest are listed under "More projects".
   const { featured, moreProjects } = useMemo(() => {
-    const live = projects.data.filter((p) => p.active !== false);
+    const live = projects.data.filter((p) => p.active !== false).map(withProjectImages);
     const list = live.length || projects.loading ? live : fallbackProjects;
     return { featured: list.slice(0, FEATURED_COUNT), moreProjects: list.slice(FEATURED_COUNT) };
   }, [projects.data, projects.loading]);
