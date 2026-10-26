@@ -54,7 +54,10 @@ const Journey = () => {
                       <h3>{r.title}</h3>
                       <p className="role-company">
                         {r.company}
-                        {/present/i.test(r.date) && <span className="role-now mono">Current</span>}
+                        {/present/i.test(r.date) && !/contractor/i.test(r.roleType) && (
+                          <span className="role-now mono">Current</span>
+                        )}
+                        {r.roleType && <span className="role-now mono">{r.roleType}</span>}
                       </p>
                     </div>
                   </div>

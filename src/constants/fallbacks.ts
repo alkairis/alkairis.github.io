@@ -46,6 +46,7 @@ export const fallbackExperiences: Experience[] = [
     bannerImage: '',
     logo: asset('images/impetus-sq.webp'),
     date: 'Jul 2022 – Present',
+    roleType: '',
     responsibilities: [
       'Build production-grade Generative AI systems — RAG pipelines and agentic LLM workflows using LangChain and LangGraph.',
       'Migrate large-scale on-prem data workloads to Google Cloud Platform (BigQuery, Dataproc, Cloud Composer).',
@@ -63,6 +64,7 @@ export const fallbackExperiences: Experience[] = [
     bannerImage: '',
     logo: asset('images/rgpv-sq.webp'),
     date: '2018 – 2022',
+    roleType: '',
     responsibilities: [
       'Bachelor of Technology in Computer Science & Engineering.',
       'Foundations in data structures, algorithms, databases and distributed systems.',

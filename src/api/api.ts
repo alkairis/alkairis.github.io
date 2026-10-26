@@ -283,6 +283,7 @@ type ProfessionalExperienceDto = {
   responsibilities: string[];
   recognition?: string[] | null;
   is_present: boolean;
+  roll_type?: string | null;
   active: boolean;
 };
 
@@ -296,6 +297,7 @@ export type Experience = {
   date: string;
   responsibilities: string[];
   recognition: string[];
+  roleType: string;
 };
 
 const normalizeExperience = (dto: ProfessionalExperienceDto): Experience => {
@@ -310,6 +312,7 @@ const normalizeExperience = (dto: ProfessionalExperienceDto): Experience => {
     date: [start, end].filter(Boolean).join(' – '),
     responsibilities: dto.responsibilities ?? [],
     recognition: dto.recognition ?? [],
+    roleType: dto.roll_type?.trim() ?? '',
   };
 };
 
