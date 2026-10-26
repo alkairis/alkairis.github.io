@@ -99,6 +99,7 @@ export const SECTIONS: SectionConfig[] = [
     fields: [
       { name: 'company_name', label: 'Company Name', type: 'text', required: true },
       { name: 'position', label: 'Position', type: 'text', required: true },
+      { name: 'roll_type', label: 'Role Type', type: 'text' },
       { name: 'banner_image', label: 'Banner Image URL', type: 'url' },
       { name: 'logo', label: 'Logo URL', type: 'url' },
       { name: 'start_date', label: 'Start Date', type: 'date', required: true },
