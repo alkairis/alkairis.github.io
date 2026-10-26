@@ -101,7 +101,7 @@ export const SkillCard = ({ id, skill, anchor }: { id: string; skill: TechnicalS
       {skill.description && <p>{skill.description}</p>}
       {skill.sub_tech.length > 0 && (
         <div className="skill-card-sub">
-          <span className="mono">Includes · {skill.sub_tech.length}</span>
+          <span className="mono">I've worked with · {skill.sub_tech.length}</span>
           <ul>
             {skill.sub_tech.map((t) => (
               <li key={t}>{t}</li>
